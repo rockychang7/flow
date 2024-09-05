@@ -1,7 +1,17 @@
 ---
 import {ModeToggle} from "@/components/mode-toggle";
+import {Button} from "@/components/ui/button";
 ---
-
-<header>
-    <ModeToggle client:load/>
+<header class="w-full h-10 py-1 flex justify-between items-baseline">
+    <div>Logo</div>
+    <div class="flex justify-evenly items-center gap-2">
+        <div class="flex gap-x-2 font-bold text-2xl">
+            <Button variant="menu" size="menu">归档</Button>
+            <Button variant="menu" size="menu">随笔</Button>
+            <Button variant="menu" size="menu">分类</Button>
+            <Button variant="menu" size="menu">标签</Button>
+            <Button variant="menu" size="menu">关于</Button>
+        </div>
+        <ModeToggle client:load/>
+    </div>
 </header>

@@ -1,8 +1,6 @@
 import * as React from "react";
 import {Moon, Sun} from "lucide-react";
 
-import {Button} from "@/components/ui/button";
-
 export function ModeToggle() {
     const [theme, setThemeState] = React.useState<
         "theme-light" | "theme-dark">("theme-light");
@@ -19,7 +17,7 @@ export function ModeToggle() {
     }, [theme]);
 
     return (
-        <div className="relative w-6 h-6"
+        <div className="relative size-6 hidden md:block"
              onClick={() => setThemeState(theme === "theme-dark" ? "theme-light" : "theme-dark")}>
             <Sun
                 className="absolute inset-0 h-full w-full transition-all duration-300 rotate-0 scale-100 cursor-pointer dark:-rotate-90 dark:scale-0"/>
