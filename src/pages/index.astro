@@ -3,10 +3,35 @@ import "@/styles/globals.css";
 import RootLayout from "@/layouts/RootLayout.astro";
 import Header from "@/components/header.astro";
 import Footer from "@/components/footer.astro";
+import ArticleList from "@/components/home-article-list.astro";
+import {Separator} from "@/components/ui/separator.tsx";
+
 const title: string = "个人主页";
 ---
 <RootLayout title={title}>
     <Header/>
-    <div>content</div>
+    <div class="flex flex-col justify-start pt-10 gap-y-6 pl-[6px]">
+        <div class="w-full flex flex-col gap-y-4">
+            <h1 class="text-2xl font-bold">个人介绍</h1>
+            <div class="text-md font-medium">
+                Hello👋 I'm rockychang. 一个独立开发者,关注前后端技术、学习方法论、心流(Flow)。 喜欢一切简单优雅的设计，专注于开发个人独立作品。
+            </div>
+        </div>
+        <Separator/>
+        <ArticleList/>
+        <Separator/>
+        <div>
+            <h1 class="text-2xl font-bold">个人项目</h1>
+            <div class="grid grid-cols-1  gap-8">
+                <div class="size-96">
+                    <div>
+                        <img src="https://picsum.photos/1500" alt="Blog post image"/>
+                    </div>
+                    <div>项目1</div>
+                </div>
+            </div>
+        </div>
+        <Separator/>
+    </div>
     <Footer/>
 </RootLayout>

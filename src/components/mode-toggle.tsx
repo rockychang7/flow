@@ -3,22 +3,22 @@ import {Moon, Sun} from "lucide-react";
 
 export function ModeToggle() {
     const [theme, setThemeState] = React.useState<
-        "theme-light" | "theme-dark">("theme-light");
+        "light" | "dark">("light");
 
     React.useEffect(() => {
-        const isDarkMode = document.documentElement.classList.contains("theme-dark");
-        setThemeState(isDarkMode ? "theme-dark" : "theme-light");
+        const isDarkMode = document.documentElement.classList.contains("dark");
+        setThemeState(isDarkMode ? "dark" : "light");
     }, []);
 
     React.useEffect(() => {
         const isDark =
-            theme === "theme-dark";
+            theme === "dark";
         document.documentElement.classList[isDark ? "add" : "remove"]("dark");
     }, [theme]);
 
     return (
-        <div className="relative size-6 hidden md:block"
-             onClick={() => setThemeState(theme === "theme-dark" ? "theme-light" : "theme-dark")}>
+        <div className="relative size-6 md:block"
+             onClick={() => setThemeState(theme === "dark" ? "light" : "dark")}>
             <Sun
                 className="absolute inset-0 h-full w-full transition-all duration-300 rotate-0 scale-100 cursor-pointer dark:-rotate-90 dark:scale-0"/>
             <Moon
