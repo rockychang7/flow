@@ -5,6 +5,7 @@ import Header from "@/components/header.astro";
 import Footer from "@/components/footer.astro";
 import ArticleList from "@/components/home-article-list.astro";
 import {Separator} from "@/components/ui/separator.tsx";
+import {CardDemo} from "@/components/home-project-list.tsx";
 
 const title: string = "个人主页";
 ---
@@ -20,16 +21,12 @@ const title: string = "个人主页";
         <Separator/>
         <ArticleList/>
         <Separator/>
-        <div>
-            <h1 class="text-2xl font-bold">个人项目</h1>
-            <div class="grid grid-cols-1  gap-8">
-                <div class="size-96">
-                    <div>
-                        <img src="https://picsum.photos/1500" alt="Blog post image"/>
-                    </div>
-                    <div>项目1</div>
-                </div>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <CardDemo/>
+            <CardDemo/>
+            <CardDemo/>
+            <CardDemo/>
+            <CardDemo/>
         </div>
         <Separator/>
     </div>
