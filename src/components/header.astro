@@ -24,6 +24,9 @@ import {MobileMenu} from "./mobile-menu";
                 <Button variant="menu" size="menu">关于</Button>
             </a>
         </div>
+        <div class="hidden md:block">
+            <ModeToggle client:load/>
+        </div>
         <div class="md:hidden">
             <MobileMenu client:load/>
         </div>
