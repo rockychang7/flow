@@ -10,5 +10,9 @@ export default defineConfig({
         tailwind({
             applyBaseStyles: false,
         }),
-        mdx(),]
+        mdx({
+                syntaxHighlight: "shiki",
+                shikiConfig: {theme: "github-light"}
+            }
+        ),]
 });
