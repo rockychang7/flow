@@ -1,0 +1,28 @@
+---
+import RootLayout from "../layouts/RootLayout.astro";
+import Footer from "../components/footer.astro";
+import Header from "../components/header.astro";
+import {getCollection} from "astro:content";
+import BadgeCategory from "../components/badge-category";
+import {Separator} from "@/components/ui/separator";
+
+const title: string = "分类";
+const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
+// 获取所有不同的 category
+const distinctCategories = new Set(allBlogPosts.map(post => post.data.category));
+const filteredPosts = allBlogPosts.filter((post, index, arr) => {
+    const category = post.data.category;
+    return !arr.slice(0, index).some(p => p.data.category === category);
+}).sort();
+---
+<RootLayout title={title}>
+    <Header/>
+    <h1 class="text-2xl font-bold pt-8">所有分类</h1>
+    <Separator/>
+    <div class="w-full gap-4 flex flex-wrap pt-2">
+        {filteredPosts.map(article => (
+                <BadgeCategory categoryName={article.data.category} url={`/categories/${article.data.category}`}/>
+        ))}
+    </div>
+    <Footer/>
+</RootLayout>

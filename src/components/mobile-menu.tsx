@@ -41,7 +41,7 @@ export function MobileMenu() {
                     <a href="/essay">
                         <Button variant="menu" size="menu">随笔</Button>
                     </a>
-                    <a href="/categoery">
+                    <a href="/category">
                         <Button variant="menu" size="menu">分类</Button>
                     </a>
                     <a href="/tag">

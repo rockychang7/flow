@@ -1,0 +1,39 @@
+---
+import {getCollection} from "astro:content";
+import RootLayout from "../../layouts/RootLayout.astro";
+import Header from "../../components/header.astro";
+import Footer from "../../components/footer.astro";
+import dayjs from "dayjs";
+import {DATE_FORMAT} from "../../constant/constants";
+import {Separator} from "../../components/ui/separator";
+
+export async function getStaticPaths() {
+    const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
+    // 获取所有不同的 category
+    const distinctCategories = new Set(allBlogPosts.map(post => post.data.category));
+    return [...distinctCategories].map(category => ({
+        params: {category: category},
+        props: {category}
+    }));
+}
+const {category} = Astro.props;
+const filteredPosts = await getCollection("articles", ({data}) => data.draft !== true && data.category === category);
+---
+<RootLayout title="分类归档">
+    <Header/>
+    <div class="flex flex-col pt-10 px-1.5">
+        <h1 class="text-2xl font-extrabold text-primary">分类/{category}</h1>
+        <Separator client:load/>
+        <div class="flex flex-col pt-4 gap-y-6 md:gap-y-2 bg-background-foreground group">
+            {filteredPosts.map(post => (
+                    <div class="flex flex-col md:flex-row w-full h-10 items-start md:gap-x-4 md:items-baseline">
+                        <span class="text-muted-foreground text-md"> {dayjs(post.data.publish_date).format(DATE_FORMAT)}</span>
+                        <a class="underline text-lg" href={`/articles/${post.slug}`}>
+                            {post.data.title}
+                        </a>
+                    </div>
+            ))}
+        </div>
+    </div>
+    <Footer/>
+</RootLayout>

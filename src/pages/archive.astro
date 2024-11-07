@@ -5,7 +5,7 @@ import Footer from "../components/footer.astro";
 import {getCollection} from "astro:content";
 import {Separator} from "@/components/ui/separator";
 import dayjs from "dayjs";
-import {DATETIME_FORMAT} from "../constant/constants";
+import {DATE_FORMAT} from "../constant/constants";
 
 const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
 const title: string = "归档";
@@ -18,7 +18,7 @@ const title: string = "归档";
         <div class="flex flex-col pt-4 gap-y-6 md:gap-y-2 bg-background-foreground group">
             {allBlogPosts.map(post => (
                     <div class="flex flex-col md:flex-row w-full h-10 items-start md:gap-x-4 md:items-baseline">
-                        <span class="text-muted-foreground text-md"> {dayjs(post.data.publishDate).format(DATETIME_FORMAT)}</span>
+                        <span class="text-muted-foreground text-md"> {dayjs(post.data.publish_date).format(DATE_FORMAT)}</span>
                         <a class="underline text-lg" href={`/articles/${post.slug}`}>
                             {post.data.title}
                         </a>

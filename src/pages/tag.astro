@@ -1,0 +1,25 @@
+---
+import RootLayout from "../layouts/RootLayout.astro";
+import Footer from "../components/footer.astro";
+import Header from "../components/header.astro";
+import {getCollection} from "astro:content";
+import {Separator} from "@/components/ui/separator";
+import BadgeTag from "../components/badge-tag";
+
+const title: string = "标签";
+const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
+// 获取所有不同的 category
+const distinctTags = new Set(allBlogPosts.flatMap(post => post.data.tags.map(tag => tag.trim())).sort());
+
+---
+<RootLayout title={title}>
+    <Header/>
+    <h1 class="text-2xl font-bold pt-8">所有标签</h1>
+    <Separator/>
+    <div class="w-full gap-4 flex flex-wrap pt-2">
+        {[...distinctTags].map(tag => (
+                <BadgeTag categoryName={tag} url={`/tags/${tag}`}/>
+        ))}
+    </div>
+    <Footer/>
+</RootLayout>

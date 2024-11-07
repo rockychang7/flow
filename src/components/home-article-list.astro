@@ -1,14 +1,14 @@
 ---
 import {getCollection} from "astro:content";
 import dayjs from "dayjs";
-import {DATETIME_FORMAT} from "../constant/constants";
+import {DATE_FORMAT} from "../constant/constants";
 const allBlogPosts = await getCollection("articles", ({data}) => {
     return data.draft !== true;
 });
 
 const latestBlogPosts = allBlogPosts
     .filter(article => !article.data.draft)
-    .sort((a, b) => new Date(b.data.publishDate) - new Date(a.data.publishDate))
+    .sort((a, b) => new Date(b.data.publish_date) - new Date(a.data.publish_date))
     .slice(0, 3);
 ---
 
@@ -22,7 +22,7 @@ const latestBlogPosts = allBlogPosts
                         <span class="sr-only">{post.data.title}</span>
                     </a>
                     <div class="bg-background dark:border-stone-800 rounded-lg border p-2 md:p-6">
-                        <div class="mb-2 text-sm text-muted-foreground">{dayjs(post.data.publishDate).format(DATETIME_FORMAT)}</div>
+                        <div class="mb-2 text-sm text-muted-foreground">{dayjs(post.data.publish_date).format(DATE_FORMAT)}</div>
                         <h3 class="mb-2 text-xl font-bold tracking-tight text-foreground group-hover:text-primary">
                             {post.data.title}
                         </h3>

@@ -82,3 +82,16 @@
     font-style: normal;
     font-display: swap;
 }
+
+/*自定义设置markdown样式*/
+details{
+
+
+
+}
+
+#目录{
+    padding: 0px;
+    margin: 0px;
+    height: 20px;
+}

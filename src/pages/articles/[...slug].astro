@@ -4,6 +4,8 @@ import RootLayout from "../../layouts/RootLayout.astro";
 import Header from "../../components/header.astro";
 import Footer from "../../components/footer.astro";
 import Prose from "../../components/md-prose.astro";
+import dayjs from "dayjs";
+import {DATETIME_FORMAT} from "../../constant/constants";
 
 export async function getStaticPaths() {
     const blogEntries = await getCollection("articles");
@@ -19,6 +21,11 @@ const {Content} = await entry.render();
 <RootLayout title={entry.data.title}>
     <Header/>
     <Prose>
+        <div class="flex flex-col">
+            <h1 class="text-4xl text-primary  m-0">{entry.data.title}</h1>
+            <span class="font-medium text-gray-500">{dayjs(entry.data.publish_date).format(DATETIME_FORMAT)}</span>
+            <img class="border-2 border-primary/10 shadow-md rounded-xl" src={entry.data.cover_url} alt="cover"/>
+        </div>
         <Content/>
     </Prose>
     <Footer/>
