@@ -7,6 +7,7 @@ import remarkCollapse from "remark-collapse";
 
 // https://astro.build/config
 export default defineConfig({
+    site: "http://localhost:4321",
     integrations: [react(),
         tailwind({
             applyBaseStyles: false,

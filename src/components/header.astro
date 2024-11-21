@@ -3,6 +3,13 @@ import {ModeToggle} from "@/components/mode-toggle";
 import {Button} from "@/components/ui/button";
 import Logo from "@/components/logo.astro";
 import {MobileMenu} from "./mobile-menu";
+import {Rss} from "lucide-react";
+import {Separator} from "@/components/ui/separator";
+import GlobalSearch from "@/components/global-search";
+import { generateSearchData } from '@/lib/generateSearchData';
+
+// 生成搜索数据
+const searchData = await generateSearchData();
 ---
 <header class="w-full h-8 flex justify-between items-center">
     <Logo/>
@@ -24,7 +31,15 @@ import {MobileMenu} from "./mobile-menu";
                 <Button variant="menu" size="menu">关于</Button>
             </a>
         </div>
-        <div class="hidden md:block">
+        <div class="hidden md:flex gap-x-1 justify-center">
+            <Separator className="bg-primary/60 h-6 w-[0.5px] mr-1"/>
+            <GlobalSearch
+                    client:load
+                    searchData={searchData}
+            />
+            <a href="/rss.xml">
+                <Rss className="size-6" client:load/>
+            </a>
             <ModeToggle client:load/>
         </div>
         <div class="md:hidden">

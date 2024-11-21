@@ -31,7 +31,11 @@ const {title} = Astro.props;
     <meta name="generator" content={Astro.generator}/>
     <title>{title}</title>
 </head>
-<body class="min-h-svh container w-full flex flex-col font-sans p-4 md:px-8 min-w-[400px] max-w-screen-md">
-<slot/>
+<body>
+<main class="min-h-svh container w-full flex flex-col font-sans p-4 md:px-8 min-w-[400px] max-w-screen-md">
+    <slot/>
+</main>
+<!-- Add this portal container for dialogs -->
+<div id="dialog-portal"></div>
 </body>
 </html>

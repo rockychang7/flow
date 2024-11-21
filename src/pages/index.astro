@@ -6,7 +6,7 @@ import Footer from "@/components/footer.astro";
 import ArticleList from "@/components/home-article-list.astro";
 import {Separator} from "@/components/ui/separator.tsx";
 import {CardDemo} from "@/components/home-project-list.tsx";
-
+import BackToTop from "@/components/back-to-top.tsx";
 const title: string = "个人主页";
 ---
 <RootLayout title={title}>
@@ -30,5 +30,6 @@ const title: string = "个人主页";
         </div>
         <Separator/>
     </div>
+    <BackToTop client:load/>
     <Footer/>
 </RootLayout>

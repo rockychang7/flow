@@ -83,15 +83,23 @@
     font-display: swap;
 }
 
-/*自定义设置markdown样式*/
-details{
-
-
-
-}
 
 #目录{
     padding: 0px;
     margin: 0px;
     height: 20px;
+}
+
+#dialog-portal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 50;
+}
+
+#dialog-portal > * {
+    pointer-events: auto;
 }
