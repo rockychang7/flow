@@ -2,7 +2,7 @@ import {Button} from "@/components/ui/button";
 import React from "react";
 import {Menu} from "lucide-react";
 import {Separator} from "@/components/ui/separator";
-import {ModeToggle} from "@/components/mode-toggle.tsx";
+import {ModeToggle} from "@/components/common/mode-toggle.tsx";
 
 export function MobileMenu() {
     const [isOpen, setIsOpen] = React.useState(false);

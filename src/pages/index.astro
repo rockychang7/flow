@@ -1,35 +1,24 @@
 ---
-import "@/styles/globals.css";
 import RootLayout from "@/layouts/RootLayout.astro";
-import Header from "@/components/header.astro";
-import Footer from "@/components/footer.astro";
+import Header from "../components/common/header.astro";
+import Footer from "../components/common/footer.astro";
 import ArticleList from "@/components/home-article-list.astro";
 import {Separator} from "@/components/ui/separator.tsx";
-import {CardDemo} from "@/components/home-project-list.tsx";
-import BackToTop from "@/components/back-to-top.tsx";
+import {ProjectList} from "@/components/home-project-list.tsx";
+import PersonalIntro from "@/components/personal-intro.astro";
+import TextBorderAnimation from "@/components/ui/text-border-animation.tsx";
 const title: string = "个人主页";
 ---
 <RootLayout title={title}>
     <Header/>
-    <div class="flex flex-col justify-start pt-10 gap-y-6 px-[6px]">
-        <div class="w-full flex flex-col gap-y-4">
-            <h1 class="text-2xl font-bold">个人介绍</h1>
-            <div class="text-md font-medium">
-                Hello👋 I'm rockychang. 一个独立开发者,关注前后端技术、学习方法论、心流(Flow)。 喜欢一切简单优雅的设计，专注于开发个人独立作品。
-            </div>
-        </div>
+    <div class="flex flex-col justify-start pt-10 gap-y-6 px-1.5">
+        <PersonalIntro/>
         <Separator/>
         <ArticleList/>
         <Separator/>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <CardDemo/>
-            <CardDemo/>
-            <CardDemo/>
-            <CardDemo/>
-            <CardDemo/>
-        </div>
+        <ProjectList client:load/>
         <Separator/>
+        <TextBorderAnimation text="归档" client:load/>
     </div>
-    <BackToTop client:load/>
     <Footer/>
 </RootLayout>

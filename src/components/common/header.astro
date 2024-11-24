@@ -1,12 +1,12 @@
 ---
-import {ModeToggle} from "@/components/mode-toggle";
+import Logo from "@/components/icons/logo.astro";
 import {Button} from "@/components/ui/button";
-import Logo from "@/components/logo.astro";
-import {MobileMenu} from "./mobile-menu";
-import {Rss} from "lucide-react";
 import {Separator} from "@/components/ui/separator";
-import GlobalSearch from "@/components/global-search";
-import { generateSearchData } from '@/lib/generateSearchData';
+import {ModeToggle} from "@/components/common/mode-toggle";
+import {MobileMenu} from "@/components/mobile-menu";
+import {Rss} from "lucide-react";
+import GlobalSearch from "./global-search";
+import { generateSearchData } from '../../lib/generateSearchData';
 
 // 生成搜索数据
 const searchData = await generateSearchData();
@@ -45,5 +45,6 @@ const searchData = await generateSearchData();
         <div class="md:hidden">
             <MobileMenu client:load/>
         </div>
+
     </div>
 </header>
