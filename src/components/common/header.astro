@@ -1,50 +1,8 @@
 ---
 import Logo from "@/components/icons/logo.astro";
-import {Button} from "@/components/ui/button";
-import {Separator} from "@/components/ui/separator";
-import {ModeToggle} from "@/components/common/mode-toggle";
-import {MobileMenu} from "@/components/mobile-menu";
-import {Rss} from "lucide-react";
-import GlobalSearch from "./global-search";
-import { generateSearchData } from '../../lib/generateSearchData';
-
-// 生成搜索数据
-const searchData = await generateSearchData();
+import HeaderMenu from "@/components/common/header-menu.astro";
 ---
 <header class="w-full h-8 flex justify-between items-center">
     <Logo/>
-    <div class="flex justify-evenly items-center gap-2 ">
-        <div class="hidden md:flex gap-x-2 text-2xl">
-            <a href="/archive">
-                <Button variant="menu" size="menu">归档</Button>
-            </a>
-            <a href="/essay">
-                <Button variant="menu" size="menu">随笔</Button>
-            </a>
-            <a href="/category">
-                <Button variant="menu" size="menu">分类</Button>
-            </a>
-            <a href="/tag">
-                <Button variant="menu" size="menu">标签</Button>
-            </a>
-            <a href="/about">
-                <Button variant="menu" size="menu">关于</Button>
-            </a>
-        </div>
-        <div class="hidden md:flex gap-x-1 justify-center">
-            <Separator className="bg-primary/60 h-6 w-[0.5px] mr-1"/>
-            <GlobalSearch
-                    client:load
-                    searchData={searchData}
-            />
-            <a href="/rss.xml">
-                <Rss className="size-6" client:load/>
-            </a>
-            <ModeToggle client:load/>
-        </div>
-        <div class="md:hidden">
-            <MobileMenu client:load/>
-        </div>
-
-    </div>
+    <HeaderMenu/>
 </header>

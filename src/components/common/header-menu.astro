@@ -1,0 +1,8 @@
+---
+import {HeaderMobileMenu} from "@/components/common/header-mobile-menu";
+import HeaderMdMenu from "@/components/common/header-md-menu.astro";
+---
+<div class="flex justify-evenly items-center gap-2">
+    <HeaderMdMenu/>
+    <HeaderMobileMenu client:load/>
+</div>

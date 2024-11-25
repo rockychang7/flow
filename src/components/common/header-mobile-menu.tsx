@@ -1,10 +1,11 @@
-import {Button} from "@/components/ui/button";
+import {Button} from "@/components/ui/button.tsx";
 import React from "react";
 import {Menu} from "lucide-react";
-import {Separator} from "@/components/ui/separator";
+import {Separator} from "@/components/ui/separator.tsx";
 import {ModeToggle} from "@/components/common/mode-toggle.tsx";
+import {menuInfo} from "@/data/menu-info";
 
-export function MobileMenu() {
+export function HeaderMobileMenu() {
     const [isOpen, setIsOpen] = React.useState(false);
     const menuRef = React.useRef(null);
     const buttonRef = React.useRef(null);
@@ -26,30 +27,20 @@ export function MobileMenu() {
 
 
     return (
-        <>
+        <div className="md:hidden">
             <Button ref={buttonRef} variant="ghost" onClick={() => setIsOpen(!isOpen)}><Menu/></Button>
             <div
                 ref={menuRef}
-                className={`absolute w-[200px] p-4 top-[64px] right-[10px] w-[200px] bg-background rounded-md shadow-2xl transition-all duration-300 ${
+                className={`absolute w-[200px] border p-4 top-[60px] right-[8px] w-[200px] bg-background rounded-md shadow-xl transition-all duration-300 ${
                     isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
                 }`}
             >
-                <div className="flex flex-col gap-x-2">
-                    <a href="/archive">
-                        <Button variant="menu" size="menu">归档</Button>
-                    </a>
-                    <a href="/essay">
-                        <Button variant="menu" size="menu">随笔</Button>
-                    </a>
-                    <a href="/category">
-                        <Button variant="menu" size="menu">分类</Button>
-                    </a>
-                    <a href="/tag">
-                        <Button variant="menu" size="menu">标签</Button>
-                    </a>
-                    <a href="/src/pages/about">
-                        <Button variant="menu" size="menu">关于</Button>
-                    </a>
+                <div className="flex flex-col gap-y-1">
+                    {menuInfo.map((item, index) => (
+                        <a href={item.menuLink}>
+                            <Button variant="menu" size="menu">{item.menuName}</Button>
+                        </a>
+                    ))}
                     <Separator/>
                     <div className="flex gap-x-2 w-full pt-2 ">
                         <div>Github</div>
@@ -58,7 +49,7 @@ export function MobileMenu() {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
 
     );
 }

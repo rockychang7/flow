@@ -1,0 +1,14 @@
+---
+import {menuInfo} from "../../data/menu-info";
+import TextBorderAnimation from "../ui/text-border-animation";
+import HeaderBadge from "./header-badge.astro";
+---
+<div class="hidden md:flex gap-x-4 text-2xl">
+    {menuInfo.map((item, index) => (
+            <a href={item.menuLink}>
+                <TextBorderAnimation className="text-primary font-bold text-[18px]" text={item.menuName}
+                                     client:load/>
+            </a>
+    ))}
+    <HeaderBadge/>
+</div>

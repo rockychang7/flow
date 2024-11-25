@@ -3,14 +3,15 @@ import {Search, X} from "lucide-react";
 import Fuse from "fuse.js";
 import {Dialog, DialogContent, DialogHeader, DialogTitle,} from "@/components/ui/dialog.tsx";
 
+// @ts-ignore
 const GlobalSearch = ({searchData}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-    const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null)
+    const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
 
     useEffect(() => {
-        setPortalContainer(document.getElementById('dialog-portal'))
-    }, [])
+        setPortalContainer(document.getElementById("dialog-portal"));
+    }, []);
     // 配置 Fuse.js 选项
     const fuseOptions = {
         keys: ["title", "content", "tags"],
@@ -28,7 +29,7 @@ const GlobalSearch = ({searchData}) => {
         return fuse.search(searchTerm).slice(0, 5);
     }, [searchTerm, fuse]);
 
-    const handleSearch = (event) => {
+    const handleSearch = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         setSearchTerm(event.target.value);
     };
 
@@ -37,7 +38,7 @@ const GlobalSearch = ({searchData}) => {
     };
 
     // 高亮匹配文本
-    const highlightMatch = (text, matches) => {
+    const highlightMatch = (text: any, matches: any[]) => {
         if (!matches || !text) return text;
 
         let highlightedText = text;
@@ -45,10 +46,11 @@ const GlobalSearch = ({searchData}) => {
             .sort((a, b) => b.indices[0][0] - a.indices[0][0]); // 从后向前处理，避免位置偏移
 
         indices.forEach(match => {
+            // @ts-ignore
             match.indices.forEach(([start, end]) => {
                 highlightedText =
                     highlightedText.substring(0, start) +
-                    `<mark class="bg-yellow-200 rounded">${highlightedText.substring(start, end + 1)}</mark>` +
+                    `<mark class="bg-yellow-500 rounded-sm">${highlightedText.substring(start, end + 1)}</mark>` +
                     highlightedText.substring(end + 1);
             });
         });
@@ -56,18 +58,20 @@ const GlobalSearch = ({searchData}) => {
         return <span dangerouslySetInnerHTML={{__html: highlightedText}}/>;
     };
 
+
     return (
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
+                className="p-2 rounded-full hover:bg-muted transition-colors duration-200"
                 aria-label="Open search"
             >
                 <Search className="w-5 h-5"/>
             </button>
 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogContent  container={portalContainer}  className="sm:max-w-2xl">
+                {/* @ts-ignore */}
+                <DialogContent container={portalContainer} className="sm:max-w-2xl">
                     <DialogHeader>
                         <DialogTitle>全局搜索</DialogTitle>
                     </DialogHeader>
@@ -81,7 +85,7 @@ const GlobalSearch = ({searchData}) => {
                                 value={searchTerm}
                                 onChange={handleSearch}
                                 placeholder="搜索内容..."
-                                className="w-full pl-10 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full pl-10 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 bg-background focus:ring-secondary"
                                 autoFocus
                             />
                             {searchTerm && (
@@ -100,15 +104,16 @@ const GlobalSearch = ({searchData}) => {
                                     const item = result.item;
                                     const matches = result.matches;
 
-                                    const titleMatch = matches.find(m => m.key === "title");
-                                    const contentMatch = matches.find(m => m.key === "content");
-                                    const tagMatches = matches.filter(m => m.key === "tags");
+                                    const titleMatch = matches?.find(m => m.key === "title");
+                                    const contentMatch = matches?.find(m => m.key === "content");
+                                    const tagMatches = matches?.filter(m => m.key === "tags");
 
                                     return (
                                         <div
                                             key={index}
-                                            className="p-4 hover:bg-gray-50 cursor-pointer rounded-lg transition-colors duration-200"
+                                            className="p-4 hover:bg-muted cursor-pointer rounded-lg transition-colors duration-200"
                                             onClick={() => {
+                                                // @ts-ignore
                                                 window.location.href = item.url;
                                                 setIsOpen(false);
                                             }}
@@ -117,7 +122,7 @@ const GlobalSearch = ({searchData}) => {
                                                 {titleMatch ? highlightMatch(item.title, [titleMatch]) : item.title}
                                             </h3>
                                             {item.content && (
-                                                <p className="text-gray-600 mt-1 text-sm line-clamp-2">
+                                                <p className="text-secondary-foreground mt-1 text-sm line-clamp-2">
                                                     {contentMatch
                                                         ? highlightMatch(item.content, [contentMatch])
                                                         : item.content}
@@ -128,7 +133,7 @@ const GlobalSearch = ({searchData}) => {
                                                     {item.tags.map((tag, tagIndex) => (
                                                         <span
                                                             key={tagIndex}
-                                                            className="px-2 py-1 bg-gray-100 text-xs rounded-full text-gray-600"
+                                                            className="px-2 py-1 bg-secondary text-primary text-xs rounded-xl"
                                                         >
                               {tagMatches.some(m => m.value === tag)
                                   ? highlightMatch(tag, [tagMatches.find(m => m.value === tag)])

@@ -39,10 +39,10 @@ export default function TextBorderAnimation({text = "Programming", className}: T
     return (
         <div onMouseEnter={handleHover} onMouseLeave={handleHoverExit} className="overflow-hidden">
             <span className={cn("text-5xl font-bold text-foreground", className)}>{text}</span>
-            <div className="relative mt-1 h-1 w-full">
+            <div className="relative mt-0.5 h-1 w-full">
                 <div
                     className={cn(
-                        "absolute left-0 top-0 h-full w-full bg-yellow-500 transition-transform duration-300",
+                        "absolute left-0 top-0 h-full w-full bg-primary transition-transform duration-700",
                         isHoveredIn
                             ? "translate-x-0 transform opacity-100"
                             : "-translate-x-full transform opacity-0",
@@ -50,7 +50,7 @@ export default function TextBorderAnimation({text = "Programming", className}: T
                 ></div>
                 <div
                     className={cn(
-                        "absolute left-0 top-0 h-full w-full translate-x-0 transform bg-yellow-500 opacity-0 transition-transform duration-300",
+                        "absolute left-0 top-0 h-full w-full translate-x-0 transform bg-primary opacity-0 transition-transform duration-150",
                         isHoveredOut && "translate-x-full opacity-100",
                     )}
                 ></div>

@@ -6,7 +6,6 @@ import ArticleList from "@/components/home-article-list.astro";
 import {Separator} from "@/components/ui/separator.tsx";
 import {ProjectList} from "@/components/home-project-list.tsx";
 import PersonalIntro from "@/components/personal-intro.astro";
-import TextBorderAnimation from "@/components/ui/text-border-animation.tsx";
 const title: string = "个人主页";
 ---
 <RootLayout title={title}>
@@ -18,7 +17,6 @@ const title: string = "个人主页";
         <Separator/>
         <ProjectList client:load/>
         <Separator/>
-        <TextBorderAnimation text="归档" client:load/>
     </div>
     <Footer/>
 </RootLayout>
