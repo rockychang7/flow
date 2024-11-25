@@ -66,7 +66,7 @@ const GlobalSearch = ({searchData}) => {
                 className="p-2 rounded-full hover:bg-muted transition-colors duration-200"
                 aria-label="Open search"
             >
-                <Search className="w-5 h-5"/>
+                <Search className="w-5 h-5 text-primary"/>
             </button>
 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
