@@ -1,35 +1,20 @@
 ---
 import {getCollection} from "astro:content";
-import dayjs from "dayjs";
-import {DATE_FORMAT} from "../constant/constants";
+import ArticleCard from "@/components/article-card.tsx";
 const allBlogPosts = await getCollection("articles", ({data}) => {
     return data.draft !== true;
 });
 
 const latestBlogPosts = allBlogPosts
-    .filter(article => !article.data.draft)
     .sort((a, b) => new Date(b.data.publish_date) - new Date(a.data.publish_date))
-    .slice(0, 3);
+    .slice(0, 6);
 ---
 
 <div class="flex flex-col">
     <!--   最新文章列表-->
     <h1 class="text-2xl font-bold pb-2">最新文章</h1>
-    <section class="grid grid-cols-1 gap-4 grid-cols-1">
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {latestBlogPosts.map(post => (
-                <article class="group relative overflow-hidden rounded-lg shadow-md transition-all hover:shadow-lg">
-                    <a href=`/articles/${post.slug}` class="absolute inset-0 z-10">
-                        <span class="sr-only">{post.data.title}</span>
-                    </a>
-                    <div class="bg-background dark:border-stone-800 rounded-lg border p-2 md:p-6">
-                        <div class="mb-2 text-sm text-muted-foreground">{dayjs(post.data.publish_date).format(DATE_FORMAT)}</div>
-                        <h3 class="mb-2 text-xl font-bold tracking-tight text-foreground group-hover:text-primary">
-                            {post.data.title}
-                        </h3>
-                        <p class="hidden md:block text-muted-foreground">
-                            {post.data.description}
-                        </p>
-                    </div>
-                </article>))}
+                <ArticleCard key={post.id} post={post}/>))}
     </section>
 </div>

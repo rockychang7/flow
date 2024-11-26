@@ -1,9 +1,9 @@
 ---
-
+import SwapText from "@/components/ui/swap-text.tsx";
 ---
 <div class="w-full flex flex-col gap-y-4">
     <h1 class="text-2xl font-bold">个人介绍</h1>
     <div class="text-md font-medium">
-        Hello👋，我是 rockychang，一名专注于前后端技术的独立开发者。致力于通过学习方法论、心流 (Flow) 提升个人效率与专注力。热爱一切简单优雅的设计，现专注于打造独立且有价值的个人作品。
+        Hello👋，我是 rockychang，一名专注于前后端技术的<span class="inline md:hidden">独立开发</span><SwapText supportsHover className="hidden md:inline-block" finalText="伪设计师" initialText="独立开发" client:load/>。致力于通过学习方法论、心流 (Flow) 提升个人效率与专注力。热爱一切简单优雅的设计，现专注于打造独立且有价值的个人作品。
     </div>
 </div>

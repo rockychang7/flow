@@ -71,6 +71,10 @@ module.exports = {
                 "accordion-down": "accordion-down 0.2s ease-out",
                 "accordion-up": "accordion-up 0.2s ease-out",
             },
+            transitionTimingFunction: {
+                slow: "cubic-bezier(.405, 0, .025, 1)",
+                "minor-spring": "cubic-bezier(0.18,0.89,0.82,1.04)",
+            }
         },
     },
     plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
