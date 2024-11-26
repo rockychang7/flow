@@ -1,7 +1,6 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card";
 import {projectInfo} from "@/data/project-info";
 import {useId} from "react";
-
 export function ProjectList() {
     const id = useId();
     return (
