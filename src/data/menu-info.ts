@@ -4,10 +4,6 @@ export const menuInfo = [
         "menuLink": "/archive",
     },
     {
-        "menuName": "随笔",
-        "menuLink": "/essay",
-    },
-    {
         "menuName": "分类",
         "menuLink": "/category",
     },

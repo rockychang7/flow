@@ -1,25 +1,33 @@
+import {ArrowRight} from "lucide-react";
 import dayjs from "dayjs";
 import {DATE_FORMAT} from "@/constant/constants.ts";
 
-// @ts-ignore
-export default function ArticleCard({post}) {
+export default function ArticleCard({post}: { post: any }) {
     return (
-        <article className="group relative overflow-hidden rounded-lg">
-            <a href={`/articles/${post.slug}`} className="absolute inset-0 z-10">
-                <span className="sr-only">{post.data.title}</span>
-            </a>
-            <div className="bg-background dark:border-stone-800 rounded-lg border border-t-8 border-t-primary p-2 md:p-2 h-full">
-                <h3 className="mb-2 text-2xl font-bold tracking-tight text-foreground group-hover:text-primary">
-                    {post.data.title}
-                </h3>
-                <div
-                    className="mb-2 text-sm text-muted-foreground">{dayjs(post.data.publish_date).format(DATE_FORMAT)}</div>
-
-                <p className="hidden md:block text-xs text-muted-foreground">
-                    {post.data.description}
-                </p>
+        <div
+            className="group relative bg-card text-card-foreground rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl">
+            <div
+                className="absolute top-0 left-0 w-2 h-full bg-primary transform origin-left scale-y-100 md:scale-y-0 md:group-hover:scale-y-100 transition-transform duration-400"></div>
+            <div className="p-6">
+                <a href={`/articles/${post.slug}`} className="block">
+                    <h2 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors duration-300">{post.data.title}</h2>
+                </a>
+                <p className="text-muted-foreground mb-4">{post.data.description}</p>
+                <div className="flex justify-between items-center text-sm text-muted-foreground mb-4">
+          <span className="font-medium bg-primary/10 text-primary px-2 py-1 rounded">
+            {post.data.category}
+          </span>
+                    <time dateTime={post.data.publish_date}>
+                        {dayjs(post.data.publish_date).format(DATE_FORMAT)}
+                    </time>
+                </div>
+                <a
+                    href={`/articles/${post.slug}`}
+                    className="inline-flex items-center text-primary hover:underline"
+                >
+                    阅读全文 <ArrowRight className="ml-2 h-4 w-4"/>
+                </a>
             </div>
-        </article>
-    )
+        </div>
+    );
 }
-

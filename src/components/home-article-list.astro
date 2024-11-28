@@ -15,6 +15,6 @@ const latestBlogPosts = allBlogPosts
     <h1 class="text-2xl font-bold pb-2">最新文章</h1>
     <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {latestBlogPosts.map(post => (
-                <ArticleCard key={post.id} post={post}/>))}
+                <ArticleCard key={post.slug} post={post} client:load/>))}
     </section>
 </div>
