@@ -1,17 +1,37 @@
-import React, {useEffect, useMemo, useState} from "react";
-import {Search, X} from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
+import { Search, X } from "lucide-react";
 import Fuse from "fuse.js";
-import {Dialog, DialogContent, DialogHeader, DialogTitle,} from "@/components/ui/dialog.tsx";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog.tsx";
 
-// @ts-ignore
-const GlobalSearch = ({searchData}) => {
+// 定义 `searchData` 的类型
+interface SearchItem {
+    title: string;
+    content: string;
+    tags: string[];
+    url: string;
+}
+
+interface GlobalSearchProps {
+    searchData: SearchItem[];
+}
+
+const GlobalSearch: React.FC<GlobalSearchProps> = ({ searchData }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
 
     useEffect(() => {
         setPortalContainer(document.getElementById("dialog-portal"));
+        const down = (e: KeyboardEvent) => {
+            if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault();
+                setIsOpen((open) => !open);
+            }
+        };
+        document.addEventListener("keydown", down);
+        return () => document.removeEventListener("keydown", down);
     }, []);
+
     // 配置 Fuse.js 选项
     const fuseOptions = {
         keys: ["title", "content", "tags"],
@@ -29,7 +49,7 @@ const GlobalSearch = ({searchData}) => {
         return fuse.search(searchTerm).slice(0, 5);
     }, [searchTerm, fuse]);
 
-    const handleSearch = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(event.target.value);
     };
 
@@ -38,14 +58,15 @@ const GlobalSearch = ({searchData}) => {
     };
 
     // 高亮匹配文本
-    const highlightMatch = (text: any, matches: any[]) => {
+    // @ts-ignore
+    const highlightMatch = (text: string, matches: Fuse.FuseResultMatch[]): React.ReactNode => {
         if (!matches || !text) return text;
 
         let highlightedText = text;
         const indices = matches
             .sort((a, b) => b.indices[0][0] - a.indices[0][0]); // 从后向前处理，避免位置偏移
 
-        indices.forEach(match => {
+        indices.forEach((match) => {
             // @ts-ignore
             match.indices.forEach(([start, end]) => {
                 highlightedText =
@@ -55,9 +76,8 @@ const GlobalSearch = ({searchData}) => {
             });
         });
 
-        return <span dangerouslySetInnerHTML={{__html: highlightedText}}/>;
+        return <span dangerouslySetInnerHTML={{ __html: highlightedText }} />;
     };
-
 
     return (
         <>
@@ -66,7 +86,7 @@ const GlobalSearch = ({searchData}) => {
                 className="p-2 rounded-full hover:bg-muted transition-colors duration-200"
                 aria-label="Open search"
             >
-                <Search className="w-5 h-5 text-primary"/>
+                <Search className="w-5 h-5 text-primary" />
             </button>
 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -78,8 +98,7 @@ const GlobalSearch = ({searchData}) => {
 
                     <div className="relative">
                         <div className="relative">
-                            <Search
-                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"/>
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                             <input
                                 type="text"
                                 value={searchTerm}
@@ -93,7 +112,7 @@ const GlobalSearch = ({searchData}) => {
                                     onClick={clearSearch}
                                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                                 >
-                                    <X className="w-4 h-4"/>
+                                    <X className="w-4 h-4" />
                                 </button>
                             )}
                         </div>
@@ -104,16 +123,15 @@ const GlobalSearch = ({searchData}) => {
                                     const item = result.item;
                                     const matches = result.matches;
 
-                                    const titleMatch = matches?.find(m => m.key === "title");
-                                    const contentMatch = matches?.find(m => m.key === "content");
-                                    const tagMatches = matches?.filter(m => m.key === "tags");
+                                    const titleMatch = matches?.find((m) => m.key === "title");
+                                    const contentMatch = matches?.find((m) => m.key === "content");
+                                    const tagMatches = matches?.filter((m) => m.key === "tags");
 
                                     return (
                                         <div
                                             key={index}
                                             className="p-4 hover:bg-muted cursor-pointer rounded-lg transition-colors duration-200"
                                             onClick={() => {
-                                                // @ts-ignore
                                                 window.location.href = item.url;
                                                 setIsOpen(false);
                                             }}
@@ -123,9 +141,7 @@ const GlobalSearch = ({searchData}) => {
                                             </h3>
                                             {item.content && (
                                                 <p className="text-secondary-foreground mt-1 text-sm line-clamp-2">
-                                                    {contentMatch
-                                                        ? highlightMatch(item.content, [contentMatch])
-                                                        : item.content}
+                                                    {contentMatch ? highlightMatch(item.content, [contentMatch]) : item.content}
                                                 </p>
                                             )}
                                             {item.tags && item.tags.length > 0 && (
@@ -135,8 +151,8 @@ const GlobalSearch = ({searchData}) => {
                                                             key={tagIndex}
                                                             className="px-2 py-1 bg-secondary text-primary text-xs rounded-xl"
                                                         >
-                              {tagMatches.some(m => m.value === tag)
-                                  ? highlightMatch(tag, [tagMatches.find(m => m.value === tag)])
+                              {tagMatches?.some((m) => m.value === tag)
+                                  ? highlightMatch(tag, [tagMatches.find((m) => m.value === tag)!])
                                   : tag}
                             </span>
                                                     ))}
@@ -147,9 +163,7 @@ const GlobalSearch = ({searchData}) => {
                                 })}
                             </div>
                         ) : searchTerm ? (
-                            <div className="mt-4 text-center text-gray-500">
-                                未找到相关结果
-                            </div>
+                            <div className="mt-4 text-center text-gray-500">未找到相关结果</div>
                         ) : null}
                     </div>
                 </DialogContent>
