@@ -3,8 +3,8 @@ import RootLayout from "../layouts/RootLayout.astro";
 import Footer from "../components/common/footer.astro";
 import Header from "../components/common/header.astro";
 import {getCollection} from "astro:content";
-import BadgeCategory from "../components/badge-category";
 import {Separator} from "@/components/ui/separator";
+import CategoryCard from "@/components/category-card";
 
 const title: string = "分类";
 const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
@@ -14,15 +14,20 @@ const filteredPosts = allBlogPosts.filter((post, index, arr) => {
     const category = post.data.category;
     return !arr.slice(0, index).some(p => p.data.category === category);
 }).sort();
+
+
 ---
 <RootLayout title={title}>
     <Header/>
     <h1 class="text-2xl font-bold pt-8">所有分类</h1>
     <Separator/>
-    <div class="w-full gap-4 flex flex-wrap pt-2">
+    <div class="pt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredPosts.map(article => (
-                <BadgeCategory categoryName={article.data.category} url={`/categories/${article.data.category}`}/>
+                <CategoryCard key={article.slug} slug={`/categories/${article.data.category}`}
+                              postCount={allBlogPosts.filter(post => post.data.category === article.data.category).length}
+                              name={article.data.category} client:load/>
         ))}
     </div>
+
     <Footer/>
 </RootLayout>

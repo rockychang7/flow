@@ -22,12 +22,12 @@ const {Content} = await entry.render();
     <Header/>
     <div class="mt-4">
         <BlogPostHeader title={entry.data.title} publishDate={entry.data.publish_date} coverImage={entry.data.cover_url}
-                        tags={[]}
+                        tags={entry.data.tags}
                         client:load/>
     </div>
     <Prose>
         <Content/>
     </Prose>
-    <Separator/>
+    <Separator className="mt-8"/>
     <Footer/>
 </RootLayout>

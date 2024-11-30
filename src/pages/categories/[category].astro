@@ -18,6 +18,7 @@ export async function getStaticPaths() {
 }
 const {category} = Astro.props;
 const filteredPosts = await getCollection("articles", ({data}) => data.draft !== true && data.category === category);
+const sortBlogPosts = filteredPosts.sort((a, b) => new Date(b.data.publish_date) - new Date(a.data.publish_date));
 ---
 <RootLayout title="分类归档">
     <Header/>
@@ -25,7 +26,7 @@ const filteredPosts = await getCollection("articles", ({data}) => data.draft !==
         <h1 class="text-2xl font-extrabold text-primary">分类/{category}</h1>
         <Separator client:load/>
         <div class="flex flex-col pt-4 gap-y-6 md:gap-y-2 bg-background-foreground group">
-            {filteredPosts.map(post => (
+            {sortBlogPosts.map(post => (
                     <div class="flex flex-col md:flex-row w-full h-10 items-start md:gap-x-4 md:items-baseline">
                         <span class="text-muted-foreground text-md"> {dayjs(post.data.publish_date).format(DATE_FORMAT)}</span>
                         <a class="underline text-lg" href={`/articles/${post.slug}`}>
