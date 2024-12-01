@@ -7,7 +7,7 @@ const frontendTechStack = [
 ]
 
 const backendTechStack = [
-    "Golang", "Java", "Python", "MongoDB", "Redis", "Docker", "Mysql", "Nginx", "Spring Boot"
+    "Golang", "Java", "Python", "MongoDB", "Redis", "Docker", "Mysql", "Nginx"
 ]
 
 const contactInfo = [

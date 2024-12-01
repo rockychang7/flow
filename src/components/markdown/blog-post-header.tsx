@@ -37,9 +37,10 @@ export default function BlogPostHeader({title, publishDate, coverImage, tags}: B
 
             </div>
 
-            <div className="relative w-full border rounded-sm h-96 rounded-lg">
+            {coverImage && <div className="relative w-full border rounded-sm h-96 rounded-lg">
                 <ImageModal src={coverImage} alt={`Cover image for ${title}`}/>
-            </div>
+            </div>}
+
         </div>
     );
 }
