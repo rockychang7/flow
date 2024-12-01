@@ -6,7 +6,7 @@ const allBlogPosts = await getCollection("articles", ({data}) => {
 });
 
 const latestBlogPosts = allBlogPosts
-    .sort((a, b) => new Date(b.data.publish_date) - new Date(a.data.publish_date))
+    .sort((a, b) => new Date(b.data.publish_date).getTime() - new Date(a.data.publish_date).getTime())
     .slice(0, 6);
 ---
 
@@ -15,6 +15,6 @@ const latestBlogPosts = allBlogPosts
     <h1 class="text-2xl font-bold pb-2">最新文章</h1>
     <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {latestBlogPosts.map(post => (
-                <ArticleCard key={post.slug} post={post} client:load/>))}
+                <ArticleCard   post={post} client:load/>))}
     </section>
 </div>

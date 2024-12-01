@@ -19,7 +19,7 @@ export async function getStaticPaths() {
 }
 const {tag} = Astro.props;
 const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true && data.tags.includes(tag));
-const sortBlogPosts = allBlogPosts.sort((a, b) => new Date(b.data.publish_date) - new Date(a.data.publish_date));
+const sortBlogPosts = allBlogPosts.sort((a, b) => new Date(b.data.publish_date).getTime() - new Date(a.data.publish_date).getTime());
 ---
 <RootLayout title="标签归档">
     <Header/>

@@ -5,7 +5,6 @@ import Header from "@/components/common/header.astro";
 import Footer from "@/components/common/footer.astro";
 import Prose from "@/components/markdown/md-prose.astro";
 import BlogPostHeader from "@/components/markdown/blog-post-header";
-import {Separator} from "@/components/ui/separator";
 
 export async function getStaticPaths() {
     const blogEntries = await getCollection("articles");

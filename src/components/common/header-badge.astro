@@ -3,9 +3,10 @@ import {ModeToggle} from "./mode-toggle";
 import GlobalSearch from "./global-search";
 import RssComponent from "@/components/icons/rss-icons";
 import {Separator} from "../ui/separator";
+import type {SearchItem} from '@/type/search';
 import {generateSearchData} from "@/lib/generateSearchData";
 // 生成搜索数据
-const searchData = await generateSearchData();
+const searchData: SearchItem[] = await generateSearchData();
 ---
 <div class="flex gap-x-1 justify-center items-center">
     <Separator orientation="vertical" className="bg-primary/60 h-5"/>

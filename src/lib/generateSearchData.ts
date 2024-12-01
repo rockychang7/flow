@@ -1,14 +1,9 @@
-export interface SearchItem {
-    title: string;
-    content: string;
-    url: string;
-    tags?: string[];
-}
+import type {SearchItem} from '@/type/search';
 
-export async function generateSearchData() {
+export async function generateSearchData(): Promise<SearchItem[]> {
     // 这里是获取所有可搜索内容的逻辑
     // 可以从 Markdown、collections 或其他数据源获取
-    const posts = await import.meta.glob("../content/articles/*.mdx");
+    const posts: any = await import.meta.glob("../content/articles/*.mdx");
 
     const searchData: SearchItem[] = [];
 

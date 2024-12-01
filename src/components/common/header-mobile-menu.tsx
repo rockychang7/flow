@@ -38,7 +38,7 @@ export function HeaderMobileMenu() {
             >
                 <div className="flex flex-col gap-y-1">
                     {menuInfo.map((item, index) => (
-                        <a href={item.menuLink}>
+                        <a key={index} href={item.menuLink}>
                             <Button className="hover:underline" variant="menu" size="menu">{item.menuName}</Button>
                         </a>
                     ))}

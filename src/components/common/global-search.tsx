@@ -1,21 +1,14 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Search, X } from "lucide-react";
+import React, {useEffect, useMemo, useState} from "react";
+import {Search, X} from "lucide-react";
 import Fuse from "fuse.js";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog.tsx";
-
-// 定义 `searchData` 的类型
-interface SearchItem {
-    title: string;
-    content: string;
-    tags: string[];
-    url: string;
-}
+import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx";
+import type {SearchItem} from '@/type/search';
 
 interface GlobalSearchProps {
     searchData: SearchItem[];
 }
 
-const GlobalSearch: React.FC<GlobalSearchProps> = ({ searchData }) => {
+const GlobalSearch: React.FC<GlobalSearchProps> = ({searchData}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
@@ -76,7 +69,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ searchData }) => {
             });
         });
 
-        return <span dangerouslySetInnerHTML={{ __html: highlightedText }} />;
+        return <span dangerouslySetInnerHTML={{__html: highlightedText}}/>;
     };
 
     return (
@@ -86,7 +79,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ searchData }) => {
                 className="p-2 rounded-full hover:bg-muted transition-colors duration-200"
                 aria-label="Open search"
             >
-                <Search className="w-5 h-5 text-primary" />
+                <Search className="w-5 h-5 text-primary"/>
             </button>
 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -98,7 +91,8 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ searchData }) => {
 
                     <div className="relative">
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            <Search
+                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"/>
                             <input
                                 type="text"
                                 value={searchTerm}
@@ -112,7 +106,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ searchData }) => {
                                     onClick={clearSearch}
                                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                                 >
-                                    <X className="w-4 h-4" />
+                                    <X className="w-4 h-4"/>
                                 </button>
                             )}
                         </div>

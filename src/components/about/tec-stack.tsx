@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Component, Database, Frame, Server } from 'lucide-react'
+import { Component, Frame, Server } from 'lucide-react'
 
 const technologies = [
     { name: "Astro.js", description: "Javascript框架，用于编写本网站的主框架", icon: Server },

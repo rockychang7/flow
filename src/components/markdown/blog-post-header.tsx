@@ -7,7 +7,7 @@ import {Separator} from "@/components/ui/separator";
 interface BlogPostHeaderProps {
     title: string;
     publishDate: Date;
-    coverImage: string;
+    coverImage: string | null | undefined;
     tags: string[];
 }
 

@@ -9,7 +9,6 @@ import CategoryCard from "@/components/category-card";
 const title: string = "分类";
 const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
 // 获取所有不同的 category
-const distinctCategories = new Set(allBlogPosts.map(post => post.data.category));
 const filteredPosts = allBlogPosts.filter((post, index, arr) => {
     const category = post.data.category;
     return !arr.slice(0, index).some(p => p.data.category === category);
@@ -23,9 +22,9 @@ const filteredPosts = allBlogPosts.filter((post, index, arr) => {
     <Separator/>
     <div class="pt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredPosts.map(article => (
-                <CategoryCard key={article.slug} slug={`/categories/${article.data.category}`}
+                <CategoryCard slug={`/categories/${article.data.category}`}
                               postCount={allBlogPosts.filter(post => post.data.category === article.data.category).length}
-                              name={article.data.category} client:load/>
+                              name={article.data.category}/>
         ))}
     </div>
 

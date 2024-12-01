@@ -3,14 +3,13 @@ import {categoryInfo} from "@/data/category-info";
 
 interface CategoryCardProps {
     name: string
-    description: string
     postCount: number
     slug: string
 }
 
 export default function CategoryCard({name, postCount, slug}: CategoryCardProps) {
     return (
-        <Card className="overflow-hidden">
+        <Card className="overflow-hidden" key={slug}>
             <CardContent className="p-6">
                 <h3 className="text-2xl font-bold mb-2">{name}</h3>
                 <p className="text-muted-foreground">{categoryInfo.filter(category => category.name === name)[0].description}</p>
