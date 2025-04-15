@@ -1,0 +1,115 @@
+---
+author: rockychang
+category: css
+cover_url: https://s21.ax1x.com/2025/04/15/pEfDX40.jpg
+description: test
+draft: false
+publish_date: 2025-04-15 15:50:20
+tags: ["css"]
+title: css中元素居中的常用方式
+---
+
+#目录
+
+css中元素居中的需求基本上日常开发中随时都能遇见，所以本篇文章就常用的几种方式进行汇总以方便查阅。
+
+首先需要说明的是，css的元素居中方式远不止本文提供的这几种，本文主要介绍几种利用常见布局方式来实现元素居中的功能，话不多说让我们开始吧。
+
+# 1. 使用margin水平居中
+
+```css
+ .content {
+    width: 50%;
+	margin-left: auto;
+	margin-right: auto;
+	background: blue;
+  }
+```
+
+需要注意的是这种方式只能让元素水平居中，并且居中的元素必须有指定的宽度，如果不指定的话**flow layout**下block元素默认会占满所有width。有了指定的宽度就可以利用`auto margin`实现水平居中，因为auto值的含义是表示margin需要尽量占用最大空间，如果左右同时指定了auto,最终会达成平衡各占一半空间也就实现了居中
+
+当然如果高度是固定的话，也可以利用这个特性实现水平垂直居中，不过一般利用它实现水平居中比较常见。
+
+# 2. 使用absolute position垂直居中
+
+```css
+.content{
+	position:absolute;
+	left:0px;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	width: 100px;
+	height: 100px;
+	margin: auto;
+	background: blue;
+}
+```
+
+在**absoulte定位**下，如果我们指定了上下左右边距都是0px,同样如果是`auto margin`，元素的四个方向都会尽量占用空间，结果就是垂直和水平方向都会平分各自两边的空间从而实现垂直居中。注意这里必须保证元素距离上下左右的边距都是0px,并且元素需要指定好宽和高。
+
+> 需要注意的是这种方式不能保证元素永远在屏幕正中间，如果有滚动条并且下拉的话，元素也会随之移动
+
+# 3. 使用fixed position垂直居中
+
+```css
+.content{
+	position:fixed;
+	left:0px;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	width: 100px;
+	height: 100px;
+	margin: auto;
+	background: blue;
+}
+```
+
+这个居中方式原理和`absolute定位`类似，不同的是`fixed定位`垂直居中的元素是不会随着scroll进行的滚动的，位置保持不变，可以用它来实现Modal这种需要永远固定在屏幕中央的组件
+
+
+# 4. 使用flexbox垂直居中
+
+```css
+.wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+}
+
+.content {
+	width: 100px;
+	height: 100px;
+	background-color: blue;
+}
+```
+
+这里是利用了flex布局下x轴和y轴分别居中的方式让元素垂直居中，同样如果出现滚动条下拉的话，元素的位置也会发生变化
+
+> 父容器需要占满屏幕的宽度和高度才会生效
+
+# 5. 使用Grid布局居中元素
+
+```css
+.wrapper {
+	width: 100%;
+	height: 100vh;
+	display: grid;
+	/*注意：这里使用的是place-content,和flex布局保持一致，虽然place-items也能实现一样的效果*/
+	place-content: center;
+}
+
+.content {
+	width: 300px;
+	height: 300px;
+	background-color: blue;
+}
+```
+
+这个方式和flex布局实现方式类似，不过这里使用的是grid布局的特性，通过创建一个1X1的Grid格子，然后二维方向上分别指定对其方式为中即可实现垂直居中的特性，同样如果滚动条下拉的话，元素的位置也会发生变化
+
+
+# 总结
+到这里，常见的几种元素居中的方式应该是比较清楚了。需要注意的是，根据不同的使用场景再选取合适的方式来实现这个特性
