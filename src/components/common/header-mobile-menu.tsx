@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { mediaLinkInfo } from "@/data/media-link-info";
 import { menuInfo } from "@/data/menu-info";
+import { navigate } from "astro:transitions/client";
 import { Archive, FolderOpen, Github, Menu, Tags, Twitter, User } from "lucide-react";
 import React, { useState } from "react";
 
@@ -21,6 +22,12 @@ const iconMap: Record<string, React.ElementType> = {
 
 export function HeaderMobileMenu() {
     const [open, setOpen] = useState(false);
+
+    const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+        e.preventDefault();
+        setOpen(false);
+        navigate(href);
+    };
 
     return (
         <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -36,7 +43,11 @@ export function HeaderMobileMenu() {
                     const IconComponent = iconMap[item.menuIcon];
                     return (
                         <DropdownMenuItem key={index} asChild className="rounded-lg py-3 focus:bg-muted/70 cursor-pointer">
-                            <a href={item.menuLink} className="flex items-center gap-3 w-full">
+                            <a
+                                href={item.menuLink}
+                                onClick={(e) => handleNavigation(e, item.menuLink)}
+                                className="flex items-center gap-3 w-full"
+                            >
                                 {IconComponent && <IconComponent className="h-4 w-4 opacity-70" />}
                                 <span className="text-base font-medium">{item.menuName}</span>
                             </a>

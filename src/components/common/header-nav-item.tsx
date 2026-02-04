@@ -1,5 +1,6 @@
 import React from "react";
 import {Archive, FolderOpen, Tags, User} from "lucide-react";
+import { navigate } from "astro:transitions/client";
 import {
     Tooltip,
     TooltipContent,
@@ -24,12 +25,18 @@ interface HeaderNavItemProps {
 export function HeaderNavItem({menuName, menuLink, menuIcon}: HeaderNavItemProps) {
     const IconComponent = iconMap[menuIcon];
 
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        navigate(menuLink);
+    };
+
     return (
         <TooltipProvider delayDuration={100}>
             <Tooltip>
                 <TooltipTrigger asChild>
                     <a
                         href={menuLink}
+                        onClick={handleClick}
                         className="p-2 rounded-full hover:bg-muted transition-colors duration-200"
                         aria-label={menuName}
                     >

@@ -1,7 +1,5 @@
 ---
-import {getCollection} from "astro:content";
-import dayjs from "dayjs";
-import {DATE_FORMAT} from "@/constant/constants.ts";
+import { getCollection } from "astro:content";
 
 const allBlogPosts = await getCollection("articles", ({data}) => {
     return data.draft !== true;

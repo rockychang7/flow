@@ -1,11 +1,9 @@
 ---
-import {getCollection} from "astro:content";
-import RootLayout from "../../layouts/RootLayout.astro";
-import Header from "../../components/common/header.astro";
+import ArticleListItem from "@/components/article-list-item.astro";
+import { getCollection } from "astro:content";
 import Footer from "../../components/common/footer.astro";
-import dayjs from "dayjs";
-import {DATE_FORMAT} from "../../constant/constants";
-import {Separator} from "../../components/ui/separator";
+import Header from "../../components/common/header.astro";
+import RootLayout from "../../layouts/RootLayout.astro";
 
 export async function getStaticPaths() {
     const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
@@ -17,7 +15,6 @@ export async function getStaticPaths() {
         props: {tag}
     }));
 }
-import ArticleListItem from "@/components/article-list-item.astro";
 
 const {tag} = Astro.props;
 const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true && data.tags.includes(tag));
