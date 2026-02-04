@@ -52,6 +52,46 @@ const {title, maxWidth = "max-w-[640px]"} = Astro.props;
             document.documentElement.classList.toggle("dark", theme === "dark");
         });
     </script>
+
+    <!-- iOS Chrome back button fix (known Astro bug workaround) -->
+    <script is:inline>
+        (function() {
+            // Detect iOS Chrome (or any iOS browser other than Safari)
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isChrome = /CriOS/.test(navigator.userAgent);
+            const isIOSChrome = isIOS && isChrome;
+
+            if (isIOSChrome) {
+                // Override click handler to use history.pushState with proper state
+                document.addEventListener('click', (e) => {
+                    const link = e.target.closest('a');
+                    if (!link) return;
+
+                    const href = link.getAttribute('href');
+                    if (!href) return;
+
+                    // Only handle internal links
+                    const url = new URL(href, window.location.origin);
+                    if (url.origin !== window.location.origin) return;
+                    if (link.target === '_blank') return;
+
+                    // Let Astro's router handle it, but ensure pushState is used
+                    // by adding data attribute
+                    link.setAttribute('data-astro-history', 'push');
+                });
+
+                // Fix for popstate not firing on iOS Chrome
+                let lastUrl = location.href;
+                const observer = new MutationObserver(() => {
+                    if (location.href !== lastUrl) {
+                        lastUrl = location.href;
+                        window.dispatchEvent(new PopStateEvent('popstate', { state: history.state }));
+                    }
+                });
+                observer.observe(document, { subtree: true, childList: true });
+            }
+        })();
+    </script>
 </head>
 <body>
 <main class={`min-h-svh mx-auto w-full flex flex-col font-sans px-6 py-8 ${maxWidth}`}>
