@@ -1,4 +1,14 @@
 @import 'tailwindcss';
+@import '../../node_modules/react-photo-view/dist/react-photo-view.css';
+
+/* Ensure PhotoView appears above everything including sticky headers */
+.PhotoView-Portal,
+.PhotoView-Portal > div,
+.PhotoView__Photo,
+.PhotoView-Slider,
+.PhotoView-Slider__Backdrop {
+    z-index: 99999 !important;
+}
 
 @plugin 'tailwindcss-animate';
 @plugin '@tailwindcss/typography';
