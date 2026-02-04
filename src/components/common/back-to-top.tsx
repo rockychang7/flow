@@ -45,7 +45,7 @@ const BackToTop = () => {
                         fixed bottom-6 right-4 md:bottom-12 md:right-16 p-3 bg-primary text-white 
                         rounded-full shadow-lg hover:bg-primary/80
                         transition-all duration-300 ease-in-out 
-                        focus:outline-none focus:ring-2 focus:ring-primary/80 
+                        focus:outline-hidden focus:ring-2 focus:ring-primary/80 
                         focus:ring-opacity-50 z-50
                         ${isVisible
                         ? "animate-fade-in-slide-up"

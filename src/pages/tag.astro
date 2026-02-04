@@ -4,7 +4,7 @@ import Footer from "../components/common/footer.astro";
 import Header from "../components/common/header.astro";
 import {getCollection} from "astro:content";
 import {Separator} from "@/components/ui/separator";
-import TagBadge from "@/components/tag-badge";
+import TagListItem from "@/components/tag-list-item.astro";
 
 const title: string = "标签";
 const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
@@ -13,13 +13,17 @@ const distinctTags = new Set(allBlogPosts.flatMap(post => post.data.tags.map(tag
 ---
 <RootLayout title={title}>
     <Header/>
-    <h1 class="text-2xl font-bold pt-8">所有标签</h1>
-    <Separator/>
-    <div class="pt-2 flex flex-wrap justify-center gap-4">
-        {[...distinctTags].map(tag => (
-                <TagBadge name={tag} count={allBlogPosts.filter(post => post.data.tags.includes(tag)).length}
-                          slug={`/tags/${tag}`}/>
-        ))}
+    <div class="flex flex-col mt-8 gap-y-4">
+        <h1 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">TAGS</h1>
+        <div class="flex flex-wrap gap-x-6 gap-y-3 pt-2">
+            {[...distinctTags].map(tag => (
+                <TagListItem
+                    name={tag}
+                    count={allBlogPosts.filter(post => post.data.tags.includes(tag)).length}
+                    url={`/tags/${tag}`}
+                />
+            ))}
+        </div>
     </div>
     <Footer/>
 </RootLayout>

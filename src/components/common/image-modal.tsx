@@ -20,7 +20,7 @@ export default function ImageModal({src, alt}: ImageModalProps) {
                 onClick={() => setIsOpen(true)}
             />
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogContent className="w-full max-w-screen-md rounded-md p-0">
+                <DialogContent className="w-full max-w-(--breakpoint-md) rounded-md p-0">
                     <div className="w-full p-1">
                         <img
                             src={src}

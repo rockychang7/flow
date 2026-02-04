@@ -1,0 +1,14 @@
+---
+import {projectInfo} from "@/data/project-info";
+import ProjectListItem from "./project-list-item.astro";
+---
+
+<section class="flex flex-col gap-y-2">
+    {projectInfo.map((item) => (
+        <ProjectListItem
+            title={item.projectName}
+            description={item.projectDescription}
+            url={item.projectLink}
+        />
+    ))}
+</section>

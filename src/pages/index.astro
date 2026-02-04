@@ -3,19 +3,23 @@ import RootLayout from "@/layouts/RootLayout.astro";
 import Header from "../components/common/header.astro";
 import Footer from "../components/common/footer.astro";
 import ArticleList from "@/components/home-article-list.astro";
-import {Separator} from "@/components/ui/separator.tsx";
-import {ProjectList} from "../components/home-project-list";
+import ProjectList from "@/components/home-project-list.astro";
 import PersonalIntro from "@/components/personal-intro.astro";
-const title: string = "首页";
+
+const title: string = "Rocky Chang";
 ---
 <RootLayout title={title}>
     <Header/>
-    <div class="flex flex-col justify-start pt-10 gap-y-6 px-1.5">
+    <div class="flex flex-col gap-y-14 mt-8">
         <PersonalIntro/>
-        <Separator/>
-        <ArticleList/>
-        <Separator/>
-        <ProjectList client:load/>
+        <div class="flex flex-col gap-y-4">
+            <h2 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">Articles</h2>
+            <ArticleList/>
+        </div>
+        <div class="flex flex-col gap-y-4">
+            <h2 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">Projects</h2>
+            <ProjectList/>
+        </div>
     </div>
     <Footer/>
 </RootLayout>

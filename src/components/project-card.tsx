@@ -38,7 +38,7 @@ export default function ProjectCard({projectName, projectDescription, projectIma
                         <p className="text-muted-foreground mb-4 line-clamp-2">{truncatedDescription}</p>
                         </CardContent>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="max-w-xs bg-background/80 backdrop-blur-sm border border-border shadow-xl">
+                    <TooltipContent side="top" className="max-w-xs bg-background/80 backdrop-blur-xs border border-border shadow-xl">
                         <CardContent>
                         <p className="text-sm text-foreground/80">{projectDescription}</p>
                         </CardContent>

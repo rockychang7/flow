@@ -1,0 +1,21 @@
+---
+import { TagIcon } from "lucide-react";
+
+interface Props {
+    name: string;
+    count: number;
+    url: string;
+}
+
+const {name, count, url} = Astro.props;
+---
+
+<a href={url} class="inline-flex items-center gap-2 group">
+    <span class="text-muted-foreground group-hover:text-primary transition-colors text-lg">#</span>
+    <span class="text-base font-medium group-hover:text-primary transition-colors border-b border-transparent group-hover:border-primary">
+        {name}
+    </span>
+    <sup class="text-xs text-muted-foreground font-mono ml-0.5 opacity-60">
+        {count}
+    </sup>
+</a>

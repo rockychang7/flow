@@ -76,7 +76,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({searchData}) => {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="p-2 rounded-full hover:bg-muted transition-colors duration-200"
+                className="p-2 rounded-full hover:bg-muted transition-colors duration-200 cursor-pointer"
                 aria-label="Open search"
             >
                 <Search className="w-5 h-5 text-primary"/>
@@ -84,27 +84,26 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({searchData}) => {
 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 {/* @ts-ignore */}
-                <DialogContent container={portalContainer} className="sm:max-w-2xl">
-                    <DialogHeader>
+                <DialogContent container={portalContainer} className="sm:max-w-2xl w-[90vw] top-[15%] translate-y-0 sm:top-[50%] sm:translate-y-[-50%] bg-popover/95 backdrop-blur-md border-border/40 shadow-2xl p-0 gap-0 overflow-hidden rounded-xl [&>button:last-child]:hidden">
+                    <DialogHeader className="sr-only">
                         <DialogTitle>全局搜索</DialogTitle>
                     </DialogHeader>
 
                     <div className="relative">
-                        <div className="relative">
-                            <Search
-                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"/>
+                        <div className="flex items-center border-b border-border/40 px-4 py-3">
+                            <Search className="w-5 h-5 text-muted-foreground mr-3 shrink-0"/>
                             <input
                                 type="text"
                                 value={searchTerm}
                                 onChange={handleSearch}
-                                placeholder="搜索内容..."
-                                className="w-full pl-10 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 bg-background focus:ring-secondary"
+                                placeholder="搜索文章、标签..."
+                                className="flex-1 bg-transparent text-lg placeholder:text-muted-foreground focus:outline-none h-10"
                                 autoFocus
                             />
                             {searchTerm && (
                                 <button
                                     onClick={clearSearch}
-                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    className="text-muted-foreground hover:text-foreground transition-colors p-1"
                                 >
                                     <X className="w-4 h-4"/>
                                 </button>
@@ -112,7 +111,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({searchData}) => {
                         </div>
 
                         {searchResults.length > 0 ? (
-                            <div className="mt-4 max-h-[60vh] overflow-y-auto">
+                            <div className="max-h-[60vh] overflow-y-auto p-2 scrollbar-hide">
                                 {searchResults.map((result, index) => {
                                     const item = result.item;
                                     const matches = result.matches;
@@ -124,41 +123,45 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({searchData}) => {
                                     return (
                                         <div
                                             key={index}
-                                            className="p-4 hover:bg-muted cursor-pointer rounded-lg transition-colors duration-200"
+                                            className="group flex flex-col p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors duration-200"
                                             onClick={() => {
                                                 window.location.href = item.url;
                                                 setIsOpen(false);
                                             }}
                                         >
-                                            <h3 className="font-semibold text-lg">
-                                                {titleMatch ? highlightMatch(item.title, [titleMatch]) : item.title}
-                                            </h3>
+                                            <div className="flex items-center justify-between mb-1">
+                                                <h3 className="font-medium text-base text-foreground group-hover:text-primary transition-colors">
+                                                    {titleMatch ? highlightMatch(item.title, [titleMatch]) : item.title}
+                                                </h3>
+                                                {item.tags && item.tags.length > 0 && (
+                                                    <div className="flex gap-1">
+                                                        {item.tags.slice(0, 2).map((tag, tagIndex) => (
+                                                            <span key={tagIndex} className="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-secondary-foreground">
+                                                                {tag}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+
                                             {item.content && (
-                                                <p className="text-secondary-foreground mt-1 text-sm line-clamp-2">
+                                                <p className="text-muted-foreground text-sm line-clamp-1">
                                                     {contentMatch ? highlightMatch(item.content, [contentMatch]) : item.content}
                                                 </p>
-                                            )}
-                                            {item.tags && item.tags.length > 0 && (
-                                                <div className="flex flex-wrap gap-2 mt-2">
-                                                    {item.tags.map((tag, tagIndex) => (
-                                                        <span
-                                                            key={tagIndex}
-                                                            className="px-2 py-1 bg-secondary text-primary text-xs rounded-xl"
-                                                        >
-                              {tagMatches?.some((m) => m.value === tag)
-                                  ? highlightMatch(tag, [tagMatches.find((m) => m.value === tag)!])
-                                  : tag}
-                            </span>
-                                                    ))}
-                                                </div>
                                             )}
                                         </div>
                                     );
                                 })}
                             </div>
                         ) : searchTerm ? (
-                            <div className="mt-4 text-center text-gray-500">未找到相关结果</div>
-                        ) : null}
+                            <div className="py-12 text-center text-muted-foreground text-sm">
+                                未找到相关结果
+                            </div>
+                        ) : (
+                            <div className="py-12 text-center text-muted-foreground/50 text-sm">
+                                输入关键词开始搜索...
+                            </div>
+                        )}
                     </div>
                 </DialogContent>
             </Dialog>

@@ -17,23 +17,23 @@ export async function getStaticPaths() {
         props: {tag}
     }));
 }
+import ArticleListItem from "@/components/article-list-item.astro";
+
 const {tag} = Astro.props;
 const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true && data.tags.includes(tag));
 const sortBlogPosts = allBlogPosts.sort((a, b) => new Date(b.data.publish_date).getTime() - new Date(a.data.publish_date).getTime());
 ---
 <RootLayout title="标签归档">
     <Header/>
-    <div class="flex flex-col pt-10 px-1.5">
-        <h1 class="text-2xl font-extrabold text-primary">标签/{tag}</h1>
-        <Separator client:load/>
-        <div class="flex flex-col pt-4 gap-y-6 md:gap-y-2 bg-background-foreground group">
+    <div class="flex flex-col mt-8 gap-y-4">
+        <h1 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">TAG / {tag}</h1>
+        <div class="flex flex-col gap-y-2">
             {sortBlogPosts.map(post => (
-                    <div class="flex flex-col md:flex-row w-full h-10 items-start md:gap-x-4 md:items-baseline">
-                        <span class="text-muted-foreground text-md"> {dayjs(post.data.publish_date).format(DATE_FORMAT)}</span>
-                        <a class="underline text-lg" href={`/articles/${post.slug}`}>
-                            {post.data.title}
-                        </a>
-                    </div>
+                    <ArticleListItem
+                        title={post.data.title}
+                        date={post.data.publish_date}
+                        url={`/articles/${post.slug}`}
+                    />
             ))}
         </div>
     </div>

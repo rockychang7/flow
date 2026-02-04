@@ -1,0 +1,18 @@
+---
+interface Props {
+    name: string;
+    count: number;
+    url: string;
+}
+
+const {name, count, url} = Astro.props;
+---
+
+<a href={url} class="group flex items-center justify-between py-2 border-b border-border/40 hover:border-border transition-colors">
+    <span class="text-base font-normal group-hover:text-primary transition-colors">
+        {name}
+    </span>
+    <span class="text-sm text-muted-foreground font-mono">
+        {count}
+    </span>
+</a>

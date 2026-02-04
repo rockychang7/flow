@@ -1,8 +1,49 @@
 ---
-import Logo from "@/components/icons/logo.astro";
-import HeaderMenu from "@/components/common/header-menu.astro";
+import RssComponent from "@/components/icons/rss-icons";
+import { generateSearchData } from "@/lib/generateSearchData";
+import type { SearchItem } from '@/type/search';
+import { menuInfo } from "../../data/menu-info";
+import { Separator } from "../ui/separator";
+import GlobalSearch from "./global-search";
+import { HeaderMobileMenu } from "./header-mobile-menu";
+import { HeaderNavItem } from "./header-nav-item";
+import LogoNew from "./logo-new.astro";
+import { ModeToggle } from "./mode-toggle";
+
+// 生成搜索数据
+const searchData: SearchItem[] = await generateSearchData();
 ---
-<header class="w-full h-8 flex justify-between items-center">
-    <Logo/>
-    <HeaderMenu/>
+<header class="w-full flex items-center justify-between py-3 mb-6">
+    <!-- Logo -->
+    <!-- Logo -->
+    <a href="/" class="group shrink-0 transition-transform hover:scale-105 duration-200 hover:no-underline select-none">
+        <LogoNew />
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:flex items-center gap-x-1">
+        <!-- Menu Icons -->
+        {menuInfo.map((item) => (
+            <HeaderNavItem
+                client:load
+                menuName={item.menuName}
+                menuLink={item.menuLink}
+                menuIcon={item.menuIcon}
+            />
+        ))}
+
+        <Separator orientation="vertical" className="bg-primary/30 h-5 mx-1" />
+
+        <!-- Tools -->
+        <GlobalSearch client:load searchData={searchData} />
+        <RssComponent client:load />
+        <ModeToggle client:load />
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="md:hidden flex items-center gap-x-1">
+        <GlobalSearch client:load searchData={searchData} />
+        <ModeToggle client:load />
+        <HeaderMobileMenu client:load />
+    </div>
 </header>

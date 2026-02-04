@@ -14,7 +14,7 @@ export function TechStack() {
             <h2 className="text-2xl font-bold">本站技术栈</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {technologies.map((tech, index) => (
-                    <Card key={tech.name} className="animate-fade-in-up" style={{animationDelay: `${index * 100}ms`}}>
+                    <Card key={tech.name}>
                         <CardHeader className="flex flex-row items-center space-x-4 pb-2">
                             <div className="bg-primary/10 p-1.5 rounded-full">
                                 <tech.icon className="h-4 w-4 text-primary" />

@@ -1,9 +1,23 @@
 ---
-import SwapText from "@/components/ui/swap-text.tsx";
+// 个人介绍 - Minimal 段落式风格
 ---
-<div class="w-full flex flex-col gap-y-4">
-    <h1 class="text-2xl font-bold">个人介绍</h1>
-    <div class="text-md font-medium">
-        Hello👋，我是 rockychang，一名专注于前后端技术的<span class="inline md:hidden">独立开发</span><SwapText supportsHover className="hidden md:inline-block" finalText="伪设计师" initialText="独立开发" client:load/>。致力于通过学习方法论以及心流（Flow）理论，提升个人效率与专注力。热爱一切简单优雅的设计，现专注于打造独立且有价值的个人作品。
-    </div>
-</div>
+<section class="space-y-2 text-base leading-relaxed text-foreground/90 font-light">
+    <p>
+        我是一名 <span class="font-medium text-foreground">AI全栈工程师</span>，目前沉浸在
+        <span class="italic font-serif">Vibe Coding</span> 的状态中。
+    </p>
+    <p>
+        关注 <span class="font-medium">AGI</span> 与<span class="font-medium">方法论</span>，热爱一切简单优雅的设计。
+        我会定期在这里<a href="/archive" class="italic underline underline-offset-4 decoration-border hover:decoration-primary transition-all">撰写文章</a>，
+        分享关于 <span class="font-medium">AGI</span>、开发、设计和个人成长的思考。
+    </p>
+    <p>
+        欢迎通过
+        <a href="mailto:joebig19960318@gmail.com" class="italic underline underline-offset-4 decoration-border hover:decoration-primary transition-all">邮件</a>
+        与我交流，或者在
+        <a href="https://twitter.com/rockychang_ai" target="_blank" class="italic underline underline-offset-4 decoration-border hover:decoration-primary transition-all">推特</a>
+        和
+        <a href="https://github.com/rockychang7" target="_blank" class="italic underline underline-offset-4 decoration-border hover:decoration-primary transition-all">GitHub</a>
+        上关注我。
+    </p>
+</section>

@@ -1,20 +1,28 @@
 ---
 import {getCollection} from "astro:content";
-import ArticleCard from "@/components/article-card.tsx";
+import dayjs from "dayjs";
+import {DATE_FORMAT} from "@/constant/constants.ts";
+
 const allBlogPosts = await getCollection("articles", ({data}) => {
     return data.draft !== true;
 });
 
+import ArticleListItem from "./article-list-item.astro";
+
 const latestBlogPosts = allBlogPosts
     .sort((a, b) => new Date(b.data.publish_date).getTime() - new Date(a.data.publish_date).getTime())
-    .slice(0, 6);
+    .slice(0, 5);
 ---
 
-<div class="flex flex-col">
-    <!--   最新文章列表-->
-    <h1 class="text-2xl font-bold pb-2">最新文章</h1>
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {latestBlogPosts.map(post => (
-                <ArticleCard   post={post} client:load/>))}
-    </section>
-</div>
+<section class="flex flex-col gap-y-2">
+    {latestBlogPosts.map(post => (
+        <ArticleListItem
+            title={post.data.title}
+            date={post.data.publish_date}
+            url={`/articles/${post.slug}`}
+        />
+    ))}
+    <a href="/archive" class="mt-4 text-sm hover:underline inline-flex items-center gap-1 w-fit">
+        查看全部 <span aria-hidden="true">→</span>
+    </a>
+</section>

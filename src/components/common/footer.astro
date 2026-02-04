@@ -1,23 +1,12 @@
 ---
-import {ModeToggle} from "./mode-toggle";
-import {Github, Twitter} from "lucide-react";
-import React from "react";
 import {mediaLinkInfo} from "@/data/media-link-info";
-import {Separator} from "@/components/ui/separator";
 ---
-<div class="flex flex-col pt-4 mt-auto">
-    <Separator/>
-    <footer class="flex py-2 md:flex-row h-[60px] justify-between items-start md:items-center ">
-        <div class="basis-3/4 text-sm text-center md:text-left mx-auto text-muted-foreground p-2">©2024-present
-            rockycheong.com
-        </div>
-        <div class="basis-1/4 hidden md:flex pr-1 justify-end gap-x-2">
-            <a target="_blank" href={mediaLinkInfo.Github}>
-                <Github className="text-primary"/>
-            </a>
-            <a target="_blank" href={mediaLinkInfo.Twitter}>
-                <Twitter className="text-primary"/>
-            </a>
-        </div>
-    </footer>
-</div>
+<footer class="mt-auto pt-8 pb-4 text-center border-t border-border">
+    <p class="text-sm text-muted-foreground">
+        本站模板开源于
+        <a href="https://github.com/rockychang7/flow" class="underline hover:no-underline">GitHub</a>
+    </p>
+    <p class="text-xs text-muted-foreground mt-2">
+        ©2024-present rockycheong.com
+    </p>
+</footer>

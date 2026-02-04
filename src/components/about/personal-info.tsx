@@ -21,7 +21,7 @@ export function PersonalInfo() {
         <section className="space-y-6">
             <h2 className="text-2xl font-bold">关于我</h2>
             <div className="space-y-4">
-                <Card className="animate-fade-in-up">
+                <Card>
                     <CardHeader>
                         <CardTitle>我的技术栈</CardTitle>
                     </CardHeader>
@@ -50,7 +50,7 @@ export function PersonalInfo() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="animate-fade-in-up" style={{animationDelay: '200ms'}}>
+                <Card>
                     <CardHeader>
                         <CardTitle>联系我</CardTitle>
                     </CardHeader>

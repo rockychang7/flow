@@ -1,0 +1,24 @@
+---
+import dayjs from "dayjs";
+
+interface Props {
+    title: string;
+    date: Date;
+    url: string;
+}
+
+const {title, date, url} = Astro.props;
+---
+
+<a href={url} class="group flex items-baseline justify-between py-2 transition-colors relative">
+    <div class="relative overflow-hidden">
+        <span class="text-lg font-normal group-hover:text-primary transition-colors text-foreground decoration-0">
+            {title}
+        </span>
+        <span class="absolute bottom-0 left-0 w-full h-px bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-left"></span>
+    </div>
+
+    <time class="text-sm text-muted-foreground font-mono shrink-0 ml-4 opacity-60 group-hover:opacity-100 transition-opacity">
+        {dayjs(date).format("DD.MMM.YYYY")}
+    </time>
+</a>

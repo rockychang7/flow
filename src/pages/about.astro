@@ -2,22 +2,91 @@
 import RootLayout from "@/layouts/RootLayout.astro";
 import Header from "../components/common/header.astro";
 import Footer from "../components/common/footer.astro";
-import {AboutHero} from "@/components/about/about-hero";
-import {BlogGoals} from "@/components/about/blog-goals";
-import {PersonalInfo} from "@/components/about/personal-info";
-import {TechStack} from "@/components/about/tec-stack";
+
 
 const title: string = "关于";
 ---
 <RootLayout title={title}>
     <Header/>
-    <div class="min-h-screen bg-gradient-to-b from-background to-background/80 px-1.5 py-8">
-        <div class="max-w-4xl mx-auto space-y-12">
-            <AboutHero />
-            <BlogGoals />
-            <TechStack />
-            <PersonalInfo />
-        </div>
+    <div class="flex flex-col mt-8 gap-y-10">
+        <!-- About Section -->
+        <section class="flex flex-col gap-y-4">
+            <h2 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">About</h2>
+            <div class="flex flex-col gap-y-4 text-pretty leading-relaxed text-muted-foreground">
+                <p>
+                    我是 Rocky Chang，一名 AI 全栈工程师，目前正沉浸在 Vibe Coding 的心流中。
+                </p>
+                <p>
+                    我热衷于探索 AGI 的无限可能，并致力于将前沿技术转化为优雅、实用的产品。在这个快速变化的时代，我坚持追求简单、纯粹的代码与设计美学。
+                </p>
+            </div>
+        </section>
+
+        <!-- Goals Section -->
+        <section class="flex flex-col gap-y-4">
+            <h2 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">Goals</h2>
+            <div class="flex flex-col gap-y-4 text-pretty leading-relaxed text-muted-foreground">
+                <p>
+                    Flow 是我的数字花园，用于记录我在技术探索、产品构建以及个人成长道路上的思考与沉淀。
+                </p>
+                <p>
+                    我希望通过分享高质量的文章和开源项目，与更多志同道合的朋友交流，共同推动 AI 应用的落地与创新。我相信，最好的学习方式就是输出，最好的成长方式就是构建。
+                </p>
+            </div>
+        </section>
+
+        <!-- Tech Stack Section -->
+        <section class="flex flex-col gap-y-4">
+            <h2 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">Stack</h2>
+            <div class="flex flex-col gap-y-4">
+                <div class="flex flex-col gap-y-2">
+                    <span class="text-xs font-medium text-muted-foreground/80">AI Workflow</span>
+                    <div class="flex flex-wrap gap-2">
+                        {["Claude Code", "Antigravity", "Windsurf", "OpenCode"].map((tech) => (
+                            <span class="px-2 py-1 rounded bg-secondary text-secondary-foreground text-sm">{tech}</span>
+                        ))}
+                    </div>
+                </div>
+                <div class="flex flex-col gap-y-2">
+                    <span class="text-xs font-medium text-muted-foreground/80">Frontend</span>
+                    <div class="flex flex-wrap gap-2">
+                        {["React", "Astro", "Next.js", "Vite", "TailwindCSS"].map((tech) => (
+                            <span class="px-2 py-1 rounded bg-secondary text-secondary-foreground text-sm">{tech}</span>
+                        ))}
+                    </div>
+                </div>
+                <div class="flex flex-col gap-y-2">
+                    <span class="text-xs font-medium text-muted-foreground/80">Backend</span>
+                    <div class="flex flex-wrap gap-2">
+                        {["Golang", "Java", "MySQL", "Redis", "Kafka", "Docker"].map((tech) => (
+                            <span class="px-2 py-1 rounded bg-secondary text-secondary-foreground text-sm">{tech}</span>
+                        ))}
+                    </div>
+                </div>
+                <div class="flex flex-col gap-y-2">
+                    <span class="text-xs font-medium text-muted-foreground/80">Design</span>
+                    <div class="flex flex-wrap gap-2">
+                        {["V0", "Stitch"].map((tech) => (
+                            <span class="px-2 py-1 rounded bg-secondary text-secondary-foreground text-sm">{tech}</span>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Connect Section -->
+        <section class="flex flex-col gap-y-4">
+            <h2 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">Connect</h2>
+            <div class="flex flex-col gap-y-2 text-muted-foreground">
+                <p>
+                    你可以在 <a href="https://github.com/rockychang7" target="_blank" class="text-foreground hover:underline underline-offset-4 decoration-border">GitHub</a> 上找到我的开源项目，
+                    或者在 <a href="https://twitter.com/rockychang_ai" target="_blank" class="text-foreground hover:underline underline-offset-4 decoration-border">Twitter/X</a> 上关注我的最新动态。
+                </p>
+                <p>
+                    如有合作意向或技术交流，欢迎发送邮件至 <a href="mailto:rockychang7@gmail.com" class="text-foreground hover:underline underline-offset-4 decoration-border">rockychang7@gmail.com</a>。
+                </p>
+            </div>
+        </section>
     </div>
     <Footer/>
 </RootLayout>

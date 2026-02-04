@@ -13,10 +13,9 @@ export function BlogGoals() {
                 {goals.map((goal, index) => (
                     <li
                         key={index}
-                        className="flex items-center space-x-3 animate-fade-in-left"
-                        style={{animationDelay: `${index * 400}ms`}}
+                        className="flex items-center space-x-3"
                     >
-                        <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
+                        <CheckCircle className="h-5 w-5 text-primary shrink-0" />
                         <span className="text-sm">{goal}</span>
                     </li>
                 ))}
