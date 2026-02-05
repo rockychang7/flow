@@ -7,7 +7,9 @@ import Prose from "@/components/markdown/md-prose.astro";
 import { TableOfContents } from "@/components/markdown/table-of-contents";
 import { TocMobile } from "@/components/markdown/toc-mobile";
 import RootLayout from "@/layouts/RootLayout.astro";
+import { getReadingTime, getWordCount } from "@/lib/utils";
 import { getCollection } from "astro:content";
+
 
 export async function getStaticPaths() {
     const blogEntries = await getCollection("articles");
@@ -19,16 +21,23 @@ export async function getStaticPaths() {
 
 const {entry} = Astro.props;
 const {Content, headings} = await entry.render();
-
+const wordCount = getWordCount(entry.body);
+const readingTime = getReadingTime(entry.body);
 
 ---
 <RootLayout title={entry.data.title}>
     <Header/>
 
     <div class="relative mt-8 mb-16">
-        <BlogPostHeader title={entry.data.title} publishDate={entry.data.publish_date} coverImage={entry.data.cover_url}
-                        tags={entry.data.tags}
-                        client:load/>
+        <BlogPostHeader
+            title={entry.data.title}
+            publishDate={entry.data.publish_date}
+            coverImage={entry.data.cover_url}
+            tags={entry.data.tags}
+            wordCount={wordCount}
+            readingTime={readingTime}
+            client:load
+        />
         <Prose>
             <Content/>
         </Prose>

@@ -1,9 +1,9 @@
 <script>
-    const COPY_BUTTON_CLASS = "absolute right-2 top-2 p-2 rounded-md bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground transition-all backdrop-blur-sm z-10";
+    const COPY_BUTTON_CLASS = "absolute right-2 top-2 p-2 rounded-md bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground transition-all backdrop-blur-sm z-10 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:text-zinc-50 dark:hover:bg-zinc-600 border border-transparent dark:border-zinc-600";
     const CHECK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
     const COPY_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`;
 
-    function processPreBlock(pre) {
+    function processPreBlock(pre: HTMLElement) {
         // Prevent duplicates
         if (pre.querySelector('.copy-code-btn')) return;
 
@@ -25,7 +25,8 @@
             // Prevent triggering other click events
             e.stopPropagation();
 
-            const code = pre.querySelector('code');
+            // Get code content
+            const code = pre.querySelector("code");
             const text = code?.innerText || pre.innerText;
 
             try {
@@ -49,11 +50,13 @@
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             mutation.addedNodes.forEach((node) => {
-                if (node.nodeType === 1) { // Element node
+                if (node instanceof HTMLElement) { // Element node
                     if (node.tagName === 'PRE') {
                         processPreBlock(node);
-                    } else if (node.querySelectorAll) {
-                        node.querySelectorAll('pre').forEach(processPreBlock);
+                    } else {
+                        node.querySelectorAll('pre').forEach((preElement: HTMLElement) => {
+                            processPreBlock(preElement);
+                        });
                     }
                 }
             });
@@ -62,7 +65,9 @@
 
     function init() {
         // Process existing blocks
-        document.querySelectorAll('pre').forEach(processPreBlock);
+        document.querySelectorAll('pre').forEach((preElement: HTMLElement) => {
+            processPreBlock(preElement);
+        });
 
         // Start observing document body for changes (navigation, hydration, etc)
         observer.observe(document.body, { childList: true, subtree: true });

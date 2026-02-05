@@ -6,9 +6,10 @@ interface TableOfContentsProps {
     headings: Heading[];
     className?: string;
     onItemClick?: () => void;
+    hideTitle?: boolean;
 }
 
-export function TableOfContents({headings, className, onItemClick}: TableOfContentsProps) {
+export function TableOfContents({headings, className, onItemClick, hideTitle}: TableOfContentsProps) {
     const [activeId, setActiveId] = useState<string>("");
 
     useEffect(() => {
@@ -47,7 +48,7 @@ export function TableOfContents({headings, className, onItemClick}: TableOfConte
 
     return (
         <nav className={cn("flex flex-col gap-2 text-sm", className)}>
-            <p className="font-semibold text-foreground mb-2 tracking-tight">目录</p>
+            {!hideTitle && <p className="font-semibold text-foreground mb-2 tracking-tight">目录</p>}
             <ul className="flex flex-col gap-2.5 border-l border-border/60 pl-4">
                 {filteredHeadings.map((heading) => (
                     <li key={heading.slug} style={{paddingLeft: `${(heading.depth - 1) * 8}px`}}>

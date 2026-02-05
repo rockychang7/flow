@@ -57,7 +57,7 @@ export function HeaderMobileMenu() {
 
                 <DropdownMenuSeparator className="bg-border/40 my-2" />
 
-                <div className="flex items-center justify-start gap-4 py-2 px-2">
+                <div className="flex items-center justify-start gap-1 py-2 px-2">
                     <a
                         target="_blank"
                         href={mediaLinkInfo.Github}

@@ -32,7 +32,7 @@ export function TocMobile({headings}: { headings: Heading[] }) {
                 <DialogHeader className="mb-4">
                     <DialogTitle className="text-left text-lg font-bold">目录</DialogTitle>
                 </DialogHeader>
-                <TableOfContents headings={headings} onItemClick={() => setOpen(false)} />
+                <TableOfContents headings={headings} onItemClick={() => setOpen(false)} hideTitle />
             </DialogContent>
         </Dialog>
     );

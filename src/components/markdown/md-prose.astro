@@ -1,14 +1,14 @@
 ---
 
 ---
-<div class="pt-4 prose prose-neutral dark:prose-invert max-w-none
+<div class="prose prose-neutral dark:prose-invert max-w-none
            prose-headings:font-bold prose-headings:tracking-tight prose-headings:scroll-mt-24
-           prose-h1:text-2xl prose-h1:lg:text-3xl prose-h1:mb-8
-           prose-h2:text-xl prose-h2:lg:text-2xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:pb-2 prose-h2:border-b prose-h2:border-border/40
-           prose-h3:text-lg prose-h3:lg:text-xl prose-h3:mt-8 prose-h3:mb-4
-           prose-p:leading-7 prose-p:text-muted-foreground prose-p:mb-6
+           prose-h1:text-xl prose-h1:lg:text-2xl prose-h1:mb-6
+           prose-h2:text-lg prose-h2:lg:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-border/40
+           prose-h3:text-base prose-h3:lg:text-lg prose-h3:mt-6 prose-h3:mb-3
+           prose-p:leading-[1.8] prose-p:text-foreground/90 prose-p:mb-6
            prose-img:rounded-md prose-img:shadow-md prose-img:mx-auto
-           prose-li:text-muted-foreground prose-li:my-1
+           prose-li:text-foreground/90 prose-li:my-1
            prose-a:font-medium prose-a:underline prose-a:underline-offset-4 prose-a:decoration-border hover:prose-a:decoration-foreground transition-colors
            prose-pre:p-4 prose-pre:rounded-lg prose-pre:border prose-pre:border-border/40 prose-pre:bg-muted/50
            ">
@@ -20,15 +20,15 @@
 
     /* Inline code styling only */
     .prose :not(pre) > code {
-        @apply bg-muted px-1.5 py-0.5 rounded-sm text-sm font-mono text-foreground border border-border/50;
+        @apply bg-muted px-1.5 py-0.5 rounded-sm text-[15px] font-mono text-foreground border border-border/50;
     }
 
     /* Code block styling adjustments */
     .prose pre {
-        @apply my-6 overflow-x-auto;
+        @apply my-6 overflow-x-auto font-mono;
     }
 
     .prose pre code {
-        @apply bg-transparent p-0 text-sm border-none;
+        @apply bg-transparent p-0 text-[15px] border-none;
     }
 </style>
