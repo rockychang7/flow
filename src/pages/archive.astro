@@ -11,7 +11,7 @@ import ArticleListItem from "@/components/article-list-item.astro";
 
 const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
 const sortBlogPosts = allBlogPosts.sort((a, b) => new Date(b.data.publish_date).getTime() - new Date(a.data.publish_date).getTime());
-const title: string = "归档";
+const title: string = "Archive";
 ---
 <RootLayout title={title}>
     <Header/>

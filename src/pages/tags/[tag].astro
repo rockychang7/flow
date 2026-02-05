@@ -20,7 +20,7 @@ const {tag} = Astro.props;
 const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true && data.tags.includes(tag));
 const sortBlogPosts = allBlogPosts.sort((a, b) => new Date(b.data.publish_date).getTime() - new Date(a.data.publish_date).getTime());
 ---
-<RootLayout title="标签归档">
+<RootLayout title="Tag Archive">
     <Header/>
     <div class="flex flex-col mt-8 gap-y-4">
         <h1 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">TAG / {tag}</h1>

@@ -22,7 +22,7 @@ const {category} = Astro.props;
 const filteredPosts = await getCollection("articles", ({data}) => data.draft !== true && data.category === category);
 const sortBlogPosts = filteredPosts.sort((a, b) => new Date(b.data.publish_date).getTime() - new Date(a.data.publish_date).getTime());
 ---
-<RootLayout title="分类归档">
+<RootLayout title="Category Archive">
     <Header/>
     <div class="flex flex-col mt-8 gap-y-4">
         <h1 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">CATEGORY / {category}</h1>

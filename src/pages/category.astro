@@ -6,7 +6,7 @@ import {getCollection} from "astro:content";
 import {Separator} from "@/components/ui/separator";
 import CategoryListItem from "@/components/category-list-item.astro";
 
-const title: string = "分类";
+const title: string = "Categories";
 const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
 // 获取所有不同的 category
 const filteredPosts = allBlogPosts.filter((post, index, arr) => {
