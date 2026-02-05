@@ -6,6 +6,8 @@ import Footer from "@/components/common/footer.astro";
 import Prose from "@/components/markdown/md-prose.astro";
 import BlogPostHeader from "@/components/markdown/blog-post-header";
 import CodeCopy from "@/components/markdown/code-copy.astro";
+import {TableOfContents} from "@/components/markdown/table-of-contents";
+import {TocMobile} from "@/components/markdown/toc-mobile";
 
 export async function getStaticPaths() {
     const blogEntries = await getCollection("articles");
@@ -18,9 +20,7 @@ export async function getStaticPaths() {
 const {entry} = Astro.props;
 const {Content, headings} = await entry.render();
 
-import {TableOfContents} from "@/components/markdown/table-of-contents";
-import {TocMobile} from "@/components/markdown/toc-mobile";
-import CodeCopy from "@/components/markdown/code-copy.astro";
+
 ---
 <RootLayout title={entry.data.title}>
     <Header/>
