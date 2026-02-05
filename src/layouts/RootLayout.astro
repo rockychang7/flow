@@ -3,7 +3,6 @@ import BackToTop from "@/components/common/back-to-top.tsx";
 import "@/styles/globals.css";
 import "@fontsource/maple-mono/400.css";
 import "@fontsource/maple-mono/500.css";
-import "cn-fontsource-lxgw-wen-kai-gb-screen/font.css";
 import "@fontsource/maple-mono/700.css";
 import { ClientRouter } from 'astro:transitions';
 const {title, maxWidth = "max-w-[640px]"} = Astro.props;
@@ -14,6 +13,8 @@ const {title, maxWidth = "max-w-[640px]"} = Astro.props;
 <head>
     <meta charset="utf-8"/>
     <link rel="icon" type="image/svg+xml" href="/favicon.ico"/>
+    <!-- Web-optimized LXGW WenKai Screen (Subsetting + Swap) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-web/style.css" />
     <meta name="viewport" content="width=device-width"/>
     <meta name="generator" content={Astro.generator}/>
     <title>{title}</title>

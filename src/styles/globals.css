@@ -50,11 +50,11 @@
   --radius-sm: calc(var(--radius) - 4px);
 
   --font-sans:
-    'Maple Mono', 'LXGW WenKai GB Screen', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'SimSun',
+    'Maple Mono', 'LXGW WenKai Screen', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'SimSun',
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     'Liberation Mono', 'Courier New', monospace;
   --font-mono:
-    'Maple Mono', 'LXGW WenKai GB Screen', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'SimSun',
+    'Maple Mono', 'LXGW WenKai Screen', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'SimSun',
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     'Liberation Mono', 'Courier New', monospace;
 
