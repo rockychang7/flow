@@ -18,23 +18,24 @@ const {title, maxWidth = "max-w-[640px]"} = Astro.props;
     <title>{title}</title>
     <ClientRouter />
     <script is:inline>
-        // Immediately apply theme on page load (blocking, runs before anything renders)
+        // Immediately apply theme on page load
         (function() {
-            const theme = localStorage.getItem("theme") ||
-                (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+            let theme = localStorage.getItem("theme");
+
+            // If no stored preference, use system preference and SAVE it
+            if (!theme) {
+                theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+                // Write to localStorage so refresh remembers this choice
+                localStorage.setItem("theme", theme);
+            }
+
+            // Apply theme
             if (theme === "dark") {
                 document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
             }
         })();
-
-        // MutationObserver to persist theme changes to localStorage
-        if (typeof localStorage !== "undefined") {
-            const observer = new MutationObserver(() => {
-                const isDark = document.documentElement.classList.contains("dark");
-                localStorage.setItem("theme", isDark ? "dark" : "light");
-            });
-            observer.observe(document.documentElement, {attributes: true, attributeFilter: ["class"]});
-        }
     </script>
 
     <!-- View Transitions theme sync -->
