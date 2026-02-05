@@ -1,6 +1,7 @@
 <script>
     // Constants for classes and icons
-    const COPY_BUTTON_CLASS = "absolute right-2 top-2 p-2 rounded-md bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground transition-all opacity-0 group-hover:opacity-100 focus:opacity-100";
+    // Removed opacity-0 and group-hover:opacity-100 to make button always visible
+    const COPY_BUTTON_CLASS = "absolute right-2 top-2 p-2 rounded-md bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground transition-all backdrop-blur-sm z-10";
     const CHECK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
     const COPY_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`;
 
@@ -8,11 +9,13 @@
         const codeBlocks = document.querySelectorAll('pre');
 
         codeBlocks.forEach((pre) => {
-            // Check if button already exists to prevent duplicates (e.g. on view transitions)
+            // Check if button already exists to prevent duplicates
             if (pre.querySelector('.copy-code-btn')) return;
 
             // Make pre relative for positioning
-            pre.style.position = 'relative';
+            if (getComputedStyle(pre).position === 'static') {
+                pre.style.position = 'relative';
+            }
             pre.classList.add('group');
 
             const button = document.createElement('button');
@@ -27,11 +30,11 @@
                 try {
                     await navigator.clipboard.writeText(text);
                     button.innerHTML = CHECK_ICON;
-                    button.classList.add('text-green-500');
+                    button.classList.add('text-green-500', 'bg-muted'); // Keep active style
 
                     setTimeout(() => {
                         button.innerHTML = COPY_ICON;
-                        button.classList.remove('text-green-500');
+                        button.classList.remove('text-green-500', 'bg-muted');
                     }, 2000);
                 } catch (err) {
                     console.error('Failed to copy code:', err);
@@ -42,9 +45,6 @@
         });
     }
 
-    // Initial load
-    addCopyButtons();
-
-    // Re-run on view transitions
+    // Use astro:page-load for both initial load and view transitions
     document.addEventListener('astro:page-load', addCopyButtons);
 </script>
