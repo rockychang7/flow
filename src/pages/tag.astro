@@ -1,10 +1,9 @@
 ---
-import RootLayout from "../layouts/RootLayout.astro";
+import TagListItem from "@/components/cards/tag-list-item.astro";
+import { getCollection } from "astro:content";
 import Footer from "../components/common/footer.astro";
 import Header from "../components/common/header.astro";
-import {getCollection} from "astro:content";
-import {Separator} from "@/components/ui/separator";
-import TagListItem from "@/components/tag-list-item.astro";
+import RootLayout from "../layouts/RootLayout.astro";
 
 const title: string = "Tags";
 const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);

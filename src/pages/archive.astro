@@ -1,13 +1,10 @@
 ---
-import RootLayout from "../layouts/RootLayout.astro";
-import Header from "../components/common/header.astro";
+import { getCollection } from "astro:content";
 import Footer from "../components/common/footer.astro";
-import {getCollection} from "astro:content";
-import {Separator} from "@/components/ui/separator";
-import dayjs from "dayjs";
-import {DATE_FORMAT} from "../constant/constants";
+import Header from "../components/common/header.astro";
+import RootLayout from "../layouts/RootLayout.astro";
 
-import ArticleListItem from "@/components/article-list-item.astro";
+import ArticleListItem from "@/components/cards/article-list-item.astro";
 
 const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
 const sortBlogPosts = allBlogPosts.sort((a, b) => new Date(b.data.publish_date).getTime() - new Date(a.data.publish_date).getTime());

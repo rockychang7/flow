@@ -1,11 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {cn} from "@/lib/utils";
-
-interface Heading {
-    depth: number;
-    slug: string;
-    text: string;
-}
+import type {Heading} from "@/type/markdown";
 
 interface TableOfContentsProps {
     headings: Heading[];

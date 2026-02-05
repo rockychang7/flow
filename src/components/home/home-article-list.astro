@@ -5,7 +5,7 @@ const allBlogPosts = await getCollection("articles", ({data}) => {
     return data.draft !== true;
 });
 
-import ArticleListItem from "./article-list-item.astro";
+import ArticleListItem from "@/components/cards/article-list-item.astro";
 
 const latestBlogPosts = allBlogPosts
     .sort((a, b) => new Date(b.data.publish_date).getTime() - new Date(a.data.publish_date).getTime())

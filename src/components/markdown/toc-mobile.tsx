@@ -9,12 +9,7 @@ import {
 import {Button} from "@/components/ui/button";
 import {TableOfContents} from "./table-of-contents";
 import {useState} from "react";
-
-interface Heading {
-    depth: number;
-    slug: string;
-    text: string;
-}
+import type {Heading} from "@/type/markdown";
 
 export function TocMobile({headings}: { headings: Heading[] }) {
     const [open, setOpen] = useState(false);
