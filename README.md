@@ -36,6 +36,8 @@ npm run preview
 - 🏷️ **Categories & Tags** - Organized content structure
 - 📖 **Table of Contents** - Auto-generated for articles
 - 🖼️ **Image Zoom** - Click-to-expand images with pan/zoom
+- 📋 **Code Copy** - One-click code copying for developer experience
+- 📜 **Changelog Timeline** - Visual history of site updates
 - ⬆️ **Back to Top** - Smooth scroll button
 
 ## Project Structure
