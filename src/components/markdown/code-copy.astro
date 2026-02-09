@@ -73,11 +73,8 @@
         observer.observe(document.body, { childList: true, subtree: true });
     }
 
-    // Run on initial load
-    init();
-
-    // Re-run on view transitions to re-attach observer to new body
-    document.addEventListener('astro:after-swap', () => {
+    // Run on initial load and after every view transition navigation
+    document.addEventListener('astro:page-load', () => {
         init();
     });
 </script>

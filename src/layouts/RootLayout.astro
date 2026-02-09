@@ -1,5 +1,6 @@
 ---
 import BackToTop from "@/components/common/back-to-top.tsx";
+import CodeCopy from "@/components/markdown/code-copy.astro";
 import "@/styles/globals.css";
 import "@fontsource/maple-mono/400.css";
 import "@fontsource/maple-mono/500.css";
@@ -100,6 +101,7 @@ const {title, maxWidth = "max-w-[640px]"} = Astro.props;
 <main class={`min-h-svh mx-auto w-full flex flex-col font-sans px-6 py-8 ${maxWidth}`}>
     <slot/>
 </main>
+<CodeCopy />
 <BackToTop client:load/>
 <!-- Add this portal container for dialogs -->
 <div id="dialog-portal"></div>
