@@ -73,7 +73,10 @@
         observer.observe(document.body, { childList: true, subtree: true });
     }
 
-    // Run on initial load and after every view transition navigation
+    // Run on initial load
+    init();
+
+    // Re-run after every view transition navigation
     document.addEventListener('astro:page-load', () => {
         init();
     });

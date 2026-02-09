@@ -5,105 +5,115 @@ import "@/styles/globals.css";
 import "@fontsource/maple-mono/400.css";
 import "@fontsource/maple-mono/500.css";
 import "@fontsource/maple-mono/700.css";
-import { ClientRouter } from 'astro:transitions';
-const {title, maxWidth = "max-w-[640px]"} = Astro.props;
+import { ClientRouter } from "astro:transitions";
+const { title, maxWidth = "max-w-[640px]" } = Astro.props;
 ---
 
-
 <html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico"/>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <!-- Web-optimized LXGW WenKai Screen (Subsetting + Swap) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-web/style.css" />
-    <meta name="viewport" content="width=device-width"/>
-    <meta name="generator" content={Astro.generator}/>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-web/style.css"
+    />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-    <ClientRouter />
     <script is:inline>
-        // Immediately apply theme on page load
-        (function() {
-            let theme = localStorage.getItem("theme");
+      // Immediately apply theme on page load
+      (function () {
+        let theme = localStorage.getItem("theme");
 
-            // If no stored preference, use system preference and SAVE it
-            if (!theme) {
-                theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-                // Write to localStorage so refresh remembers this choice
-                localStorage.setItem("theme", theme);
-            }
+        // If no stored preference, use system preference and SAVE it
+        if (!theme) {
+          theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          // Write to localStorage so refresh remembers this choice
+          localStorage.setItem("theme", theme);
+        }
 
-            // Apply theme
-            if (theme === "dark") {
-                document.documentElement.classList.add("dark");
-            } else {
-                document.documentElement.classList.remove("dark");
-            }
-        })();
+        // Apply theme
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      })();
     </script>
 
     <!-- View Transitions theme sync -->
     <script is:inline>
-        // BEFORE swap: copy dark class to the incoming document
-        document.addEventListener('astro:before-swap', (event) => {
-            const isDark = document.documentElement.classList.contains('dark');
-            event.newDocument.documentElement.classList.toggle('dark', isDark);
-        });
+      // BEFORE swap: copy dark class to the incoming document
+      document.addEventListener("astro:before-swap", (event) => {
+        const isDark = document.documentElement.classList.contains("dark");
+        event.newDocument.documentElement.classList.toggle("dark", isDark);
+      });
 
-        // AFTER swap: fallback to ensure theme is correct
-        document.addEventListener('astro:after-swap', () => {
-            const theme = localStorage.getItem("theme") ||
-                (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-            document.documentElement.classList.toggle("dark", theme === "dark");
-        });
+      // AFTER swap: fallback to ensure theme is correct
+      document.addEventListener("astro:after-swap", () => {
+        const theme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.classList.toggle("dark", theme === "dark");
+      });
     </script>
 
     <!-- iOS Chrome back button fix (known Astro bug workaround) -->
     <script is:inline>
-        (function() {
-            // Detect iOS Chrome (or any iOS browser other than Safari)
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-            const isChrome = /CriOS/.test(navigator.userAgent);
-            const isIOSChrome = isIOS && isChrome;
+      (function () {
+        // Detect iOS Chrome (or any iOS browser other than Safari)
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isChrome = /CriOS/.test(navigator.userAgent);
+        const isIOSChrome = isIOS && isChrome;
 
-            if (isIOSChrome) {
-                // Override click handler to use history.pushState with proper state
-                document.addEventListener('click', (e) => {
-                    const link = e.target.closest('a');
-                    if (!link) return;
+        if (isIOSChrome) {
+          // Override click handler to use history.pushState with proper state
+          document.addEventListener("click", (e) => {
+            const link = e.target.closest("a");
+            if (!link) return;
 
-                    const href = link.getAttribute('href');
-                    if (!href) return;
+            const href = link.getAttribute("href");
+            if (!href) return;
 
-                    // Only handle internal links
-                    const url = new URL(href, window.location.origin);
-                    if (url.origin !== window.location.origin) return;
-                    if (link.target === '_blank') return;
+            // Only handle internal links
+            const url = new URL(href, window.location.origin);
+            if (url.origin !== window.location.origin) return;
+            if (link.target === "_blank") return;
 
-                    // Let Astro's router handle it, but ensure pushState is used
-                    // by adding data attribute
-                    link.setAttribute('data-astro-history', 'push');
-                });
+            // Let Astro's router handle it, but ensure pushState is used
+            // by adding data attribute
+            link.setAttribute("data-astro-history", "push");
+          });
 
-                // Fix for popstate not firing on iOS Chrome
-                let lastUrl = location.href;
-                const observer = new MutationObserver(() => {
-                    if (location.href !== lastUrl) {
-                        lastUrl = location.href;
-                        window.dispatchEvent(new PopStateEvent('popstate', { state: history.state }));
-                    }
-                });
-                observer.observe(document, { subtree: true, childList: true });
+          // Fix for popstate not firing on iOS Chrome
+          let lastUrl = location.href;
+          const observer = new MutationObserver(() => {
+            if (location.href !== lastUrl) {
+              lastUrl = location.href;
+              window.dispatchEvent(
+                new PopStateEvent("popstate", { state: history.state })
+              );
             }
-        })();
+          });
+          observer.observe(document, { subtree: true, childList: true });
+        }
+      })();
     </script>
-</head>
-<body>
-<main class={`min-h-svh mx-auto w-full flex flex-col font-sans px-6 py-8 ${maxWidth}`}>
-    <slot/>
-</main>
-<CodeCopy />
-<BackToTop client:load/>
-<!-- Add this portal container for dialogs -->
-<div id="dialog-portal"></div>
-</body>
+    <ClientRouter />
+  </head><body>
+    <main
+      class={`min-h-svh mx-auto w-full flex flex-col font-sans px-6 py-8 ${maxWidth}`}
+    >
+      <slot />
+    </main>
+    <CodeCopy />
+    <BackToTop client:load />
+    <!-- Add this portal container for dialogs -->
+    <div id="dialog-portal"></div>
+  </body>
 </html>
