@@ -48,7 +48,7 @@ export function TableOfContents({headings, className, onItemClick, hideTitle}: T
 
     return (
         <nav className={cn("flex flex-col gap-2 text-sm", className)}>
-            {!hideTitle && <p className="font-semibold text-foreground mb-2 tracking-tight">目录</p>}
+            {!hideTitle && <p className="font-semibold text-foreground mb-2">目录</p>}
             <ul className="flex flex-col gap-2.5 border-l border-border/60 pl-4">
                 {filteredHeadings.map((heading) => (
                     <li key={heading.slug} style={{paddingLeft: `${(heading.depth - 1) * 8}px`}}>

@@ -49,13 +49,19 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
 
-  /* 正文:阅读向字体(中文楷体屏显版),代码才用等宽 */
+  /* 双轨字体:UI 用系统黑体栈,文章正文用阅读向字体(font-reading) */
   --font-sans:
-    'LXGW WenKai GB Screen', ui-sans-serif, system-ui, -apple-system,
-    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC',
+    sans-serif;
+  /* 阅读轨:拉丁用 Source Serif 4,中文用霞鹜文楷(400/700 真字重);
+     加载间隙回退到系统楷体保持气质一致 */
+  --font-reading:
+    'Source Serif 4', Georgia, 'LXGW WenKai', 'STKaiti', 'KaiTi',
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', serif;
   --font-mono:
     'Maple Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    'LXGW WenKai GB Screen', 'Liberation Mono', 'Courier New', monospace;
+    'LXGW WenKai', 'Liberation Mono', 'Courier New', monospace;
 
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
@@ -195,9 +201,8 @@
     body {
         @apply bg-background text-foreground;
         font-feature-settings: "rlig" 1, "calt" 1; /* 开启连字 */
-        text-rendering: optimizeLegibility;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
+        /* 中西文混排渐进增强:自动加中英间隙(不支持的浏览器忽略) */
+        text-autospace: normal;
     }
 
     /* 全局链接样式 - 默认无下划线，hover时显示 */

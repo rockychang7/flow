@@ -1,7 +1,7 @@
 {
   "name": "flow",
   "type": "module",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -17,6 +17,7 @@
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
     "@fontsource/maple-mono": "^5.2.6",
+    "@fontsource/source-serif-4": "^5.2.9",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-label": "^2.1.8",
@@ -29,8 +30,8 @@
     "astro": "^7.0.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "cn-fontsource-lxgw-wen-kai-gb-screen": "^1.0.6",
     "dayjs": "^1.11.19",
+    "lxgw-wenkai-webfont": "^1.7.0",
     "fuse.js": "^7.1.0",
     "lucide-react": "^0.563.0",
     "react": "^19.2.4",

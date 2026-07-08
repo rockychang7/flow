@@ -2,6 +2,18 @@ import type { LogItem } from "@/type/changelog";
 
 export const changelogs: LogItem[] = [
   {
+    version: "v2.1.1",
+    date: "2026-07-08",
+    description: "排版重构:双轨字体方案,修复中文伪粗体与中英混排观感。",
+    features: [
+      "文章正文换用真字重霞鹜文楷(400/700),标题与加粗不再是浏览器合成的伪粗体",
+      "正文拉丁字符改用 Source Serif 4 衬线体,与楷体混排灰度统一",
+      "字体双轨制:界面走系统黑体栈,仅文章阅读区使用阅读向字体",
+      "正文基线 16px → 18px,拉开标题层级,移除中文标题负字距",
+      "字体自带 font-display: swap 消除首屏闪白,新增 text-autospace 中英自动间隙",
+    ],
+  },
+  {
     version: "v2.1.0",
     date: "2026-07-08",
     description: "全站质量重构:修复生产环境问题,补齐 SEO,优化搜索与阅读体验。",

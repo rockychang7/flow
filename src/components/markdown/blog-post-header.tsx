@@ -29,7 +29,7 @@ export default function BlogPostHeader({title, publishDate, coverImage, tags, wo
             </div>
 
             <div className="border-l-4 border-primary pl-3 mb-4">
-                <h1 className="font-bold text-3xl sm:text-4xl tracking-tight text-foreground leading-tight">
+                <h1 className="font-reading font-bold text-3xl sm:text-4xl text-foreground leading-tight">
                     {title}
                 </h1>
             </div>
