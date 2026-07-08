@@ -1,4 +1,5 @@
 import {defineConfig} from "astro/config";
+import {unified} from "@astrojs/markdown-remark";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
@@ -28,7 +29,9 @@ export default defineConfig({
         plugins: [tailwindcss()],
     },
     markdown: {
-        remarkPlugins: [[remarkToc, {heading: "目录", maxDepth: 3}],
-            [remarkCollapse, {test: "目录", summary: "open table of contents"}]],
+        processor: unified({
+            remarkPlugins: [[remarkToc, {heading: "目录", maxDepth: 3}],
+                [remarkCollapse, {test: "目录", summary: "open table of contents"}]],
+        }),
     }
 });
