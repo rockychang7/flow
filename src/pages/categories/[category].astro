@@ -1,35 +1,34 @@
 ---
 import ArticleListItem from "@/components/cards/article-list-item.astro";
-import { getCollection } from "astro:content";
+import { getPublishedArticles, sortByDateDesc } from "@/lib/articles";
 import Footer from "../../components/common/footer.astro";
 import Header from "../../components/common/header.astro";
 import RootLayout from "../../layouts/RootLayout.astro";
 
 export async function getStaticPaths() {
-    const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
-    // 获取所有不同的 category
-    const distinctCategories = new Set(allBlogPosts.map(post => post.data.category));
-    return [...distinctCategories].map(category => ({
+    const allBlogPosts = await getPublishedArticles();
+    const distinctCategories = [...new Set(allBlogPosts.map(post => post.data.category))].sort();
+    return distinctCategories.map(category => ({
         params: {category: category},
         props: {category}
     }));
 }
 
 const {category} = Astro.props;
-const filteredPosts = await getCollection("articles", ({data}) => data.draft !== true && data.category === category);
-const sortBlogPosts = filteredPosts.sort((a, b) => new Date(b.data.publish_date).getTime() - new Date(a.data.publish_date).getTime());
+const allBlogPosts = await getPublishedArticles();
+const sortBlogPosts = sortByDateDesc(allBlogPosts.filter(post => post.data.category === category));
 ---
-<RootLayout title="Category Archive">
+<RootLayout title={`Category / ${category}`} description={`分类「${category}」下的所有文章`}>
     <Header/>
     <div class="flex flex-col mt-8 gap-y-4">
         <h1 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">CATEGORY / {category}</h1>
         <div class="flex flex-col gap-y-2">
             {sortBlogPosts.map(post => (
-                    <ArticleListItem
-                        title={post.data.title}
-                        date={post.data.publish_date}
-                        url={`/articles/${post.id}`}
-                    />
+                <ArticleListItem
+                    title={post.data.title}
+                    date={post.data.publish_date}
+                    url={`/articles/${post.id}`}
+                />
             ))}
         </div>
     </div>

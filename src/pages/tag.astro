@@ -1,24 +1,31 @@
 ---
 import TagListItem from "@/components/cards/tag-list-item.astro";
-import { getCollection } from "astro:content";
+import { getPublishedArticles } from "@/lib/articles";
 import Footer from "../components/common/footer.astro";
 import Header from "../components/common/header.astro";
 import RootLayout from "../layouts/RootLayout.astro";
 
 const title: string = "Tags";
-const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
-// 获取所有不同的 category
-const distinctTags = new Set(allBlogPosts.flatMap(post => post.data.tags.map(tag => tag.trim())).sort());
+const allBlogPosts = await getPublishedArticles();
+
+// 统计每个标签的文章数
+const tagCounts = new Map<string, number>();
+for (const post of allBlogPosts) {
+    for (const tag of post.data.tags) {
+        tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+    }
+}
+const sortedTags = [...tagCounts.keys()].sort();
 ---
-<RootLayout title={title}>
+<RootLayout title={title} description="按标签浏览所有文章">
     <Header/>
     <div class="flex flex-col mt-8 gap-y-4">
         <h1 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">TAGS</h1>
         <div class="flex flex-wrap gap-x-6 gap-y-3 pt-2">
-            {[...distinctTags].map(tag => (
+            {sortedTags.map(tag => (
                 <TagListItem
                     name={tag}
-                    count={allBlogPosts.filter(post => post.data.tags.includes(tag)).length}
+                    count={tagCounts.get(tag) ?? 0}
                     url={`/tags/${tag}`}
                 />
             ))}

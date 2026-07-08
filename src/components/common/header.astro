@@ -1,7 +1,5 @@
 ---
 import RssComponent from "@/components/icons/rss-icons";
-import { generateSearchData } from "@/lib/generateSearchData";
-import type { SearchItem } from '@/type/search';
 import { menuInfo } from "../../data/menu-info";
 import { Separator } from "../ui/separator";
 import GlobalSearch from "./global-search";
@@ -9,12 +7,8 @@ import { HeaderMobileMenu } from "./header-mobile-menu";
 import { HeaderNavItem } from "./header-nav-item";
 import LogoNew from "./logo-new.astro";
 import { ModeToggle } from "./mode-toggle";
-
-// 生成搜索数据
-const searchData: SearchItem[] = await generateSearchData();
 ---
 <header class="w-full flex items-center justify-between py-3 mb-6">
-    <!-- Logo -->
     <!-- Logo -->
     <a href="/" class="group shrink-0 hover:no-underline select-none">
         <LogoNew />
@@ -35,14 +29,14 @@ const searchData: SearchItem[] = await generateSearchData();
         <Separator orientation="vertical" className="bg-primary/30 h-5 mx-1" />
 
         <!-- Tools -->
-        <GlobalSearch client:load searchData={searchData} />
-        <RssComponent client:load />
+        <GlobalSearch client:load />
+        <RssComponent />
         <ModeToggle client:load />
     </nav>
 
     <!-- Mobile Menu -->
     <div class="md:hidden flex items-center gap-x-1">
-        <GlobalSearch client:load searchData={searchData} />
+        <GlobalSearch client:load />
         <ModeToggle client:load />
         <HeaderMobileMenu client:load />
     </div>

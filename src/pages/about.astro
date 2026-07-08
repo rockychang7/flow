@@ -6,7 +6,7 @@ import Footer from "../components/common/footer.astro";
 
 const title: string = "About";
 ---
-<RootLayout title={title}>
+<RootLayout title={title} description="关于 Rocky Chang:AI 全栈工程师,记录技术探索、产品构建与个人成长">
     <Header/>
     <div class="flex flex-col mt-8 gap-y-10">
         <!-- About Section -->
@@ -14,10 +14,10 @@ const title: string = "About";
             <h2 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">About</h2>
             <div class="flex flex-col gap-y-4 text-pretty leading-relaxed text-foreground/90">
                 <p>
-                    我是 Rocky Chang，一名 AI 全栈工程师，目前正沉浸在 Vibe Coding 的心流中。
+                    我是 Rocky Chang，一名 AI 全栈工程师，目前专注于 Agent Coding 实践与 Agent 应用开发。
                 </p>
                 <p>
-                    我热衷于探索 AGI 的无限可能，并致力于将前沿技术转化为优雅、实用的产品。在这个快速变化的时代，我坚持追求简单、纯粹的代码与设计美学。
+                    我热衷于探索 AI 的无限可能，并致力于将前沿技术转化为优雅、实用的产品。在这个快速变化的时代，我坚持追求简单、纯粹的代码与设计美学。
                 </p>
             </div>
         </section>
@@ -40,9 +40,9 @@ const title: string = "About";
             <h2 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">Stack</h2>
             <div class="flex flex-col gap-y-4">
                 <div class="flex flex-col gap-y-2">
-                    <span class="text-xs font-medium text-muted-foreground/80">AI Workflow</span>
+                    <span class="text-xs font-medium text-muted-foreground/80">Coding Agent</span>
                     <div class="flex flex-wrap gap-2">
-                        {["Claude Code", "Antigravity", "Windsurf", "OpenCode"].map((tech) => (
+                        {["Claude Code", "Codex", "OpenCode"].map((tech) => (
                             <span class="px-2 py-1 rounded bg-secondary text-secondary-foreground text-sm">{tech}</span>
                         ))}
                     </div>
@@ -50,7 +50,7 @@ const title: string = "About";
                 <div class="flex flex-col gap-y-2">
                     <span class="text-xs font-medium text-muted-foreground/80">Frontend</span>
                     <div class="flex flex-wrap gap-2">
-                        {["React", "Astro", "Next.js", "Vite", "TailwindCSS"].map((tech) => (
+                        {["HTML", "CSS", "JavaScript", "TypeScript", "React", "Astro", "Next.js", "Vite", "TailwindCSS"].map((tech) => (
                             <span class="px-2 py-1 rounded bg-secondary text-secondary-foreground text-sm">{tech}</span>
                         ))}
                     </div>
@@ -66,7 +66,7 @@ const title: string = "About";
                 <div class="flex flex-col gap-y-2">
                     <span class="text-xs font-medium text-muted-foreground/80">Design</span>
                     <div class="flex flex-wrap gap-2">
-                        {["V0", "Stitch"].map((tech) => (
+                        {["Stitch"].map((tech) => (
                             <span class="px-2 py-1 rounded bg-secondary text-secondary-foreground text-sm">{tech}</span>
                         ))}
                     </div>

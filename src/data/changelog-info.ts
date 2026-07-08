@@ -2,6 +2,19 @@ import type { LogItem } from "@/type/changelog";
 
 export const changelogs: LogItem[] = [
   {
+    version: "v2.1.0",
+    date: "2026-07-08",
+    description: "全站质量重构:修复生产环境问题,补齐 SEO,优化搜索与阅读体验。",
+    features: [
+      "升级 Astro 7,修复 RSS 链接、日期与草稿泄露等生产环境问题",
+      "补齐全站 SEO(Open Graph、canonical、sitemap、robots.txt)",
+      "搜索重构:索引按需加载,支持 ↑↓/Enter 键盘导航",
+      "正文改用本地托管的霞鹜文楷,代码保留等宽字体",
+      "暗色模式真正跟随系统偏好,提升键盘可访问性",
+      "清理死代码与冗余依赖,统一文章读取与日期格式",
+    ],
+  },
+  {
     version: "v2.0.1",
     date: "2026-02-05",
     description: "进一步打磨用户体验，新增实用功能。",

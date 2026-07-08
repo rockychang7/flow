@@ -49,14 +49,13 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
 
+  /* 正文:阅读向字体(中文楷体屏显版),代码才用等宽 */
   --font-sans:
-    'Maple Mono', 'LXGW WenKai Screen', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'SimSun',
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    'Liberation Mono', 'Courier New', monospace;
+    'LXGW WenKai GB Screen', ui-sans-serif, system-ui, -apple-system,
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   --font-mono:
-    'Maple Mono', 'LXGW WenKai Screen', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'SimSun',
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    'Liberation Mono', 'Courier New', monospace;
+    'Maple Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'LXGW WenKai GB Screen', 'Liberation Mono', 'Courier New', monospace;
 
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;

@@ -1,15 +1,8 @@
 ---
-import { getCollection } from "astro:content";
-
-const allBlogPosts = await getCollection("articles", ({data}) => {
-    return data.draft !== true;
-});
-
 import ArticleListItem from "@/components/cards/article-list-item.astro";
+import { getPublishedArticles, sortByDateDesc } from "@/lib/articles";
 
-const latestBlogPosts = allBlogPosts
-    .sort((a, b) => new Date(b.data.publish_date).getTime() - new Date(a.data.publish_date).getTime())
-    .slice(0, 5);
+const latestBlogPosts = sortByDateDesc(await getPublishedArticles()).slice(0, 5);
 ---
 
 <section class="flex flex-col gap-y-2">

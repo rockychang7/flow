@@ -12,37 +12,37 @@ interface TableOfContentsProps {
 export function TableOfContents({headings, className, onItemClick, hideTitle}: TableOfContentsProps) {
     const [activeId, setActiveId] = useState<string>("");
 
+    // Only show h1, h2, h3
+    const filteredHeadings = headings.filter((h) => h.depth <= 3);
+
     useEffect(() => {
+        const ids = filteredHeadings.map((h) => h.slug);
         const observer = new IntersectionObserver(
             (entries) => {
-                entries.forEach((entry) => {
+                for (const entry of entries) {
                     if (entry.isIntersecting) {
+                        // 标题进入视口顶部判定区,设为当前项
                         setActiveId(entry.target.id);
+                    } else {
+                        // 向上回滚、标题从判定区下方离开时,回退到上一个标题
+                        const zoneBottom = entry.rootBounds?.bottom ?? window.innerHeight * 0.2;
+                        if (entry.boundingClientRect.top >= zoneBottom) {
+                            const idx = ids.indexOf(entry.target.id);
+                            if (idx > 0) setActiveId(ids[idx - 1]);
+                        }
                     }
-                });
+                }
             },
             {rootMargin: "0px 0px -80% 0px"}
         );
 
-        headings.forEach((heading) => {
-            const element = document.getElementById(heading.slug);
-            if (element) {
-                observer.observe(element);
-            }
-        });
+        for (const id of ids) {
+            const element = document.getElementById(id);
+            if (element) observer.observe(element);
+        }
 
-        return () => {
-            headings.forEach((heading) => {
-                const element = document.getElementById(heading.slug);
-                if (element) {
-                    observer.unobserve(element);
-                }
-            });
-        };
+        return () => observer.disconnect();
     }, [headings]);
-
-    // Only show h1, h2, h3
-    const filteredHeadings = headings.filter((h) => h.depth <= 3);
 
     if (filteredHeadings.length === 0) return null;
 

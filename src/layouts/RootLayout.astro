@@ -1,46 +1,75 @@
 ---
 import BackToTop from "@/components/common/back-to-top.tsx";
 import CodeCopy from "@/components/markdown/code-copy.astro";
+import { SITE } from "@/constant/constants";
 import "@/styles/globals.css";
 import "@fontsource/maple-mono/400.css";
 import "@fontsource/maple-mono/500.css";
 import "@fontsource/maple-mono/700.css";
+import "cn-fontsource-lxgw-wen-kai-gb-screen/font.css";
 import { ClientRouter } from "astro:transitions";
-const { title, maxWidth = "max-w-[640px]" } = Astro.props;
+
+interface Props {
+    title: string;
+    description?: string;
+    ogImage?: string | null;
+    maxWidth?: string;
+}
+
+const {
+    title,
+    description = SITE.description,
+    ogImage,
+    maxWidth = "max-w-[640px]",
+} = Astro.props;
+
+const fullTitle = title === SITE.title ? title : `${title} | ${SITE.title}`;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
-    <!-- Web-optimized LXGW WenKai Screen (Subsetting + Swap) -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-web/style.css"
-    />
-    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE.author} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={SITE.title}
+      href={new URL("rss.xml", Astro.site)}
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
     <script is:inline>
       // Immediately apply theme on page load
       (function () {
-        let theme = localStorage.getItem("theme");
-
-        // If no stored preference, use system preference and SAVE it
-        if (!theme) {
-          theme = window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light";
-          // Write to localStorage so refresh remembers this choice
-          localStorage.setItem("theme", theme);
-        }
-
-        // Apply theme
-        if (theme === "dark") {
-          document.documentElement.classList.add("dark");
-        } else {
-          document.documentElement.classList.remove("dark");
-        }
+        // localStorage 只存用户手动选择;没有选择时跟随系统,且监听系统变化
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+        const apply = () => {
+          const stored = localStorage.getItem("theme");
+          const theme = stored ?? (systemDark.matches ? "dark" : "light");
+          document.documentElement.classList.toggle("dark", theme === "dark");
+        };
+        apply();
+        systemDark.addEventListener("change", apply);
       })();
     </script>
 

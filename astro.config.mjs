@@ -1,6 +1,7 @@
 import {defineConfig} from "astro/config";
 import {unified} from "@astrojs/markdown-remark";
 import react from "@astrojs/react";
+import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
 import remarkToc from "remark-toc";
@@ -8,7 +9,7 @@ import remarkCollapse from "remark-collapse";
 
 // https://astro.build/config
 export default defineConfig({
-    site: "http://localhost:4321",
+    site: "https://rockycheong.com",
     integrations: [react(),
         mdx({
             syntaxHighlight: "shiki",
@@ -24,6 +25,7 @@ export default defineConfig({
                 // Let's try standard `themes` config.
             }
         }),
+        sitemap(),
     ],
     vite: {
         plugins: [tailwindcss()],

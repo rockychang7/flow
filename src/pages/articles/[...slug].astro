@@ -11,7 +11,11 @@ import { getCollection, render } from "astro:content";
 
 
 export async function getStaticPaths() {
-    const blogEntries = await getCollection("articles");
+    // 开发模式下保留草稿预览,生产构建不生成草稿页面
+    const blogEntries = await getCollection(
+        "articles",
+        ({data}) => import.meta.env.DEV || data.draft !== true
+    );
     return blogEntries.map(entry => ({
         params: {slug: entry.id},
         props: {entry}
@@ -25,7 +29,11 @@ const wordCount = getWordCount(body);
 const readingTime = getReadingTime(body);
 
 ---
-<RootLayout title={entry.data.title}>
+<RootLayout
+    title={entry.data.title}
+    description={entry.data.description}
+    ogImage={entry.data.cover_url}
+>
     <Header/>
 
     <div class="relative mt-8 mb-16">

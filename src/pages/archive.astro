@@ -1,16 +1,15 @@
 ---
-import { getCollection } from "astro:content";
+import { getPublishedArticles, sortByDateDesc } from "@/lib/articles";
 import Footer from "../components/common/footer.astro";
 import Header from "../components/common/header.astro";
 import RootLayout from "../layouts/RootLayout.astro";
 
 import ArticleListItem from "@/components/cards/article-list-item.astro";
 
-const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
-const sortBlogPosts = allBlogPosts.sort((a, b) => new Date(b.data.publish_date).getTime() - new Date(a.data.publish_date).getTime());
+const sortBlogPosts = sortByDateDesc(await getPublishedArticles());
 const title: string = "Archive";
 ---
-<RootLayout title={title}>
+<RootLayout title={title} description="按时间线浏览所有文章">
     <Header/>
     <div class="flex flex-col mt-8 gap-y-4">
         <h1 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">Archive</h1>

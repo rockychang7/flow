@@ -1,26 +1,25 @@
 ---
 import ArticleListItem from "@/components/cards/article-list-item.astro";
-import { getCollection } from "astro:content";
+import { getPublishedArticles, sortByDateDesc } from "@/lib/articles";
 import Footer from "../../components/common/footer.astro";
 import Header from "../../components/common/header.astro";
 import RootLayout from "../../layouts/RootLayout.astro";
 
 export async function getStaticPaths() {
-    const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true);
-// 获取所有不同的 category
-    const distinctTags = new Set(allBlogPosts.flatMap(post => post.data.tags.map(tag => tag.trim())).sort());
+    const allBlogPosts = await getPublishedArticles();
+    const distinctTags = [...new Set(allBlogPosts.flatMap(post => post.data.tags))].sort();
 
-    return [...distinctTags].map(tag => ({
+    return distinctTags.map(tag => ({
         params: {tag: tag},
         props: {tag}
     }));
 }
 
 const {tag} = Astro.props;
-const allBlogPosts = await getCollection("articles", ({data}) => data.draft !== true && data.tags.includes(tag));
-const sortBlogPosts = allBlogPosts.sort((a, b) => new Date(b.data.publish_date).getTime() - new Date(a.data.publish_date).getTime());
+const allBlogPosts = await getPublishedArticles();
+const sortBlogPosts = sortByDateDesc(allBlogPosts.filter(post => post.data.tags.includes(tag)));
 ---
-<RootLayout title="Tag Archive">
+<RootLayout title={`Tag / ${tag}`} description={`标签「${tag}」下的所有文章`}>
     <Header/>
     <div class="flex flex-col mt-8 gap-y-4">
         <h1 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">TAG / {tag}</h1>

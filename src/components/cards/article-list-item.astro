@@ -19,6 +19,6 @@ const {title, date, url} = Astro.props;
     </div>
 
     <time class="text-sm text-muted-foreground font-mono shrink-0 ml-4 opacity-60 group-hover:opacity-100 transition-opacity">
-        {dayjs(date).format("DD.MMM.YYYY")}
+        {dayjs(date).format("YYYY-MM-DD")}
     </time>
 </a>
