@@ -1,8 +1,9 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
 
-// 定义blog schema校验规则
 const blogCollection = defineCollection({
-  type: "content",
+  loader: glob({ base: "./src/content/articles", pattern: "**/*.{md,mdx}" }),
   schema: z.object({
     author: z.string(),
     category: z.string(),
@@ -14,4 +15,5 @@ const blogCollection = defineCollection({
     title: z.string(),
   }),
 });
+
 export const collections = { articles: blogCollection };

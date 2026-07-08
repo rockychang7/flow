@@ -7,21 +7,22 @@ import { TableOfContents } from "@/components/markdown/table-of-contents";
 import { TocMobile } from "@/components/markdown/toc-mobile";
 import RootLayout from "@/layouts/RootLayout.astro";
 import { getReadingTime, getWordCount } from "@/lib/utils";
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 
 
 export async function getStaticPaths() {
     const blogEntries = await getCollection("articles");
     return blogEntries.map(entry => ({
-        params: {slug: entry.slug},
+        params: {slug: entry.id},
         props: {entry}
     }));
 }
 
 const {entry} = Astro.props;
-const {Content, headings} = await entry.render();
-const wordCount = getWordCount(entry.body);
-const readingTime = getReadingTime(entry.body);
+const {Content, headings} = await render(entry);
+const body = entry.body ?? "";
+const wordCount = getWordCount(body);
+const readingTime = getReadingTime(body);
 
 ---
 <RootLayout title={entry.data.title}>
