@@ -4,7 +4,7 @@ A minimal, elegant personal blog built with Astro. Fast, clean, and focused on c
 
 ## Tech Stack
 
-- **Astro 5** - Static site generator with View Transitions
+- **Astro 7** - Static site generator with View Transitions
 - **React 19** - Interactive components
 - **Tailwind CSS 4** - Styling
 - **Shadcn UI** - UI components
@@ -33,6 +33,7 @@ npm run preview
 - 🔍 **Global Search** - Full-text search across all articles
 - 📱 **Fully Responsive** - Mobile-first design
 - 📝 **MDX Support** - Write with components in markdown
+- 💭 **Thoughts** - Micro-blog timeline; publish from a hidden page (GitHub API) or `npm run say`, data lives in the repo
 - 🏷️ **Categories & Tags** - Organized content structure
 - 📖 **Table of Contents** - Auto-generated for articles
 - 🖼️ **Image Zoom** - Click-to-expand images with pan/zoom

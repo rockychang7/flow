@@ -2,6 +2,19 @@ import type { LogItem } from "@/type/changelog";
 
 export const changelogs: LogItem[] = [
   {
+    version: "v2.2.0",
+    date: "2026-07-17",
+    description: "新增「想法」模块:可随时发布的微博客,数据以 JSON 跟随仓库。",
+    features: [
+      "新增想法时间线页 /thoughts,首页新增 Thoughts 板块(最新 3 条)",
+      "隐藏发布页 /say:浏览器直连 GitHub API 提交想法,自动触发部署,约 1 分钟上线",
+      "本地 npm run say 命令行发布,与线上写回格式一致",
+      "首页 Projects 新增 markly 与 agentup 项目介绍",
+      "修复 DATETIME_FORMAT 12 小时制笔误,统一移动端菜单 Twitter 链接",
+    ],
+    isMajor: true,
+  },
+  {
     version: "v2.1.1",
     date: "2026-07-08",
     description: "排版重构:双轨字体方案,修复中文伪粗体与中英混排观感。",

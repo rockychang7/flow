@@ -1,5 +1,5 @@
 import { defineCollection } from "astro:content";
-import { glob } from "astro/loaders";
+import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 
 const blogCollection = defineCollection({
@@ -16,4 +16,14 @@ const blogCollection = defineCollection({
   }),
 });
 
-export const collections = { articles: blogCollection };
+const thoughtsCollection = defineCollection({
+  loader: file("src/content/thoughts.json"),
+  schema: z.object({
+    id: z.number().int().positive(),
+    content: z.string().min(1),
+    // 纯字符串存储,零补齐后字典序即时间序;不用 Date 以规避构建机时区问题
+    created_at: z.string().regex(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/),
+  }),
+});
+
+export const collections = { articles: blogCollection, thoughts: thoughtsCollection };

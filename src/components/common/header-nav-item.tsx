@@ -1,5 +1,5 @@
 import React from "react";
-import {Archive, FolderOpen, Tags, User} from "lucide-react";
+import {Archive, FolderOpen, Lightbulb, Tags, User} from "lucide-react";
 import { navigate } from "astro:transitions/client";
 import {
     Tooltip,
@@ -11,6 +11,7 @@ import {
 // 图标映射
 const iconMap: Record<string, React.ElementType> = {
     Archive: Archive,
+    Lightbulb: Lightbulb,
     FolderOpen: FolderOpen,
     Tags: Tags,
     User: User,

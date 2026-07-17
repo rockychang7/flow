@@ -46,24 +46,27 @@ flow/
 ├── public/                 # 静态资源(favicon、图片、robots.txt)
 ├── src/
 │   ├── components/
-│   │   ├── cards/          # 列表项卡片(文章/分类/标签/项目)
-│   │   ├── common/         # 公共组件(Header, Footer, BackToTop, GlobalSearch, ModeToggle等)
-│   │   ├── home/           # 首页组件(个人介绍、文章/项目列表)
+│   │   ├── cards/          # 列表项卡片(文章/分类/标签/项目/想法)
+│   │   ├── common/         # 公共组件(Header, Footer, BackToTop, GlobalSearch, ModeToggle, ThoughtComposer等)
+│   │   ├── home/           # 首页组件(个人介绍、文章/想法/项目列表)
 │   │   ├── icons/          # 图标组件
 │   │   ├── markdown/       # 文章渲染相关(Prose, TOC, 代码复制, 文章头)
 │   │   └── ui/             # shadcn/ui 组件
-│   ├── constant/           # 常量(DATE_FORMAT, SITE 站点信息)
+│   ├── constant/           # 常量(DATE_FORMAT, SITE 站点信息, THOUGHTS_GITHUB 仓库信息)
 │   ├── content/
-│   │   └── articles/       # 博客文章(MDX)
-│   ├── content.config.ts   # 内容集合 Schema(glob loader + zod)
+│   │   ├── articles/       # 博客文章(MDX)
+│   │   └── thoughts.json   # 想法数据(JSON 数组,新条目追加末尾)
+│   ├── content.config.ts   # 内容集合 Schema(glob/file loader + zod)
 │   ├── data/               # 静态数据配置(菜单、项目、媒体链接、changelog)
 │   ├── layouts/
 │   │   └── RootLayout.astro # 全站布局(SEO head、主题脚本、ViewTransitions)
-│   ├── lib/                # 工具库(articles.ts 文章读取、generateSearchData、utils)
+│   ├── lib/                # 工具库(articles.ts 文章读取、thoughts.ts 想法读取、generateSearchData、utils)
 │   ├── pages/              # 页面路由
 │   │   ├── index.astro     # 首页
 │   │   ├── about.astro     # 关于页
 │   │   ├── archive.astro   # 归档页
+│   │   ├── thoughts.astro  # 想法时间线
+│   │   ├── say.astro       # 想法隐藏发布页(不进导航/sitemap,noindex)
 │   │   ├── category.astro / categories/[category].astro
 │   │   ├── tag.astro / tags/[tag].astro
 │   │   ├── changelog.astro
@@ -72,6 +75,8 @@ flow/
 │   │   └── search.json.js  # 搜索索引端点
 │   ├── styles/globals.css  # 全局样式 + Tailwind v4 主题定义
 │   └── type/               # 类型定义
+├── scripts/
+│   └── new-thought.mjs     # 本地发布想法 CLI(npm run say)
 ├── astro.config.mjs
 ├── components.json         # shadcn/ui配置
 └── tsconfig.json           # 路径别名 @/ → src/
@@ -87,10 +92,16 @@ flow/
 - 搜索索引不要作为 props 内联进页面,由 `/search.json` 端点提供,GlobalSearch 打开时懒加载。
 - React 组件只在需要交互时使用 `client:load`,纯展示组件用 Astro 组件或不加 client 指令。
 - 主题:localStorage 只存用户手动选择;无选择时跟随系统(含系统切换监听)。逻辑在 RootLayout 内联脚本 + ModeToggle。
+- **想法读取一律走 `src/lib/thoughts.ts`** 的 `getRenderedThoughts()`(已含倒序排序与 markdown → HTML 渲染),不要在页面里直接 `getCollection("thoughts")`。
+- 想法数据存 `src/content/thoughts.json`,新条目只追加在数组末尾;`created_at` 为 `YYYY-MM-DD HH:mm:ss` 纯字符串(常量 `DATETIME_FORMAT`,展示截取前 16 位),不要引入 Date/时区转换。
+- 想法序列化格式契约:`JSON.stringify(arr, null, 2) + "\n"`。两条写入路径(线上 `/say` 的 GitHub Contents API 写回、本地 `npm run say`)必须保持该格式一致,否则会产生整文件无意义 diff。
+- `/say` 是隐藏发布页:不进导航菜单、sitemap 已在 astro.config 里排除、页面传 `noindex` 给 RootLayout;发布凭证是 fine-grained PAT(仅授权本仓库 Contents 读写),只存在用户浏览器 localStorage,不进代码与环境变量。
+- 线上 `/say` 发布会直接产生远端 commit:本地改动/发布前先 `git pull --rebase`。
 
 ## 主要功能
 
 - **文章管理**: 基于MDX,Frontmatter 由 zod schema 校验
+- **想法(微博客)**: `/thoughts` 时间线 + 首页最新 3 条;线上 `/say` 隐藏页(GitHub API 直发)或本地 `npm run say` 发布,数据以 JSON 跟随仓库
 - **归档/分类/标签**: 时间线归档、分类与标签筛选页
 - **全站搜索**: ⌘K / Ctrl+K 唤起,Fuse.js 模糊匹配,支持 ↑↓/Enter 键盘导航
 - **暗色模式**: 亮/暗切换,默认跟随系统
@@ -105,6 +116,7 @@ flow/
 npm run dev       # 开发模式
 npm run build     # astro check + astro build
 npm run preview   # 预览生产构建
+npm run say       # 本地发布一条想法(交互式;或 npm run say -- "内容")
 ```
 
 ## 主题配置

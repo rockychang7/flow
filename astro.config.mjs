@@ -25,7 +25,10 @@ export default defineConfig({
                 // Let's try standard `themes` config.
             }
         }),
-        sitemap(),
+        sitemap({
+            // 隐藏发布页不进站点地图(页面本身另有 noindex meta)
+            filter: (page) => new URL(page).pathname !== "/say/",
+        }),
     ],
     vite: {
         plugins: [tailwindcss()],

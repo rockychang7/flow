@@ -9,12 +9,13 @@ import {
 import { mediaLinkInfo } from "@/data/media-link-info";
 import { menuInfo } from "@/data/menu-info";
 import { navigate } from "astro:transitions/client";
-import { Archive, FolderOpen, Github, Menu, Tags, Twitter, User } from "lucide-react";
+import { Archive, FolderOpen, Github, Lightbulb, Menu, Tags, Twitter, User } from "lucide-react";
 import React, { useState } from "react";
 
 // 图标映射
 const iconMap: Record<string, React.ElementType> = {
     Archive: Archive,
+    Lightbulb: Lightbulb,
     FolderOpen: FolderOpen,
     Tags: Tags,
     User: User,

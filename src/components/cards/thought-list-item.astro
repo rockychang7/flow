@@ -1,0 +1,24 @@
+---
+interface Props {
+    html: string;
+    createdAt: string;
+}
+
+const { html, createdAt } = Astro.props;
+---
+
+<article class="relative pl-8">
+    <span class="absolute left-[-5px] top-2 h-2.5 w-2.5 rounded-full border border-background ring-4 ring-background bg-muted-foreground/40"></span>
+    <time class="font-mono text-sm text-muted-foreground">{createdAt.slice(0, 16)}</time>
+    <div
+        class="mt-2 prose prose-sm prose-neutral dark:prose-invert max-w-none
+               prose-p:leading-relaxed prose-p:my-2 prose-p:text-foreground
+               prose-li:text-foreground prose-li:my-0.5
+               prose-a:font-medium prose-a:underline prose-a:underline-offset-4 prose-a:decoration-border hover:prose-a:decoration-foreground
+               prose-code:before:content-none prose-code:after:content-none
+               prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-sm prose-code:font-mono
+               prose-pre:p-3 prose-pre:rounded-lg prose-pre:border prose-pre:border-border/40 prose-pre:bg-muted/50
+               prose-img:rounded-md"
+        set:html={html}
+    />
+</article>

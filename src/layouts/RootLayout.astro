@@ -17,6 +17,7 @@ interface Props {
     description?: string;
     ogImage?: string | null;
     maxWidth?: string;
+    noindex?: boolean;
 }
 
 const {
@@ -24,6 +25,7 @@ const {
     description = SITE.description,
     ogImage,
     maxWidth = "max-w-[640px]",
+    noindex = false,
 } = Astro.props;
 
 const fullTitle = title === SITE.title ? title : `${title} | ${SITE.title}`;
@@ -39,6 +41,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <meta name="author" content={SITE.author} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonicalURL} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link

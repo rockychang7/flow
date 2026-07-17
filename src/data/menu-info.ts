@@ -7,6 +7,11 @@ export const menuInfo: MenuItem[] = [
     menuIcon: "Archive",
   },
   {
+    menuName: "想法",
+    menuLink: "/thoughts",
+    menuIcon: "Lightbulb",
+  },
+  {
     menuName: "分类",
     menuLink: "/category",
     menuIcon: "FolderOpen",

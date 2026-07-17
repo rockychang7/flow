@@ -2,7 +2,6 @@ export interface ProjectInfo {
     projectName: string;
     projectDescription: string;
     projectLink: string;
-    projectImageUrl?: string;
 }
 
 export interface MenuItem {
