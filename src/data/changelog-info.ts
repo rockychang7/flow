@@ -2,6 +2,20 @@ import type { LogItem } from "@/type/changelog";
 
 export const changelogs: LogItem[] = [
   {
+    version: "v2.3.0",
+    date: "2026-07-21",
+    description: "UI 极简化重构:精简排版细节,让内容成为主角。",
+    features: [
+      "重构首页:移除个人介绍,文章/想法/项目三段式,五种列表统一为同一种行样式",
+      "字标改用 Source Serif 4 衬线粗斜体,导航从图标精简为文字链接",
+      "统一为 3 级文字灰阶与单一交互语言,移除冗余动画、阴影与多余装饰",
+      "标签页改为按文章数分级的标签云,归档页按年份分组",
+      "正文强调(em)改用霞鹜文楷字面替代浏览器仿斜体",
+      "清理模板残留的死代码:未使用的颜色变量、动画与组件",
+    ],
+    isMajor: true,
+  },
+  {
     version: "v2.2.0",
     date: "2026-07-17",
     description: "新增「想法」模块:可随时发布的微博客,数据以 JSON 跟随仓库。",

@@ -265,8 +265,8 @@ export function ThoughtComposer() {
                         <Button size="sm" onClick={() => setPhase("ready")}>
                             再写一条
                         </Button>
-                        <a href="/thoughts" className="text-sm hover:underline">
-                            查看想法 →
+                        <a href="/thoughts" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                            查看想法
                         </a>
                     </div>
                 </div>
@@ -323,15 +323,15 @@ export function ThoughtComposer() {
 
             {recent.length > 0 && (
                 <div className="mt-6 flex flex-col gap-y-3">
-                    <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    <h2 className="text-caption font-semibold text-muted-foreground">
                         最近发布
                     </h2>
                     {recent.map((thought) => (
                         <div key={thought.id} className="text-sm">
-                            <time className="font-mono text-xs text-muted-foreground">
+                            <time className="font-mono text-xs text-faint">
                                 {thought.created_at.slice(0, 16)}
                             </time>
-                            <p className="mt-1 whitespace-pre-wrap text-foreground/90 line-clamp-3">
+                            <p className="mt-1 whitespace-pre-wrap text-foreground line-clamp-3">
                                 {thought.content}
                             </p>
                         </div>

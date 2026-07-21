@@ -49,7 +49,7 @@ export function TableOfContents({headings, className, onItemClick, hideTitle}: T
     return (
         <nav className={cn("flex flex-col gap-2 text-sm", className)}>
             {!hideTitle && <p className="font-semibold text-foreground mb-2">目录</p>}
-            <ul className="flex flex-col gap-2.5 border-l border-border/60 pl-4">
+            <ul className="flex flex-col gap-2.5 border-l border-border pl-4">
                 {filteredHeadings.map((heading) => (
                     <li key={heading.slug} style={{paddingLeft: `${(heading.depth - 1) * 8}px`}}>
                         <a
@@ -66,7 +66,7 @@ export function TableOfContents({headings, className, onItemClick, hideTitle}: T
                                 "block transition-colors duration-200 hover:text-foreground line-clamp-1",
                                 activeId === heading.slug
                                     ? "text-foreground font-medium"
-                                    : "text-muted-foreground/80"
+                                    : "text-muted-foreground"
                             )}
                         >
                             {heading.text}

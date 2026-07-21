@@ -1,0 +1,25 @@
+---
+// 统一的区块小标:中文标签 + 可选的「查看全部」入口,全站列表区块共用
+interface Props {
+    title: string;
+    moreHref?: string;
+    moreLabel?: string;
+    /** 页面级标题用 h1(列表页),首页区块用 h2 */
+    as?: "h1" | "h2";
+}
+
+const { title, moreHref, moreLabel = "查看全部", as: Tag = "h2" } = Astro.props;
+---
+<div class="flex items-baseline justify-between mb-1.5">
+    <Tag class="text-caption font-semibold text-muted-foreground">{title}</Tag>
+    {moreHref ? (
+        <a
+            href={moreHref}
+            class="text-caption text-muted-foreground hover:text-foreground transition-colors"
+        >
+            {moreLabel}
+        </a>
+    ) : (
+        <slot name="aside" />
+    )}
+</div>

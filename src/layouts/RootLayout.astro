@@ -4,10 +4,10 @@ import CodeCopy from "@/components/markdown/code-copy.astro";
 import { SITE } from "@/constant/constants";
 import "@/styles/globals.css";
 import "@fontsource/maple-mono/400.css";
-import "@fontsource/maple-mono/500.css";
-import "@fontsource/maple-mono/700.css";
 import "@fontsource/source-serif-4/400.css";
 import "@fontsource/source-serif-4/700.css";
+// logo 用的衬线粗斜体(仅拉丁子集,体积小)
+import "@fontsource/source-serif-4/latin-700-italic.css";
 import "lxgw-wenkai-webfont/lxgwwenkai-regular.css";
 import "lxgw-wenkai-webfont/lxgwwenkai-bold.css";
 import { ClientRouter } from "astro:transitions";
@@ -16,7 +16,6 @@ interface Props {
     title: string;
     description?: string;
     ogImage?: string | null;
-    maxWidth?: string;
     noindex?: boolean;
 }
 
@@ -24,7 +23,6 @@ const {
     title,
     description = SITE.description,
     ogImage,
-    maxWidth = "max-w-[640px]",
     noindex = false,
 } = Astro.props;
 
@@ -142,7 +140,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <ClientRouter />
   </head><body>
     <main
-      class={`min-h-svh mx-auto w-full flex flex-col font-sans px-6 py-8 ${maxWidth}`}
+      class="min-h-svh mx-auto w-full max-w-[640px] flex flex-col font-sans px-6 pt-10 pb-12"
     >
       <slot />
     </main>

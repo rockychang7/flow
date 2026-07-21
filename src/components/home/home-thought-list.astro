@@ -1,22 +1,16 @@
 ---
 import ThoughtListItem from "@/components/cards/thought-list-item.astro";
-import { getRenderedThoughts } from "@/lib/thoughts";
+import type { RenderedThought } from "@/lib/thoughts";
 
-const latestThoughts = (await getRenderedThoughts()).slice(0, 3);
+interface Props {
+    thoughts: RenderedThought[];
+}
+
+const { thoughts } = Astro.props;
 ---
 
-{latestThoughts.length > 0 && (
-    <div class="flex flex-col gap-y-4">
-        <h2 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">Thoughts</h2>
-        <section class="flex flex-col gap-y-2">
-            <div class="relative border-l border-border/50 ml-3 space-y-8">
-                {latestThoughts.map((thought) => (
-                    <ThoughtListItem html={thought.html} createdAt={thought.createdAt} />
-                ))}
-            </div>
-            <a href="/thoughts" class="mt-4 text-sm hover:underline inline-flex items-center gap-1 w-fit">
-                查看全部 <span aria-hidden="true">→</span>
-            </a>
-        </section>
-    </div>
-)}
+<section class="flex flex-col gap-y-6 pt-2">
+    {thoughts.map((thought) => (
+        <ThoughtListItem html={thought.html} createdAt={thought.createdAt} />
+    ))}
+</section>

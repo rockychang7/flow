@@ -7,12 +7,9 @@ export interface ProjectInfo {
 export interface MenuItem {
     menuName: string;
     menuLink: string;
-    menuIcon: string;
 }
 
 export interface CategoryInfo {
     name: string;
     description: string;
 }
-
-export type MediaLinkInfo = Record<string, string>;

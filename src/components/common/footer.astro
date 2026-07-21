@@ -1,14 +1,10 @@
 ---
-import {mediaLinkInfo} from "@/data/media-link-info";
 ---
-<footer class="mt-auto pt-8 pb-4 text-center border-t border-border">
-    <p class="text-sm text-muted-foreground">
-        本站模板开源于
-        <a href="https://github.com/rockychang7/flow" class="underline hover:no-underline">GitHub</a>
-    </p>
-    <div class="flex items-center justify-center gap-2 text-xs text-muted-foreground mt-4">
-        <span>©2024-present rockycheong.com</span>
-        <span class="opacity-40">•</span>
-        <a href="/changelog" class="hover:text-foreground hover:underline transition-colors">Changelog</a>
+<footer class="mt-auto pt-24 pb-4 flex flex-col items-center gap-y-2 text-caption text-faint">
+    <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+        <a href="/rss.xml" target="_blank" class="link-inline text-muted-foreground">RSS</a>
+        <a href="https://github.com/rockychang7/flow" target="_blank" rel="noopener noreferrer" class="link-inline text-muted-foreground">源码</a>
+        <a href="/changelog" class="link-inline text-muted-foreground">Changelog</a>
     </div>
+    <span>© 2024–present rockycheong.com</span>
 </footer>

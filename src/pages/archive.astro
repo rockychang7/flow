@@ -1,25 +1,46 @@
 ---
+import ArticleListItem from "@/components/cards/article-list-item.astro";
+import SectionHead from "@/components/common/section-head.astro";
 import { getPublishedArticles, sortByDateDesc } from "@/lib/articles";
 import Footer from "../components/common/footer.astro";
 import Header from "../components/common/header.astro";
 import RootLayout from "../layouts/RootLayout.astro";
 
-import ArticleListItem from "@/components/cards/article-list-item.astro";
-
 const sortBlogPosts = sortByDateDesc(await getPublishedArticles());
-const title: string = "Archive";
+
+// 按年分组(已按时间倒序,分组后年份自然倒序)
+const postsByYear = new Map<number, typeof sortBlogPosts>();
+for (const post of sortBlogPosts) {
+    const year = post.data.publish_date.getFullYear();
+    if (!postsByYear.has(year)) postsByYear.set(year, []);
+    postsByYear.get(year)!.push(post);
+}
+
+const title: string = "文章";
 ---
-<RootLayout title={title} description="按时间线浏览所有文章">
+<RootLayout title={title} description="按时间浏览所有文章">
     <Header/>
-    <div class="flex flex-col mt-8 gap-y-4">
-        <h1 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">Archive</h1>
-        <div class="flex flex-col gap-y-2">
-            {sortBlogPosts.map(post => (
-                    <ArticleListItem
-                        title={post.data.title}
-                        date={post.data.publish_date}
-                        url={`/articles/${post.id}`}
-                    />
+    <div class="flex flex-col">
+        <SectionHead title="文章" as="h1">
+            <span slot="aside" class="flex items-baseline gap-x-4">
+                <a href="/category" class="text-caption text-muted-foreground hover:text-foreground transition-colors">分类</a>
+                <a href="/tag" class="text-caption text-muted-foreground hover:text-foreground transition-colors">标签</a>
+            </span>
+        </SectionHead>
+        <div class="flex flex-col gap-y-8">
+            {[...postsByYear.entries()].map(([year, posts]) => (
+                <section>
+                    <h2 class="text-caption font-mono tabular-nums text-faint mb-1.5">{year}</h2>
+                    <div class="flex flex-col">
+                        {posts.map(post => (
+                            <ArticleListItem
+                                title={post.data.title}
+                                date={post.data.publish_date}
+                                url={`/articles/${post.id}`}
+                            />
+                        ))}
+                    </div>
+                </section>
             ))}
         </div>
     </div>

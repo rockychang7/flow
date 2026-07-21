@@ -94,7 +94,7 @@ const GlobalSearch: React.FC = () => {
             if (start < cursor) return; // 跳过重叠区间
             if (start > cursor) nodes.push(text.slice(cursor, start));
             nodes.push(
-                <mark key={i} className="bg-yellow-200 dark:bg-yellow-500/30 text-inherit rounded-sm">
+                <mark key={i} className="bg-transparent text-foreground font-semibold">
                     {text.slice(start, end + 1)}
                 </mark>
             );
@@ -109,21 +109,22 @@ const GlobalSearch: React.FC = () => {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="p-2 rounded-full hover:bg-muted transition-colors duration-200 cursor-pointer"
-                aria-label="Open search"
+                className="p-2 -m-1 text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                aria-label="打开搜索"
+                title="搜索 (⌘K)"
             >
-                <Search className="w-5 h-5 text-primary"/>
+                <Search className="size-4"/>
             </button>
 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 {/* @ts-ignore */}
-                <DialogContent container={portalContainer} className="sm:max-w-2xl w-[90vw] top-[15%] translate-y-0 sm:top-[50%] sm:translate-y-[-50%] bg-popover/95 backdrop-blur-md border-border/40 shadow-2xl p-0 gap-0 overflow-hidden rounded-xl [&>button:last-child]:hidden">
+                <DialogContent container={portalContainer} className="sm:max-w-2xl w-[90vw] top-[15%] translate-y-0 sm:top-[50%] sm:translate-y-[-50%] bg-popover border-border shadow-lg p-0 gap-0 overflow-hidden rounded-xl [&>button:last-child]:hidden">
                     <DialogHeader className="sr-only">
                         <DialogTitle>全局搜索</DialogTitle>
                     </DialogHeader>
 
                     <div className="relative">
-                        <div className="flex items-center border-b border-border/40 px-4 py-3">
+                        <div className="flex items-center border-b border-border px-4 py-3">
                             <Search className="w-5 h-5 text-muted-foreground mr-3 shrink-0"/>
                             <input
                                 type="text"
@@ -158,21 +159,21 @@ const GlobalSearch: React.FC = () => {
                                         <div
                                             key={item.url}
                                             data-index={index}
-                                            className={`group flex flex-col p-3 rounded-lg cursor-pointer transition-colors duration-200 ${
-                                                index === selectedIndex ? "bg-muted/70" : "hover:bg-muted/50"
+                                            className={`group flex flex-col p-3 rounded-md cursor-pointer transition-colors duration-200 ${
+                                                index === selectedIndex ? "bg-muted" : ""
                                             }`}
                                             onClick={() => openResult(item.url)}
                                             onMouseEnter={() => setSelectedIndex(index)}
                                         >
                                             <div className="flex items-center justify-between mb-1">
-                                                <h3 className="font-medium text-base text-foreground group-hover:text-primary transition-colors">
+                                                <h3 className="font-medium text-base text-foreground">
                                                     {highlightMatch(item.title, titleMatch)}
                                                 </h3>
                                                 {item.tags && item.tags.length > 0 && (
-                                                    <div className="flex gap-1">
+                                                    <div className="flex gap-2">
                                                         {item.tags.slice(0, 2).map((tag) => (
-                                                            <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-secondary-foreground">
-                                                                {tag}
+                                                            <span key={tag} className="text-xs text-muted-foreground">
+                                                                #{tag}
                                                             </span>
                                                         ))}
                                                     </div>
@@ -193,15 +194,15 @@ const GlobalSearch: React.FC = () => {
                                 {searchData === null ? "正在加载搜索索引..." : "未找到相关结果"}
                             </div>
                         ) : (
-                            <div className="py-12 text-center text-muted-foreground/50 text-sm">
+                            <div className="py-12 text-center text-faint text-sm">
                                 输入关键词开始搜索...
                             </div>
                         )}
 
-                        <div className="flex items-center justify-end gap-3 border-t border-border/40 px-4 py-2 text-[11px] text-muted-foreground/70">
-                            <span><kbd className="px-1 py-0.5 rounded border border-border/60 bg-muted/50">↑↓</kbd> 选择</span>
-                            <span><kbd className="px-1 py-0.5 rounded border border-border/60 bg-muted/50">↵</kbd> 打开</span>
-                            <span><kbd className="px-1 py-0.5 rounded border border-border/60 bg-muted/50">esc</kbd> 关闭</span>
+                        <div className="flex items-center justify-end gap-3 border-t border-border px-4 py-2 text-xs text-faint">
+                            <span><kbd className="px-1 py-0.5 rounded border border-border bg-muted">↑↓</kbd> 选择</span>
+                            <span><kbd className="px-1 py-0.5 rounded border border-border bg-muted">↵</kbd> 打开</span>
+                            <span><kbd className="px-1 py-0.5 rounded border border-border bg-muted">esc</kbd> 关闭</span>
                         </div>
                     </div>
                 </DialogContent>

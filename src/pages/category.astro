@@ -1,11 +1,12 @@
 ---
 import CategoryListItem from "@/components/cards/category-list-item.astro";
+import SectionHead from "@/components/common/section-head.astro";
 import { getPublishedArticles } from "@/lib/articles";
 import Footer from "../components/common/footer.astro";
 import Header from "../components/common/header.astro";
 import RootLayout from "../layouts/RootLayout.astro";
 
-const title: string = "Categories";
+const title: string = "分类";
 const allBlogPosts = await getPublishedArticles();
 
 // 统计每个分类的文章数
@@ -18,9 +19,9 @@ const sortedCategories = [...categoryCounts.keys()].sort();
 ---
 <RootLayout title={title} description="按分类浏览所有文章">
     <Header/>
-    <div class="flex flex-col mt-8 gap-y-4">
-        <h1 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">CATEGORIES</h1>
-        <div class="flex flex-col gap-y-2">
+    <div class="flex flex-col">
+        <SectionHead title="分类" as="h1" />
+        <div class="flex flex-col">
             {sortedCategories.map(category => (
                 <CategoryListItem
                     name={category}

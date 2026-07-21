@@ -1,5 +1,6 @@
 ---
 import ArticleListItem from "@/components/cards/article-list-item.astro";
+import SectionHead from "@/components/common/section-head.astro";
 import { getPublishedArticles, sortByDateDesc } from "@/lib/articles";
 import Footer from "../../components/common/footer.astro";
 import Header from "../../components/common/header.astro";
@@ -19,17 +20,17 @@ const {tag} = Astro.props;
 const allBlogPosts = await getPublishedArticles();
 const sortBlogPosts = sortByDateDesc(allBlogPosts.filter(post => post.data.tags.includes(tag)));
 ---
-<RootLayout title={`Tag / ${tag}`} description={`标签「${tag}」下的所有文章`}>
+<RootLayout title={`标签 / ${tag}`} description={`标签「${tag}」下的所有文章`}>
     <Header/>
-    <div class="flex flex-col mt-8 gap-y-4">
-        <h1 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">TAG / {tag}</h1>
-        <div class="flex flex-col gap-y-2">
+    <div class="flex flex-col">
+        <SectionHead title={`标签 / ${tag}`} as="h1" />
+        <div class="flex flex-col">
             {sortBlogPosts.map(post => (
-                    <ArticleListItem
-                        title={post.data.title}
-                        date={post.data.publish_date}
-                        url={`/articles/${post.id}`}
-                    />
+                <ArticleListItem
+                    title={post.data.title}
+                    date={post.data.publish_date}
+                    url={`/articles/${post.id}`}
+                />
             ))}
         </div>
     </div>

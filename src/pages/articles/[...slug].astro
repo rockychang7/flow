@@ -1,7 +1,7 @@
 ---
 import Footer from "@/components/common/footer.astro";
 import Header from "@/components/common/header.astro";
-import BlogPostHeader from "@/components/markdown/blog-post-header";
+import ArticleHeader from "@/components/markdown/article-header.astro";
 import Prose from "@/components/markdown/md-prose.astro";
 import { TableOfContents } from "@/components/markdown/table-of-contents";
 import { TocMobile } from "@/components/markdown/toc-mobile";
@@ -27,6 +27,7 @@ const {Content, headings} = await render(entry);
 const body = entry.body ?? "";
 const wordCount = getWordCount(body);
 const readingTime = getReadingTime(body);
+const tags = entry.data.tags;
 
 ---
 <RootLayout
@@ -36,19 +37,30 @@ const readingTime = getReadingTime(body);
 >
     <Header/>
 
-    <div class="relative mt-8 mb-16">
-        <BlogPostHeader
+    <div class="relative mb-16">
+        <ArticleHeader
             title={entry.data.title}
             publishDate={entry.data.publish_date}
             coverImage={entry.data.cover_url}
-            tags={entry.data.tags}
             wordCount={wordCount}
             readingTime={readingTime}
-            client:load
         />
         <Prose>
             <Content/>
         </Prose>
+
+        {tags.length > 0 && (
+            <div class="mt-12 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                {tags.map(tag => (
+                    <a
+                        href={`/tags/${tag}`}
+                        class="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                        #{tag}
+                    </a>
+                ))}
+            </div>
+        )}
 
         <aside class="hidden xl:block absolute left-full top-0 ml-16 h-full w-[240px]">
              <div class="sticky top-24">

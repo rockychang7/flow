@@ -1,41 +1,46 @@
 ---
-import RootLayout from "@/layouts/RootLayout.astro";
-import Header from "@/components/common/header.astro";
+import SectionHead from "@/components/common/section-head.astro";
 import Footer from "@/components/common/footer.astro";
+import Header from "@/components/common/header.astro";
 import { Badge } from "@/components/ui/badge";
+import RootLayout from "@/layouts/RootLayout.astro";
 import { changelogs } from "@/data/changelog-info";
 
 const title = "Changelog";
 ---
 
-<RootLayout title={title} maxWidth="max-w-2xl">
+<RootLayout title={title}>
     <Header/>
 
-    <div class="mt-8 mb-16">
-        <h1 class="text-3xl font-bold tracking-tight mb-2">Changelog</h1>
-        <p class="text-muted-foreground mb-12">记录网站的成长与变迁。</p>
-
-        <div class="relative border-l border-border/50 ml-3 space-y-12">
+    <div class="flex flex-col">
+        <SectionHead title="Changelog" as="h1" />
+        <div class="relative ml-2 flex flex-col gap-y-10 border-l border-border pt-3">
             {changelogs.map((log) => (
-                <div class="relative pl-8 group">
-                    {/* Time dot */}
-                    <span class={`absolute left-[-5px] top-2 h-2.5 w-2.5 rounded-full border border-background ring-4 ring-background ${log.isMajor ? 'bg-primary' : 'bg-muted-foreground/40'}`}></span>
+                <div class="relative pl-6">
+                    {/* 时间线节点 */}
+                    <span
+                        class:list={[
+                            "absolute left-[-4.5px] top-1.5 h-2 w-2 rounded-full ring-4 ring-background",
+                            log.isMajor ? "bg-foreground" : "bg-faint",
+                        ]}
+                    ></span>
 
-                    <div class="flex flex-col gap-1 mb-3">
-                        <div class="flex items-center gap-3">
-                            <span class="font-mono text-sm text-muted-foreground">{log.date}</span>
-                            <Badge variant={log.isMajor ? "default" : "secondary"} className="text-[10px] px-1.5 py-0 h-5">
-                                {log.version}
-                            </Badge>
-                        </div>
+                    <div class="mb-2 flex items-center gap-3">
+                        <span class="font-mono text-caption tabular-nums text-muted-foreground">{log.date}</span>
+                        <Badge
+                            variant={log.isMajor ? "default" : "secondary"}
+                            className="h-5 px-1.5 py-0 text-xs font-mono font-normal"
+                        >
+                            {log.version}
+                        </Badge>
                     </div>
 
-                    <div class="bg-card/50 rounded-lg border border-border/40 p-5 hover:border-border transition-colors">
-                        <p class="text-foreground font-medium mb-3">{log.description}</p>
-                        <ul class="space-y-1.5">
-                            {log.features.map(feature => (
-                                <li class="text-sm text-muted-foreground flex items-start gap-2">
-                                    <span class="mt-1.5 w-1 h-1 rounded-full bg-primary/40 shrink-0"></span>
+                    <div class="rounded-lg border border-border p-4 transition-colors hover:border-muted-foreground/40">
+                        <p class="mb-2 font-medium">{log.description}</p>
+                        <ul class="flex flex-col gap-y-1">
+                            {log.features.map((feature) => (
+                                <li class="flex items-start gap-2 text-sm text-muted-foreground">
+                                    <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50"></span>
                                     <span>{feature}</span>
                                 </li>
                             ))}

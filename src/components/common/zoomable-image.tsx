@@ -12,7 +12,7 @@ export function ZoomableImage({ src, alt, className, caption, ...props }: Zoomab
     return (
         <figure className="w-full not-prose">
             <PhotoProvider maskOpacity={0.95}>
-                <div className="overflow-hidden rounded-lg shadow-md hover:shadow-xl cursor-zoom-in">
+                <div className="overflow-hidden rounded-md cursor-zoom-in">
                     <PhotoView src={src}>
                         <img
                             src={src}
@@ -25,7 +25,7 @@ export function ZoomableImage({ src, alt, className, caption, ...props }: Zoomab
                 </div>
             </PhotoProvider>
             {caption && (
-                <figcaption className="mt-2 text-center text-sm text-muted-foreground italic">
+                <figcaption className="mt-2 text-center text-sm text-muted-foreground">
                     {caption}
                 </figcaption>
             )}

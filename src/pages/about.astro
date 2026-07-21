@@ -1,20 +1,29 @@
 ---
+import SectionHead from "@/components/common/section-head.astro";
 import RootLayout from "@/layouts/RootLayout.astro";
-import Header from "../components/common/header.astro";
 import Footer from "../components/common/footer.astro";
+import Header from "../components/common/header.astro";
 
+const stacks: [string, string[]][] = [
+    ["Coding Agent", ["Claude Code", "Codex", "OpenCode"]],
+    ["Frontend", ["HTML", "CSS", "JavaScript", "TypeScript", "React", "Astro", "Next.js", "Vite", "TailwindCSS"]],
+    ["Backend", ["Golang", "Java", "MySQL", "Redis", "Kafka", "Docker"]],
+    ["Design", ["Stitch"]],
+];
 
-const title: string = "About";
+const title: string = "关于";
 ---
 <RootLayout title={title} description="关于 Rocky Chang:AI 全栈工程师,记录技术探索、产品构建与个人成长">
     <Header/>
-    <div class="flex flex-col mt-8 gap-y-10">
-        <!-- About Section -->
-        <section class="flex flex-col gap-y-4">
-            <h2 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">About</h2>
-            <div class="flex flex-col gap-y-4 text-pretty leading-relaxed text-foreground/90">
+    <div class="flex flex-col gap-y-16">
+        <section>
+            <SectionHead title="关于" as="h1" />
+            <div class="flex flex-col gap-y-4 pt-2 text-pretty leading-relaxed">
                 <p>
                     我是 Rocky Chang，一名 AI 全栈工程师，目前专注于 Agent Coding 实践与 Agent 应用开发。
+                </p>
+                <p>
+                    关注 AI 与方法论，热爱一切简单优雅的设计。我会定期在这里<a href="/archive" class="link-inline">撰写文章</a>，分享关于 AI、开发、设计和个人成长的思考。
                 </p>
                 <p>
                     我热衷于探索 AI 的无限可能，并致力于将前沿技术转化为优雅、实用的产品。在这个快速变化的时代，我坚持追求简单、纯粹的代码与设计美学。
@@ -22,10 +31,9 @@ const title: string = "About";
             </div>
         </section>
 
-        <!-- Goals Section -->
-        <section class="flex flex-col gap-y-4">
-            <h2 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">Goals</h2>
-            <div class="flex flex-col gap-y-4 text-pretty leading-relaxed text-foreground/90">
+        <section>
+            <SectionHead title="本站" />
+            <div class="flex flex-col gap-y-4 pt-2 text-pretty leading-relaxed">
                 <p>
                     Flow 是我的数字花园，用于记录我在技术探索、产品构建以及个人成长道路上的思考与沉淀。
                 </p>
@@ -35,55 +43,27 @@ const title: string = "About";
             </div>
         </section>
 
-        <!-- Tech Stack Section -->
-        <section class="flex flex-col gap-y-4">
-            <h2 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">Stack</h2>
-            <div class="flex flex-col gap-y-4">
-                <div class="flex flex-col gap-y-2">
-                    <span class="text-xs font-medium text-muted-foreground/80">Coding Agent</span>
-                    <div class="flex flex-wrap gap-2">
-                        {["Claude Code", "Codex", "OpenCode"].map((tech) => (
-                            <span class="px-2 py-1 rounded bg-secondary text-secondary-foreground text-sm">{tech}</span>
-                        ))}
+        <section>
+            <SectionHead title="技术栈" />
+            <div class="flex flex-col gap-y-3 pt-2">
+                {stacks.map(([label, techs]) => (
+                    <div class="flex flex-col gap-y-0.5 sm:flex-row sm:items-baseline sm:gap-x-4">
+                        <span class="text-caption text-faint sm:w-28 sm:shrink-0">{label}</span>
+                        <span class="text-sm text-muted-foreground">{techs.join(" · ")}</span>
                     </div>
-                </div>
-                <div class="flex flex-col gap-y-2">
-                    <span class="text-xs font-medium text-muted-foreground/80">Frontend</span>
-                    <div class="flex flex-wrap gap-2">
-                        {["HTML", "CSS", "JavaScript", "TypeScript", "React", "Astro", "Next.js", "Vite", "TailwindCSS"].map((tech) => (
-                            <span class="px-2 py-1 rounded bg-secondary text-secondary-foreground text-sm">{tech}</span>
-                        ))}
-                    </div>
-                </div>
-                <div class="flex flex-col gap-y-2">
-                    <span class="text-xs font-medium text-muted-foreground/80">Backend</span>
-                    <div class="flex flex-wrap gap-2">
-                        {["Golang", "Java", "MySQL", "Redis", "Kafka", "Docker"].map((tech) => (
-                            <span class="px-2 py-1 rounded bg-secondary text-secondary-foreground text-sm">{tech}</span>
-                        ))}
-                    </div>
-                </div>
-                <div class="flex flex-col gap-y-2">
-                    <span class="text-xs font-medium text-muted-foreground/80">Design</span>
-                    <div class="flex flex-wrap gap-2">
-                        {["Stitch"].map((tech) => (
-                            <span class="px-2 py-1 rounded bg-secondary text-secondary-foreground text-sm">{tech}</span>
-                        ))}
-                    </div>
-                </div>
+                ))}
             </div>
         </section>
 
-        <!-- Connect Section -->
-        <section class="flex flex-col gap-y-4">
-            <h2 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">Connect</h2>
-            <div class="flex flex-col gap-y-2 text-foreground/90">
+        <section>
+            <SectionHead title="联系" />
+            <div class="flex flex-col gap-y-4 pt-2 text-pretty leading-relaxed">
                 <p>
-                    你可以在 <a href="https://github.com/rockychang7" target="_blank" class="text-foreground hover:underline underline-offset-4 decoration-border">GitHub</a> 上找到我的开源项目，
-                    或者在 <a href="https://twitter.com/rockychang_ai" target="_blank" class="text-foreground hover:underline underline-offset-4 decoration-border">Twitter/X</a> 上关注我的最新动态。
+                    你可以在 <a href="https://github.com/rockychang7" target="_blank" rel="noopener noreferrer" class="link-inline">GitHub</a> 上找到我的开源项目，
+                    或者在 <a href="https://twitter.com/rockychang_ai" target="_blank" rel="noopener noreferrer" class="link-inline">Twitter/X</a> 上关注我的最新动态。
                 </p>
                 <p>
-                    如有合作意向或技术交流，欢迎发送邮件至 <a href="mailto:rockychang0318@gmail.com" class="text-foreground hover:underline underline-offset-4 decoration-border">rockychang0318@gmail.com</a>。
+                    如有合作意向或技术交流，欢迎发送邮件至 <a href="mailto:rockychang0318@gmail.com" class="link-inline">rockychang0318@gmail.com</a>。
                 </p>
             </div>
         </section>

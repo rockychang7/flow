@@ -1,16 +1,16 @@
 ---
 
 ---
-<div class="prose prose-neutral dark:prose-invert max-w-none font-reading
-           prose-headings:font-bold prose-headings:scroll-mt-24
-           prose-h1:text-2xl prose-h1:lg:text-3xl prose-h1:mb-6
-           prose-h2:text-[23px] prose-h2:lg:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-border/40
-           prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
+<div class="em-sans prose prose-neutral dark:prose-invert max-w-none font-reading
+           prose-headings:font-bold
+           prose-h1:text-2xl prose-h1:mb-6
+           prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4
+           prose-h3:text-lg prose-h3:mt-8 prose-h3:mb-3
            prose-p:leading-[1.8] prose-p:text-foreground prose-p:mb-6
-           prose-img:rounded-md prose-img:shadow-md prose-img:mx-auto
+           prose-img:rounded-md prose-img:mx-auto
            prose-li:text-foreground prose-li:my-1
-           prose-a:font-medium prose-a:underline prose-a:underline-offset-4 prose-a:decoration-border hover:prose-a:decoration-foreground transition-colors
-           prose-pre:p-4 prose-pre:rounded-lg prose-pre:border prose-pre:border-border/40 prose-pre:bg-muted/50
+           prose-a:font-normal prose-a:underline prose-a:decoration-1 prose-a:decoration-faint prose-a:underline-offset-4 hover:prose-a:decoration-foreground
+           prose-pre:p-4 prose-pre:rounded-md prose-pre:bg-muted
            ">
     <slot/>
 </div>
@@ -23,9 +23,20 @@
         font-size: 1.125rem;
     }
 
-    /* Inline code styling only */
+    /* 中文无斜体传统:引用块不用仿斜 */
+    .prose blockquote {
+        font-style: normal;
+    }
+
+    /* 行内代码:相对正文 0.875em,只留底色一种装饰 */
     .prose :not(pre) > code {
-        @apply bg-muted px-1.5 py-0.5 rounded-sm text-[15px] font-mono text-foreground border border-border/50;
+        @apply bg-muted px-1.5 py-0.5 rounded-sm font-mono text-foreground;
+        font-size: 0.875em;
+    }
+
+    .prose code::before,
+    .prose code::after {
+        content: none;
     }
 
     /* Code block styling adjustments */
@@ -34,6 +45,7 @@
     }
 
     .prose pre code {
-        @apply bg-transparent p-0 text-[15px] border-none;
+        @apply bg-transparent p-0 border-none;
+        font-size: 0.9375rem;
     }
 </style>

@@ -1,5 +1,6 @@
 ---
 import { ThoughtComposer } from "@/components/common/thought-composer";
+import SectionHead from "@/components/common/section-head.astro";
 import Footer from "../components/common/footer.astro";
 import Header from "../components/common/header.astro";
 import RootLayout from "../layouts/RootLayout.astro";
@@ -8,8 +9,8 @@ const title: string = "Say";
 ---
 <RootLayout title={title} description="发布想法" noindex>
     <Header/>
-    <div class="flex flex-col mt-8 gap-y-4">
-        <h1 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">Say</h1>
+    <div class="flex flex-col gap-y-2">
+        <SectionHead title="Say" as="h1" />
         <ThoughtComposer client:load />
     </div>
 

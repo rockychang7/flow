@@ -5,7 +5,7 @@ import { getPublishedArticles, sortByDateDesc } from "@/lib/articles";
 const latestBlogPosts = sortByDateDesc(await getPublishedArticles()).slice(0, 5);
 ---
 
-<section class="flex flex-col gap-y-2">
+<section class="flex flex-col">
     {latestBlogPosts.map(post => (
         <ArticleListItem
             title={post.data.title}
@@ -13,7 +13,4 @@ const latestBlogPosts = sortByDateDesc(await getPublishedArticles()).slice(0, 5)
             url={`/articles/${post.id}`}
         />
     ))}
-    <a href="/archive" class="mt-4 text-sm hover:underline inline-flex items-center gap-1 w-fit">
-        查看全部 <span aria-hidden="true">→</span>
-    </a>
 </section>

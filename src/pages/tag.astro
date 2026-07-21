@@ -1,11 +1,11 @@
 ---
-import TagListItem from "@/components/cards/tag-list-item.astro";
+import SectionHead from "@/components/common/section-head.astro";
 import { getPublishedArticles } from "@/lib/articles";
 import Footer from "../components/common/footer.astro";
 import Header from "../components/common/header.astro";
 import RootLayout from "../layouts/RootLayout.astro";
 
-const title: string = "Tags";
+const title: string = "标签";
 const allBlogPosts = await getPublishedArticles();
 
 // 统计每个标签的文章数
@@ -16,18 +16,36 @@ for (const post of allBlogPosts) {
     }
 }
 const sortedTags = [...tagCounts.keys()].sort();
+
+// 按文章数把标签分到 5 档:字号 + 灰度同时表达热度
+const counts = [...tagCounts.values()];
+const min = Math.min(...counts);
+const max = Math.max(...counts);
+const tiers = [
+    "text-sm text-faint",
+    "text-base text-muted-foreground",
+    "text-lg text-muted-foreground",
+    "text-xl text-foreground",
+    "text-2xl text-foreground font-medium",
+];
+const tierClass = (count: number): string => {
+    if (max === min) return tiers[2];
+    const idx = Math.round(((count - min) / (max - min)) * (tiers.length - 1));
+    return tiers[idx];
+};
 ---
-<RootLayout title={title} description="按标签浏览所有文章">
+<RootLayout title={title} description="按标签浏览所有文章,字号越大表示该主题的文章越多">
     <Header/>
-    <div class="flex flex-col mt-8 gap-y-4">
-        <h1 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">TAGS</h1>
-        <div class="flex flex-wrap gap-x-6 gap-y-3 pt-2">
+    <div class="flex flex-col">
+        <SectionHead title="标签" as="h1" />
+        <div class="flex flex-wrap items-baseline gap-x-5 gap-y-3 pt-3">
             {sortedTags.map(tag => (
-                <TagListItem
-                    name={tag}
-                    count={tagCounts.get(tag) ?? 0}
-                    url={`/tags/${tag}`}
-                />
+                <a
+                    href={`/tags/${tag}`}
+                    class:list={["leading-none transition-colors hover:text-foreground", tierClass(tagCounts.get(tag) ?? 0)]}
+                >
+                    {tag}<span class="ml-0.5 align-super font-mono text-faint" style="font-size:0.6em">{tagCounts.get(tag)}</span>
+                </a>
             ))}
         </div>
     </div>

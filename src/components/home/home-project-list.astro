@@ -1,9 +1,9 @@
 ---
-import {projectInfo} from "@/data/project-info";
 import ProjectListItem from "@/components/cards/project-list-item.astro";
+import { projectInfo } from "@/data/project-info";
 ---
 
-<section class="flex flex-col gap-y-2">
+<section class="flex flex-col">
     {projectInfo.map((item) => (
         <ProjectListItem
             title={item.projectName}

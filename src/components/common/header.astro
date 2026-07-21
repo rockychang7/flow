@@ -1,43 +1,24 @@
 ---
-import RssComponent from "@/components/icons/rss-icons";
 import { menuInfo } from "../../data/menu-info";
-import { Separator } from "../ui/separator";
 import GlobalSearch from "./global-search";
-import { HeaderMobileMenu } from "./header-mobile-menu";
-import { HeaderNavItem } from "./header-nav-item";
 import LogoNew from "./logo-new.astro";
 import { ModeToggle } from "./mode-toggle";
 ---
-<header class="w-full flex items-center justify-between py-3 mb-6">
-    <!-- Logo -->
-    <a href="/" class="group shrink-0 hover:no-underline select-none">
+<header class="w-full flex items-center justify-between mb-16">
+    <a href="/" class="shrink-0 select-none">
         <LogoNew />
     </a>
 
-    <!-- Desktop Navigation -->
-    <nav class="hidden md:flex items-center gap-x-1">
-        <!-- Menu Icons -->
+    <nav class="flex items-center gap-x-4 sm:gap-x-5" aria-label="站点导航">
         {menuInfo.map((item) => (
-            <HeaderNavItem
-                client:load
-                menuName={item.menuName}
-                menuLink={item.menuLink}
-                menuIcon={item.menuIcon}
-            />
+            <a
+                href={item.menuLink}
+                class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+                {item.menuName}
+            </a>
         ))}
-
-        <Separator orientation="vertical" className="bg-primary/30 h-5 mx-1" />
-
-        <!-- Tools -->
         <GlobalSearch client:load />
-        <RssComponent />
         <ModeToggle client:load />
     </nav>
-
-    <!-- Mobile Menu -->
-    <div class="md:hidden flex items-center gap-x-1">
-        <GlobalSearch client:load />
-        <ModeToggle client:load />
-        <HeaderMobileMenu client:load />
-    </div>
 </header>

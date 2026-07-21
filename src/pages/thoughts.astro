@@ -1,5 +1,6 @@
 ---
 import ThoughtListItem from "@/components/cards/thought-list-item.astro";
+import SectionHead from "@/components/common/section-head.astro";
 import { getRenderedThoughts } from "@/lib/thoughts";
 import Footer from "../components/common/footer.astro";
 import Header from "../components/common/header.astro";
@@ -8,18 +9,18 @@ import RootLayout from "../layouts/RootLayout.astro";
 const thoughts = await getRenderedThoughts();
 const title: string = "想法";
 ---
-<RootLayout title={title} description="碎片想法与近况时间线">
+<RootLayout title={title} description="碎片想法与近况">
     <Header/>
-    <div class="flex flex-col mt-8 gap-y-4">
-        <h1 class="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/40 pb-2">Thoughts</h1>
+    <div class="flex flex-col">
+        <SectionHead title="想法" as="h1" />
         {thoughts.length > 0 ? (
-            <div class="relative border-l border-border/50 ml-3 mt-2 space-y-10">
+            <div class="flex flex-col gap-y-8 pt-2">
                 {thoughts.map((thought) => (
                     <ThoughtListItem html={thought.html} createdAt={thought.createdAt} />
                 ))}
             </div>
         ) : (
-            <p class="text-muted-foreground">还没有想法。</p>
+            <p class="pt-2 text-muted-foreground">还没有想法。</p>
         )}
     </div>
 

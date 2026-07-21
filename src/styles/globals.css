@@ -6,17 +6,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@utility container {
-  margin-inline: auto;
-  padding-inline: 1rem;
-  @media (width >= --theme(--breakpoint-sm)) {
-    max-width: none;
-  }
-  @media (width >= 1400px) {
-    max-width: 1400px;
-  }
-}
-
 @theme {
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
@@ -36,6 +25,8 @@
   --color-muted: hsl(var(--muted));
   --color-muted-foreground: hsl(var(--muted-foreground));
 
+  --color-faint: hsl(var(--faint));
+
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
 
@@ -49,7 +40,11 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
 
-  /* 双轨字体:UI 用系统黑体栈,文章正文用阅读向字体(font-reading) */
+  /* 辅助信息字号(日期/计数/小标),集中定义,不再散落任意值 */
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.5;
+
+  /* 三轨字体:UI 用系统黑体栈,文章正文用阅读向字体,数据用等宽 */
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
     'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC',
@@ -59,34 +54,17 @@
   --font-reading:
     'Source Serif 4', Georgia, 'LXGW WenKai', 'STKaiti', 'KaiTi',
     'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', serif;
+  /* 等宽上下文的中文回退用黑体系,避免代码块里混入楷体字面 */
   --font-mono:
     'Maple Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    'LXGW WenKai', 'Liberation Mono', 'Courier New', monospace;
+    'PingFang SC', 'Microsoft YaHei', 'Liberation Mono', 'Courier New',
+    monospace;
+  /* 强调轨:黑体语境下的 em 换楷体字面(全站唯一的「个性」) */
+  --font-kaiti:
+    'LXGW WenKai', 'Kaiti SC', 'STKaiti', 'KaiTi', serif;
 
-  --animate-accordion-down: accordion-down 0.2s ease-out;
-  --animate-accordion-up: accordion-up 0.2s ease-out;
   --animate-fade-in-slide-up: fade-in-slide-up 0.3s ease-out forwards;
-  --animate-fade-out-slide-down: fade-out-slide-down 1s ease-out forwards;
 
-  --ease-slow: cubic-bezier(0.405, 0, 0.025, 1);
-  --ease-minor-spring: cubic-bezier(0.18, 0.89, 0.82, 1.04);
-
-  @keyframes accordion-down {
-    from {
-      height: 0;
-    }
-    to {
-      height: var(--radix-accordion-content-height);
-    }
-  }
-  @keyframes accordion-up {
-    from {
-      height: var(--radix-accordion-content-height);
-    }
-    to {
-      height: 0;
-    }
-  }
   @keyframes fade-in-slide-up {
     0% {
       opacity: 0;
@@ -95,16 +73,6 @@
     100% {
       opacity: 1;
       transform: translateY(0);
-    }
-  }
-  @keyframes fade-out-slide-down {
-    0% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    100% {
-      opacity: 0;
-      transform: translateY(1rem);
     }
   }
 }
@@ -129,62 +97,54 @@
 
 @layer base {
     :root {
-        /* Minimal 极简风格 - 纯净黑白灰配色 */
-        --gradient: none;
+        /* Minimal 黑白灰:3 级文字灰(foreground/muted-foreground/faint,
+           faint 仅限非交互文字)+ 1 个面(muted)+ 1 条线(border) */
+        color-scheme: light;
         --background: 0 0% 100%;
-        --foreground: 0 0% 10%;
-        --muted: 0 0% 96%;
-        --muted-foreground: 0 0% 45%;
+        --foreground: 0 0% 11%;
+        --muted: 0 0% 96.5%;
+        --muted-foreground: 0 0% 43%;
+        --faint: 0 0% 55%;
         --popover: 0 0% 100%;
-        --popover-foreground: 0 0% 10%;
+        --popover-foreground: 0 0% 11%;
         --card: 0 0% 100%;
-        --card-foreground: 0 0% 10%;
-        --border: 0 0% 90%;
-        --input: 0 0% 90%;
-        --primary: 0 0% 15%;
+        --card-foreground: 0 0% 11%;
+        --border: 0 0% 92.5%;
+        --input: 0 0% 92.5%;
+        --primary: 0 0% 11%;
         --primary-foreground: 0 0% 98%;
-        --secondary: 0 0% 96%;
-        --secondary-foreground: 0 0% 15%;
-        --accent: 0 0% 96%;
-        --accent-foreground: 0 0% 15%;
+        --secondary: 0 0% 96.5%;
+        --secondary-foreground: 0 0% 11%;
+        --accent: 0 0% 96.5%;
+        --accent-foreground: 0 0% 11%;
         --destructive: 0 84.2% 60.2%;
         --destructive-foreground: 0 0% 98%;
-        --ring: 0 0% 15%;
+        --ring: 0 0% 43%;
         --radius: 0.5rem;
-        --chart-1: 0 0% 20%;
-        --chart-2: 0 0% 35%;
-        --chart-3: 0 0% 50%;
-        --chart-4: 0 0% 65%;
-        --chart-5: 0 0% 80%;
     }
 
     .dark {
-        /* Minimal 极简风格 - 暗色模式 */
-        --gradient: none;
+        color-scheme: dark;
         --background: 0 0% 8%;
-        --foreground: 0 0% 92%;
-        --muted: 0 0% 15%;
-        --muted-foreground: 0 0% 55%;
+        --foreground: 0 0% 90%;
+        --muted: 0 0% 12%;
+        --muted-foreground: 0 0% 60%;
+        --faint: 0 0% 50%;
         --popover: 0 0% 12%;
-        --popover-foreground: 0 0% 92%;
-        --card: 0 0% 12%;
-        --card-foreground: 0 0% 92%;
-        --border: 0 0% 20%;
-        --input: 0 0% 20%;
-        --primary: 0 0% 85%;
+        --popover-foreground: 0 0% 90%;
+        --card: 0 0% 8%;
+        --card-foreground: 0 0% 90%;
+        --border: 0 0% 18%;
+        --input: 0 0% 18%;
+        --primary: 0 0% 90%;
         --primary-foreground: 0 0% 10%;
-        --secondary: 0 0% 15%;
-        --secondary-foreground: 0 0% 92%;
-        --accent: 0 0% 15%;
-        --accent-foreground: 0 0% 92%;
+        --secondary: 0 0% 12%;
+        --secondary-foreground: 0 0% 90%;
+        --accent: 0 0% 12%;
+        --accent-foreground: 0 0% 90%;
         --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 0 0% 92%;
-        --ring: 0 0% 85%;
-        --chart-1: 0 0% 80%;
-        --chart-2: 0 0% 65%;
-        --chart-3: 0 0% 50%;
-        --chart-4: 0 0% 35%;
-        --chart-5: 0 0% 20%;
+        --destructive-foreground: 0 0% 90%;
+        --ring: 0 0% 60%;
     }
 }
 
@@ -195,7 +155,7 @@
 
     html {
         scroll-behavior: smooth;
-        scroll-padding-top: 2rem; /* Add some padding for better target positioning */
+        scroll-padding-top: 2rem;
     }
 
     body {
@@ -205,25 +165,43 @@
         text-autospace: normal;
     }
 
-    /* 全局链接样式 - 默认无下划线，hover时显示 */
-    a {
-        text-decoration: none;
-        transition: text-decoration 0.2s ease;
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        ::before,
+        ::after {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+@layer components {
+    /* 行内链接:全站唯一的行内链接语言 —— 常驻 1px 细下划线,hover 只加深线色 */
+    .link-inline {
+        text-decoration-line: underline;
+        text-decoration-thickness: 1px;
+        text-decoration-color: hsl(var(--faint));
+        text-underline-offset: 4px;
+        transition: text-decoration-color 0.15s;
+    }
+    /* hover 只在真正有悬停能力的设备上生效,触屏不残留 */
+    @media (hover: hover) and (pointer: fine) {
+        .link-inline:hover {
+            text-decoration-color: hsl(var(--foreground));
+        }
     }
 
-    /* 移除全局 hover 下划线，改用自定义动画 */
-    a:not(.group):hover {
-        text-decoration: underline;
+    /* 强调即换字面:黑体正文中 em 用楷体,楷体/衬线正文中 em 用黑体。
+       不用仿斜体(中文无斜体传统);line-height:1 防止 1.05em 撑高行盒 */
+    .em-kaiti em {
+        font-family: var(--font-kaiti);
+        font-style: normal;
+        font-size: 1.05em;
+        line-height: 1;
     }
-
-    /* 优化全局链接样式，避免与自定义组件冲突 */
-    .group a {
-        text-decoration: none;
-    }
-
-
-    .bg-gradient {
-        background: var(--gradient)
+    .em-sans em {
+        font-family: var(--font-sans);
+        font-style: normal;
     }
 }
 
@@ -235,8 +213,6 @@
 .PhotoView-Slider__Backdrop {
     z-index: 99999 !important;
 }
-
-
 
 #dialog-portal {
     position: fixed;
@@ -250,43 +226,4 @@
 
 #dialog-portal > * {
     pointer-events: auto;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeInLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
-}
-
-.animate-fade-in-up {
-    animation: fadeInUp 0.5s ease-out;
-}
-
-.animate-fade-in-left {
-    animation: fadeInLeft 0.5s ease-out;
 }
