@@ -16,14 +16,14 @@ interface TableOfContentsProps {
 export function TableOfContents({headings, className, onItemClick, hideTitle}: TableOfContentsProps) {
     const [activeId, setActiveId] = useState<string>("");
 
-    // Only show h1, h2, h3
-    const filteredHeadings = headings.filter((h) => h.depth <= 3);
+    // 文题占掉 h1,正文标题从 h2 起,故目录收 h2~h4 共三级
+    const filteredHeadings = headings.filter((h) => h.depth <= 4);
     // 缩进按相对层级算:有的文章从 # 起,有的从 ## 起,都要能看出层次
     const topDepth = Math.min(...filteredHeadings.map((h) => h.depth), 6);
     const indentClass = ["", "pl-4", "pl-8"];
 
     useEffect(() => {
-        const ids = headings.filter((h) => h.depth <= 3).map((h) => h.slug);
+        const ids = headings.filter((h) => h.depth <= 4).map((h) => h.slug);
         if (ids.length === 0) return;
 
         let frame = 0;
