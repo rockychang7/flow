@@ -17,16 +17,17 @@ for (const post of allBlogPosts) {
 }
 const sortedTags = [...tagCounts.keys()].sort();
 
-// 按文章数把标签分到 5 档:字号 + 灰度同时表达热度
+// 按文章数把标签分到 5 档,热度只用字号表达,字号全部落在六档字阶内;
+// 颜色一律 muted 常态,交给全站唯一的 hover 语言(muted → foreground)
 const counts = [...tagCounts.values()];
 const min = Math.min(...counts);
 const max = Math.max(...counts);
 const tiers = [
-    "text-sm text-faint",
-    "text-base text-muted-foreground",
-    "text-lg text-muted-foreground",
-    "text-xl text-foreground",
-    "text-2xl text-foreground font-medium",
+    "text-sm",
+    "text-base",
+    "text-lg",
+    "text-xl",
+    "text-2xl font-medium",
 ];
 const tierClass = (count: number): string => {
     if (max === min) return tiers[2];
@@ -38,13 +39,13 @@ const tierClass = (count: number): string => {
     <Header/>
     <div class="flex flex-col">
         <SectionHead title="标签" as="h1" />
-        <div class="flex flex-wrap items-baseline gap-x-5 gap-y-3 pt-3">
+        <div class="flex flex-wrap items-baseline gap-x-6 gap-y-4">
             {sortedTags.map(tag => (
                 <a
                     href={`/tags/${tag}`}
-                    class:list={["leading-none transition-colors hover:text-foreground", tierClass(tagCounts.get(tag) ?? 0)]}
+                    class:list={["leading-none text-muted-foreground transition-colors hover:text-foreground", tierClass(tagCounts.get(tag) ?? 0)]}
                 >
-                    {tag}<span class="ml-0.5 align-super font-mono text-faint" style="font-size:0.6em">{tagCounts.get(tag)}</span>
+                    {tag}<span class="ml-1 align-super font-mono text-caption font-medium">{tagCounts.get(tag)}</span>
                 </a>
             ))}
         </div>

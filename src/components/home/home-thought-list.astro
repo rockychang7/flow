@@ -9,7 +9,8 @@ interface Props {
 const { thoughts } = Astro.props;
 ---
 
-<section class="flex flex-col gap-y-6 pt-2">
+<!-- 想法条目间 48 纯留白 -->
+<section class="flex flex-col gap-y-12">
     {thoughts.map((thought) => (
         <ThoughtListItem html={thought.html} createdAt={thought.createdAt} />
     ))}

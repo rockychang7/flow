@@ -22,15 +22,15 @@ export function TocMobile({headings}: { headings: Heading[] }) {
                 <Button
                     variant="outline"
                     size="icon"
-                    className="fixed bottom-20 right-4 z-40 size-12 rounded-full shadow-sm border-border bg-background/80 backdrop-blur-sm lg:hidden transition-colors cursor-pointer"
+                    className="fixed bottom-20 right-6 z-40 size-12 cursor-pointer rounded-full border-border bg-background/50 backdrop-blur-[16px] transition-colors md:right-8 xl:hidden"
                 >
                     <List className="size-5" />
                     <span className="sr-only">Toggle Table of Contents</span>
                 </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-[300px] max-h-[60vh] overflow-y-auto rounded-xl">
+            <DialogContent className="max-h-[60vh] w-[80vw] max-w-xs overflow-y-auto">
                 <DialogHeader className="mb-4">
-                    <DialogTitle className="text-left text-sm font-semibold">目录</DialogTitle>
+                    <DialogTitle className="text-left text-sm font-medium text-muted-foreground">目录</DialogTitle>
                 </DialogHeader>
                 <TableOfContents headings={headings} onItemClick={() => setOpen(false)} hideTitle />
             </DialogContent>

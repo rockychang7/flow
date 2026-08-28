@@ -21,11 +21,12 @@ export function ModeToggle() {
             onClick={toggleTheme}
             aria-label="切换深浅色主题"
             aria-pressed={isDark}
-            className="p-2 -m-1 text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+            className="-m-1 cursor-pointer rounded-sm p-2 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
+            {/* 两枚图标叠放,只做透明度互换,不做旋转/缩放 */}
             <span className="relative block size-4">
-                <Sun className="absolute inset-0 h-full w-full transition-all duration-300 rotate-0 scale-100 dark:-rotate-90 dark:scale-0"/>
-                <Moon className="absolute inset-0 h-full w-full transition-all duration-300 rotate-90 scale-0 dark:rotate-0 dark:scale-100"/>
+                <Sun className="absolute inset-0 h-full w-full opacity-100 transition-opacity dark:opacity-0"/>
+                <Moon className="absolute inset-0 h-full w-full opacity-0 transition-opacity dark:opacity-100"/>
             </span>
         </button>
     );

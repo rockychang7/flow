@@ -1,51 +1,7 @@
 ---
-
+// 长文正文容器。排版规则集中在 globals.css 的 .prose 段(与想法共用),
+// 这里只负责挂容器,不再堆 prose-* 修饰类。
 ---
-<div class="em-sans prose prose-neutral dark:prose-invert max-w-none font-reading
-           prose-headings:font-bold
-           prose-h1:text-2xl prose-h1:mb-6
-           prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4
-           prose-h3:text-lg prose-h3:mt-8 prose-h3:mb-3
-           prose-p:leading-[1.8] prose-p:text-foreground prose-p:mb-6
-           prose-img:rounded-md prose-img:mx-auto
-           prose-li:text-foreground prose-li:my-1
-           prose-a:font-normal prose-a:underline prose-a:decoration-1 prose-a:decoration-faint prose-a:underline-offset-4 hover:prose-a:decoration-foreground
-           prose-pre:p-4 prose-pre:rounded-md prose-pre:bg-muted
-           ">
+<div class="prose max-w-none">
     <slot/>
 </div>
-
-<style is:global>
-    @reference "../../styles/globals.css";
-
-    /* 楷体字面偏小,正文基线提到 18px(标题用 rem/px 定义,不受影响) */
-    .prose {
-        font-size: 1.125rem;
-    }
-
-    /* 中文无斜体传统:引用块不用仿斜 */
-    .prose blockquote {
-        font-style: normal;
-    }
-
-    /* 行内代码:相对正文 0.875em,只留底色一种装饰 */
-    .prose :not(pre) > code {
-        @apply bg-muted px-1.5 py-0.5 rounded-sm font-mono text-foreground;
-        font-size: 0.875em;
-    }
-
-    .prose code::before,
-    .prose code::after {
-        content: none;
-    }
-
-    /* Code block styling adjustments */
-    .prose pre {
-        @apply my-6 overflow-x-auto font-mono;
-    }
-
-    .prose pre code {
-        @apply bg-transparent p-0 border-none;
-        font-size: 0.9375rem;
-    }
-</style>

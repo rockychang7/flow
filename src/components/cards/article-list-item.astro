@@ -11,9 +11,12 @@ interface Props {
 const {title, date, url} = Astro.props;
 ---
 
-<a href={url} class="flex items-baseline justify-between gap-4 py-2 px-3 -mx-3 rounded-md transition-colors hover:bg-muted">
-    <span class="font-medium min-w-0 break-words">{title}</span>
-    <time class="text-caption font-mono tabular-nums text-muted-foreground shrink-0">
+<!-- 全站统一的行语法:等宽日期 14 muted 定宽列 + 标题 16/500;零卡片零底色,hover 只换标题颜色 -->
+<a href={url} class="group flex items-baseline gap-4 py-2">
+    <time class="w-24 shrink-0 font-mono text-sm text-muted-foreground">
         {dayjs(date).format(DATE_FORMAT)}
     </time>
+    <span class="min-w-0 break-words font-medium transition-colors group-hover:text-muted-foreground">
+        {title}
+    </span>
 </a>

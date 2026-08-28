@@ -16,18 +16,16 @@ export default function ImageModal({src, alt}: ImageModalProps) {
             <img
                 src={src}
                 alt={alt}
-                className="object-cover w-full h-full object-center cursor-pointer"
+                className="block h-full w-full cursor-zoom-in object-cover object-center"
                 onClick={() => setIsOpen(true)}
             />
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogContent className="w-full max-w-(--breakpoint-md) rounded-md p-0">
-                    <div className="w-full p-1">
-                        <img
-                            src={src}
-                            alt={alt}
-                            className="w-full object-contain"
-                        />
-                    </div>
+                <DialogContent className="w-full max-w-(--breakpoint-md) overflow-hidden p-0">
+                    <img
+                        src={src}
+                        alt={alt}
+                        className="block w-full object-contain"
+                    />
                 </DialogContent>
             </Dialog>
         </>

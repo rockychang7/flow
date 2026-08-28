@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {ArrowUp} from "lucide-react";
+import {scrollBehavior} from "@/lib/utils";
 
 const BackToTop = () => {
     const [isVisible, setIsVisible] = useState(false);
@@ -31,7 +32,7 @@ const BackToTop = () => {
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
-            behavior: "smooth"
+            behavior: scrollBehavior()
         });
     };
 
@@ -42,16 +43,16 @@ const BackToTop = () => {
                     onClick={scrollToTop}
                     onAnimationEnd={handleAnimationEnd}
                     className={`
-                        fixed bottom-6 right-4 md:bottom-8 md:right-8 xl:right-[max(2rem,calc(50%-640px))]
+                        fixed bottom-6 right-6 md:bottom-8 md:right-8
                         flex items-center justify-center size-12
-                        rounded-full border border-border bg-background/80 backdrop-blur-sm
-                        text-muted-foreground shadow-sm cursor-pointer
+                        rounded-full border border-border bg-background/50 backdrop-blur-[16px]
+                        text-muted-foreground cursor-pointer
                         hover:text-foreground
-                        transition-[color,opacity,transform] duration-300 ease-in-out
+                        transition-[color,opacity] duration-150
                         focus:outline-none focus-visible:ring-2 focus-visible:ring-ring z-40
                         ${isVisible
-                        ? "animate-fade-in-slide-up opacity-100 translate-y-0"
-                        : "opacity-0 translate-y-4 pointer-events-none"
+                        ? "animate-fade-in opacity-100"
+                        : "opacity-0 pointer-events-none"
                     }
                     `}
                     aria-label="Back to top"

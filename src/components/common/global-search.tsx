@@ -109,7 +109,7 @@ const GlobalSearch: React.FC = () => {
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="p-2 -m-1 text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                className="-m-1 cursor-pointer rounded-sm p-2 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label="打开搜索"
                 title="搜索 (⌘K)"
             >
@@ -118,30 +118,30 @@ const GlobalSearch: React.FC = () => {
 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 {/* @ts-ignore */}
-                <DialogContent container={portalContainer} className="sm:max-w-2xl w-[90vw] top-[15%] translate-y-0 sm:top-[50%] sm:translate-y-[-50%] bg-popover border-border shadow-lg p-0 gap-0 overflow-hidden rounded-xl [&>button:last-child]:hidden">
+                <DialogContent container={portalContainer} className="top-[15%] w-[90vw] translate-y-0 gap-0 overflow-hidden rounded-lg border-border bg-elevated p-0 sm:top-[50%] sm:max-w-2xl sm:translate-y-[-50%] [&>button:last-child]:hidden">
                     <DialogHeader className="sr-only">
                         <DialogTitle>全局搜索</DialogTitle>
                     </DialogHeader>
 
                     <div className="relative">
                         <div className="flex items-center border-b border-border px-4 py-3">
-                            <Search className="w-5 h-5 text-muted-foreground mr-3 shrink-0"/>
+                            <Search className="mr-3 size-4 shrink-0 text-muted-foreground"/>
                             <input
                                 type="text"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 onKeyDown={handleInputKeyDown}
                                 placeholder="搜索文章、标签..."
-                                className="flex-1 bg-transparent text-lg placeholder:text-muted-foreground focus:outline-none h-10"
+                                className="h-10 flex-1 bg-transparent placeholder:text-muted-foreground focus:outline-none"
                                 autoFocus
                             />
                             {searchTerm && (
                                 <button
                                     onClick={() => setSearchTerm("")}
-                                    className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                                    className="p-1 text-muted-foreground transition-colors hover:text-foreground"
                                     aria-label="Clear search"
                                 >
-                                    <X className="w-4 h-4"/>
+                                    <X className="size-4"/>
                                 </button>
                             )}
                         </div>
@@ -159,20 +159,20 @@ const GlobalSearch: React.FC = () => {
                                         <div
                                             key={item.url}
                                             data-index={index}
-                                            className={`group flex flex-col p-3 rounded-md cursor-pointer transition-colors duration-200 ${
+                                            className={`group flex cursor-pointer flex-col gap-1 rounded-md p-3 transition-colors ${
                                                 index === selectedIndex ? "bg-muted" : ""
                                             }`}
                                             onClick={() => openResult(item.url)}
                                             onMouseEnter={() => setSelectedIndex(index)}
                                         >
-                                            <div className="flex items-center justify-between mb-1">
-                                                <h3 className="font-medium text-base text-foreground">
+                                            <div className="flex items-baseline justify-between gap-4">
+                                                <h3 className="min-w-0 truncate font-medium text-foreground">
                                                     {highlightMatch(item.title, titleMatch)}
                                                 </h3>
                                                 {item.tags && item.tags.length > 0 && (
-                                                    <div className="flex gap-2">
+                                                    <div className="flex shrink-0 gap-x-4">
                                                         {item.tags.slice(0, 2).map((tag) => (
-                                                            <span key={tag} className="text-xs text-muted-foreground">
+                                                            <span key={tag} className="text-caption font-medium text-muted-foreground">
                                                                 #{tag}
                                                             </span>
                                                         ))}
@@ -181,7 +181,7 @@ const GlobalSearch: React.FC = () => {
                                             </div>
 
                                             {item.content && (
-                                                <p className="text-muted-foreground text-sm line-clamp-1">
+                                                <p className="line-clamp-1 text-sm text-muted-foreground">
                                                     {highlightMatch(item.content, contentMatch)}
                                                 </p>
                                             )}
@@ -190,19 +190,19 @@ const GlobalSearch: React.FC = () => {
                                 })}
                             </div>
                         ) : searchTerm ? (
-                            <div className="py-12 text-center text-muted-foreground text-sm">
+                            <div className="py-12 text-center text-sm text-muted-foreground">
                                 {searchData === null ? "正在加载搜索索引..." : "未找到相关结果"}
                             </div>
                         ) : (
-                            <div className="py-12 text-center text-faint text-sm">
+                            <div className="py-12 text-center text-sm text-muted-foreground">
                                 输入关键词开始搜索...
                             </div>
                         )}
 
-                        <div className="flex items-center justify-end gap-3 border-t border-border px-4 py-2 text-xs text-faint">
-                            <span><kbd className="px-1 py-0.5 rounded border border-border bg-muted">↑↓</kbd> 选择</span>
-                            <span><kbd className="px-1 py-0.5 rounded border border-border bg-muted">↵</kbd> 打开</span>
-                            <span><kbd className="px-1 py-0.5 rounded border border-border bg-muted">esc</kbd> 关闭</span>
+                        <div className="flex items-center justify-end gap-x-4 border-t border-border px-4 py-2 text-caption font-medium text-muted-foreground">
+                            <span><kbd className="rounded-sm border border-border bg-muted px-1 py-0.5 font-mono">↑↓</kbd> 选择</span>
+                            <span><kbd className="rounded-sm border border-border bg-muted px-1 py-0.5 font-mono">↵</kbd> 打开</span>
+                            <span><kbd className="rounded-sm border border-border bg-muted px-1 py-0.5 font-mono">esc</kbd> 关闭</span>
                         </div>
                     </div>
                 </DialogContent>

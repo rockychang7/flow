@@ -4,21 +4,24 @@ import GlobalSearch from "./global-search";
 import LogoNew from "./logo-new.astro";
 import { ModeToggle } from "./mode-toggle";
 ---
-<header class="w-full flex items-center justify-between mb-16">
-    <a href="/" class="shrink-0 select-none">
-        <LogoNew />
-    </a>
+<!-- 48px 定高毛玻璃顶栏:半透明底 + 16px 背景模糊,无 hairline -->
+<header class="fixed inset-x-0 top-0 z-50 h-12 bg-background/50 backdrop-blur-[16px]">
+    <div class="mx-auto flex h-full w-full max-w-column items-center justify-between px-4">
+        <a href="/" class="shrink-0 select-none">
+            <LogoNew />
+        </a>
 
-    <nav class="flex items-center gap-x-4 sm:gap-x-5" aria-label="站点导航">
-        {menuInfo.map((item) => (
-            <a
-                href={item.menuLink}
-                class="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-                {item.menuName}
-            </a>
-        ))}
-        <GlobalSearch client:load />
-        <ModeToggle client:load />
-    </nav>
+        <nav class="flex items-center gap-x-4 sm:gap-x-6" aria-label="站点导航">
+            {menuInfo.map((item) => (
+                <a
+                    href={item.menuLink}
+                    class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                    {item.menuName}
+                </a>
+            ))}
+            <GlobalSearch client:load />
+            <ModeToggle client:load />
+        </nav>
+    </div>
 </header>

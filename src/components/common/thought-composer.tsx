@@ -130,7 +130,7 @@ function toErrorInfo(err: unknown): { message: string; reauth: boolean } {
 }
 
 const TEXTAREA_CLASS =
-    "flex min-h-[160px] w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm";
+    "flex min-h-40 w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-base shadow-xs placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 
 export function ThoughtComposer() {
     const [phase, setPhase] = useState<Phase>("init");
@@ -209,15 +209,15 @@ export function ThoughtComposer() {
     if (phase === "need_token") {
         return (
             <div className="flex flex-col gap-4">
-                <div className="text-sm text-muted-foreground leading-relaxed space-y-2">
+                <div className="space-y-2 text-sm text-muted-foreground">
                     <p>首次使用需要一个 GitHub Fine-grained Token(仅保存在当前浏览器):</p>
-                    <ol className="list-decimal list-inside space-y-1">
+                    <ol className="list-inside list-decimal space-y-1">
                         <li>
                             <a
                                 href="https://github.com/settings/personal-access-tokens/new"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="underline underline-offset-4 decoration-border hover:decoration-foreground"
+                                className="link-inline"
                             >
                                 创建 Token
                             </a>
@@ -255,9 +255,9 @@ export function ThoughtComposer() {
     const publishing = phase === "publishing";
 
     return (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
             {phase === "success" ? (
-                <div className="flex flex-col gap-3 py-2">
+                <div className="flex flex-col gap-4 py-2">
                     <p className="text-sm text-foreground">
                         已发布({publishedAt})。Cloudflare Pages 构建中,约 1 分钟后生效。
                     </p>
@@ -265,7 +265,7 @@ export function ThoughtComposer() {
                         <Button size="sm" onClick={() => setPhase("ready")}>
                             再写一条
                         </Button>
-                        <a href="/thoughts" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        <a href="/thoughts" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
                             查看想法
                         </a>
                     </div>
@@ -286,14 +286,13 @@ export function ThoughtComposer() {
                         disabled={publishing}
                     />
                     <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground font-mono">
+                        <span className="font-mono text-caption font-medium text-muted-foreground">
                             {text.length > 0 ? `${text.length} 字` : ""}
                         </span>
                         <div className="flex items-center gap-2">
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-muted-foreground"
                                 onClick={resetToken}
                                 disabled={publishing}
                             >
@@ -322,16 +321,16 @@ export function ThoughtComposer() {
             )}
 
             {recent.length > 0 && (
-                <div className="mt-6 flex flex-col gap-y-3">
-                    <h2 className="text-caption font-semibold text-muted-foreground">
+                <div className="mt-16 flex flex-col gap-y-6">
+                    <h2 className="text-sm font-medium text-muted-foreground">
                         最近发布
                     </h2>
                     {recent.map((thought) => (
-                        <div key={thought.id} className="text-sm">
-                            <time className="font-mono text-xs text-faint">
+                        <div key={thought.id}>
+                            <time className="font-mono text-caption font-medium text-muted-foreground">
                                 {thought.created_at.slice(0, 16)}
                             </time>
-                            <p className="mt-1 whitespace-pre-wrap text-foreground line-clamp-3">
+                            <p className="mt-2 line-clamp-3 whitespace-pre-wrap text-body">
                                 {thought.content}
                             </p>
                         </div>

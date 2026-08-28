@@ -1,5 +1,7 @@
 ---
-// 统一的区块小标:中文标签 + 可选的「查看全部」入口,全站列表区块共用
+// 两种角色共用一个组件:
+// as="h1" → 页题,24/700,全站唯一最大字号;as="h2" → 区块小标,14/500 muted。
+// 两者下方一律留 24。
 interface Props {
     title: string;
     moreHref?: string;
@@ -9,13 +11,22 @@ interface Props {
 }
 
 const { title, moreHref, moreLabel = "查看全部", as: Tag = "h2" } = Astro.props;
+const isPageTitle = Tag === "h1";
 ---
-<div class="flex items-baseline justify-between mb-1.5">
-    <Tag class="text-caption font-semibold text-muted-foreground">{title}</Tag>
+<div class="mb-6 flex items-baseline justify-between gap-4">
+    <Tag
+        class:list={[
+            isPageTitle
+                ? "text-2xl font-bold text-foreground"
+                : "text-sm font-medium text-muted-foreground",
+        ]}
+    >
+        {title}
+    </Tag>
     {moreHref ? (
         <a
             href={moreHref}
-            class="text-caption text-muted-foreground hover:text-foreground transition-colors"
+            class="shrink-0 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
             {moreLabel}
         </a>

@@ -3,13 +3,15 @@ import BackToTop from "@/components/common/back-to-top.tsx";
 import CodeCopy from "@/components/markdown/code-copy.astro";
 import { SITE } from "@/constant/constants";
 import "@/styles/globals.css";
-import "@fontsource/maple-mono/400.css";
-import "@fontsource/source-serif-4/400.css";
-import "@fontsource/source-serif-4/700.css";
-// logo 用的衬线粗斜体(仅拉丁子集,体积小)
-import "@fontsource/source-serif-4/latin-700-italic.css";
-import "lxgw-wenkai-webfont/lxgwwenkai-regular.css";
-import "lxgw-wenkai-webfont/lxgwwenkai-bold.css";
+// 衬线轨:拉丁 + 中文都是可变字重(wght 200–900),按 unicode-range 分片按需加载
+import "@fontsource-variable/source-serif-4";
+import "@fontsource-variable/source-serif-4/wght-italic.css";
+import "@fontsource-variable/noto-serif-sc";
+// 等宽轨(唯一例外):代码块与日期时间戳
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/500.css";
+// 首屏必用的拉丁片提前拉,避免衬线正文闪一次回退字体
+import sourceSerifLatin from "@fontsource-variable/source-serif-4/files/source-serif-4-latin-wght-normal.woff2?url";
 import { ClientRouter } from "astro:transitions";
 
 interface Props {
@@ -34,6 +36,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link
+      rel="preload"
+      href={sourceSerifLatin}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <title>{fullTitle}</title>
@@ -139,8 +148,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     </script>
     <ClientRouter />
   </head><body>
+    <!-- 版心 576(每行 36 汉字),页面上下 128(移动 64);顶栏定高 48 浮在其上 -->
     <main
-      class="min-h-svh mx-auto w-full max-w-[640px] flex flex-col font-sans px-6 pt-10 pb-12"
+      class="min-h-svh mx-auto flex w-full max-w-column flex-col px-4 pt-16 pb-16 md:pt-32 md:pb-32"
     >
       <slot />
     </main>

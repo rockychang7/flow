@@ -8,7 +8,7 @@ interface Props {
 const {name, count, url} = Astro.props;
 ---
 
-<a href={url} class="flex items-baseline justify-between gap-4 py-2 px-3 -mx-3 rounded-md transition-colors hover:bg-muted">
-    <span class="font-medium min-w-0 break-words">{name}</span>
-    <span class="text-caption font-mono tabular-nums text-muted-foreground shrink-0">{count}</span>
+<a href={url} class="group flex items-baseline justify-between gap-4 py-2">
+    <span class="min-w-0 break-words font-medium transition-colors group-hover:text-muted-foreground">{name}</span>
+    <span class="shrink-0 font-mono text-sm text-muted-foreground">{count}</span>
 </a>
