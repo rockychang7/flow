@@ -10,6 +10,10 @@ import remarkCollapse from "remark-collapse";
 // https://astro.build/config
 export default defineConfig({
     site: "https://rockycheong.com",
+    // 关于页已并入首页,旧地址静态重定向,不让外部既有链接落到 404
+    redirects: {
+        "/about": "/",
+    },
     integrations: [react(),
         mdx({
             syntaxHighlight: "shiki",
@@ -26,8 +30,8 @@ export default defineConfig({
             }
         }),
         sitemap({
-            // 隐藏发布页不进站点地图(页面本身另有 noindex meta)
-            filter: (page) => new URL(page).pathname !== "/say/",
+            // 隐藏发布页与重定向壳页不进站点地图(/say 本身另有 noindex meta)
+            filter: (page) => !["/say/", "/about/"].includes(new URL(page).pathname),
         }),
     ],
     vite: {

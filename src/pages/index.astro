@@ -1,35 +1,81 @@
 ---
-import SectionHead from "@/components/common/section-head.astro";
-import ArticleList from "@/components/home/home-article-list.astro";
 import ProjectList from "@/components/home/home-project-list.astro";
-import ThoughtList from "@/components/home/home-thought-list.astro";
-import { getRenderedThoughts } from "@/lib/thoughts";
 import RootLayout from "@/layouts/RootLayout.astro";
 import Footer from "../components/common/footer.astro";
 import Header from "../components/common/header.astro";
 
+// 左标右值的两列行,与 changelog 同一种行语法
+const stacks: [string, string[]][] = [
+    ["Coding Agent", ["Claude Code", "Codex", "OpenCode"]],
+    ["Frontend", ["HTML", "CSS", "JavaScript", "TypeScript", "React", "Astro", "Next.js", "Vite", "TailwindCSS"]],
+    ["Backend", ["Golang", "Java", "MySQL", "Redis", "Kafka", "Docker"]],
+];
+
+const links: [string, string][] = [
+    ["Email", "mailto:rockychang0318@gmail.com"],
+    ["GitHub", "https://github.com/rockychang7"],
+    ["Twitter", "https://twitter.com/rockychang_ai"],
+];
+
+// 首页即关于页:标题与 SITE.title 相同时 RootLayout 不再追加站点后缀
 const title: string = "Rocky Chang";
-const latestThoughts = (await getRenderedThoughts()).slice(0, 3);
 ---
-<RootLayout title={title}>
-    <Header/>
-    <h1 class="sr-only">Rocky Chang - AI 全栈工程师的个人博客</h1>
-    <!-- 区块间 64 -->
-    <div class="flex flex-col gap-y-16">
-        <section>
-            <SectionHead title="文章" moreHref="/archive" />
-            <ArticleList/>
+<RootLayout title={title} description="关于 RockyChang:关注 AI 与方法论,目前专注于 Agent Coding 实践与 Agent 应用开发">
+    <Header />
+
+    <!-- 名字即页题:24/700,拉丁落在 Source Serif 4 -->
+    <!-- 页题上方再压 72/144,叠在布局的 64/128 上,合计 136/272:小标题靠留白立住,首屏只留这一件事 -->
+    <h1 class="mt-18 text-2xl font-bold text-foreground md:mt-36">RockyChang</h1>
+
+    <!-- 自述是两行短句,不加段距,靠 1.75 行高自然成块 -->
+    <div class="mt-4 text-pretty text-base text-body">
+        <p>关注 AI 与方法论，热爱简单优雅的设计。</p>
+        <p>目前专注于 Agent Coding 实践与 Agent 应用开发。</p>
+    </div>
+
+    <!-- 联系方式:14 muted 一行,外链箭头由 .ext-arrow 提供 -->
+    <div class="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+        {links.map(([label, href]) => {
+            const isExternal = href.startsWith("http");
+            return (
+                <a
+                    href={href}
+                    class="ext-arrow transition-colors hover:text-foreground"
+                    {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                >
+                    {label}
+                </a>
+            );
+        })}
+    </div>
+
+    <!-- 区块间 64,区块内小标到内容 24 -->
+    <div class="mt-16 flex flex-col gap-y-16">
+        <section class="flex flex-col gap-y-6">
+            <!-- 本页小标是 16/500 实心,不走 SectionHead 的 14 muted 列表标 -->
+            <h2 class="text-base font-medium text-foreground">项目</h2>
+            <ProjectList />
         </section>
-        {latestThoughts.length > 0 && (
-            <section>
-                <SectionHead title="想法" moreHref="/thoughts" />
-                <ThoughtList thoughts={latestThoughts} />
-            </section>
-        )}
-        <section>
-            <SectionHead title="项目" />
-            <ProjectList/>
+
+        <section class="flex flex-col gap-y-6">
+            <h2 class="text-base font-medium text-foreground">技术栈</h2>
+            <div class="flex flex-col gap-y-6">
+                {stacks.map(([label, techs]) => (
+                    <div class="flex flex-col gap-y-1 sm:flex-row sm:gap-x-8 sm:gap-y-0">
+                        <span class="text-base text-muted-foreground sm:w-28 sm:shrink-0">{label}</span>
+                        <span class="text-base text-body">{techs.join(" · ")}</span>
+                    </div>
+                ))}
+            </div>
+        </section>
+
+        <section class="flex flex-col gap-y-6">
+            <h2 class="text-base font-medium text-foreground">关于本站</h2>
+            <p class="text-pretty text-base text-body">
+                Flow 是我的数字花园，用于记录个人沉淀、想法与学习。我会定期在这里<a href="/archive" class="link-inline">撰写文章</a>，分享关于 AI、开发、设计和个人成长的思考。
+            </p>
         </section>
     </div>
-    <Footer/>
+
+    <Footer />
 </RootLayout>
