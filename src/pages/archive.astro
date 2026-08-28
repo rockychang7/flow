@@ -1,5 +1,6 @@
 ---
 import ArticleListItem from "@/components/cards/article-list-item.astro";
+import LoadMore from "@/components/common/load-more.astro";
 import SectionHead from "@/components/common/section-head.astro";
 import { getPublishedArticles, sortByDateDesc } from "@/lib/articles";
 import Footer from "../components/common/footer.astro";
@@ -16,6 +17,16 @@ for (const post of sortBlogPosts) {
     postsByYear.get(year)!.push(post);
 }
 
+// 一条文章只占一行,比更新日志轻得多,首屏放 10 条。
+// 年份只是视觉分节,展开按文章总序推进;整年都在首屏之外时连年份头一起藏。
+const INITIAL = 10;
+let cursor = 0;
+const groups = [...postsByYear.entries()].map(([year, posts]) => {
+    const items = posts.map((post) => ({ post, index: cursor++ }));
+    return { year, items, hidden: items.every((item) => item.index >= INITIAL) };
+});
+const hasMore = sortBlogPosts.length > INITIAL;
+
 const title: string = "文章";
 ---
 <RootLayout title={title} description="按时间浏览所有文章">
@@ -29,21 +40,24 @@ const title: string = "文章";
         </SectionHead>
         <!-- 分组间 48;年份组头 16/500 muted -->
         <div class="flex flex-col gap-y-12">
-            {[...postsByYear.entries()].map(([year, posts]) => (
-                <section>
-                    <h2 class="mb-6 font-medium text-muted-foreground">{year}</h2>
+            {groups.map((group) => (
+                <section class:list={["reveal-group", group.hidden && "hidden"]}>
+                    <h2 class="mb-6 font-medium text-muted-foreground">{group.year}</h2>
                     <div class="flex flex-col">
-                        {posts.map(post => (
+                        {group.items.map(({ post, index }) => (
                             <ArticleListItem
                                 title={post.data.title}
                                 date={post.data.publish_date}
                                 url={`/articles/${post.id}`}
+                                class={index >= INITIAL ? "reveal-item hidden" : undefined}
                             />
                         ))}
                     </div>
                 </section>
             ))}
         </div>
+
+        {hasMore && <LoadMore step={10} />}
     </div>
 
     <Footer/>

@@ -1,44 +1,60 @@
 ---
+import LoadMore from "@/components/common/load-more.astro";
 import SectionHead from "@/components/common/section-head.astro";
 import Footer from "@/components/common/footer.astro";
 import Header from "@/components/common/header.astro";
 import RootLayout from "@/layouts/RootLayout.astro";
 import { changelogs } from "@/data/changelog-info";
 
-const title = "Changelog";
+const title = "更新日志";
+
+// 条目是「一句话 + 一列特性」,分量重,首屏只放 5 条
+const INITIAL = 5;
+const hasMore = changelogs.length > INITIAL;
 ---
 
-<RootLayout title={title}>
+<RootLayout title={title} description="本站的版本更新记录">
     <Header/>
 
     <div class="flex flex-col">
-        <SectionHead title="Changelog" as="h1" />
+        <SectionHead title="更新日志" as="h1" />
         <!-- 条目走全站行语法:等宽日期 + 文字;大版本靠字重与墨色区分,不用徽章与时间线 -->
         <div class="flex flex-col gap-y-12">
-            {changelogs.map((log) => (
-                <section class="flex flex-col gap-y-2 sm:flex-row sm:gap-x-4 sm:gap-y-0">
-                    <time class="shrink-0 font-mono text-sm text-muted-foreground sm:w-24">{log.date}</time>
+            {changelogs.map((log, index) => (
+                <section
+                    class:list={[
+                        "reveal-item flex flex-col gap-y-2 sm:flex-row sm:gap-x-4 sm:gap-y-0",
+                        index >= INITIAL && "hidden",
+                    ]}
+                >
+                    {/* 左标列宽与关于页技术栈同为 w-28,两处共用同一种左标右值行 */}
+                    <time class="shrink-0 font-mono text-sm text-muted-foreground sm:w-28">{log.date}</time>
                     <div class="flex min-w-0 flex-col gap-y-2">
                         <div class="flex flex-wrap items-baseline gap-x-4">
                             <span
                                 class:list={[
-                                    "min-w-0 break-words font-medium",
-                                    log.isMajor ? "text-foreground" : "text-muted-foreground",
+                                    "min-w-0 break-words",
+                                    log.isMajor
+                                        ? "font-medium text-foreground"
+                                        : "text-muted-foreground",
                                 ]}
                             >
                                 {log.description}
                             </span>
                             <span class="font-mono text-caption font-medium text-muted-foreground">{log.version}</span>
                         </div>
-                        <ul class="flex flex-col gap-y-2">
+                        {/* 项目符号与 .prose li::marker 同用 muted 色:条目常折行,无标记会糊成一片 */}
+                        <ul class="flex list-disc flex-col gap-y-1.5 pl-4 marker:text-muted-foreground">
                             {log.features.map((feature) => (
-                                <li class="text-sm text-body">{feature}</li>
+                                <li class="pl-1 text-sm text-body">{feature}</li>
                             ))}
                         </ul>
                     </div>
                 </section>
             ))}
         </div>
+
+        {hasMore && <LoadMore step={5} />}
     </div>
 
     <Footer/>

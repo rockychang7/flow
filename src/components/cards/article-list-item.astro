@@ -6,13 +6,15 @@ interface Props {
     title: string;
     date: Date;
     url: string;
+    /** 归档页用它挂逐批展开的钩子,其余页面不传 */
+    class?: string;
 }
 
-const {title, date, url} = Astro.props;
+const {title, date, url, class: className} = Astro.props;
 ---
 
 <!-- 全站统一的行语法:等宽日期 14 muted 定宽列 + 标题 16/500;零卡片零底色,hover 只换标题颜色 -->
-<a href={url} class="group flex items-baseline gap-4 py-2">
+<a href={url} class:list={["group flex items-baseline gap-4 py-2", className]}>
     <time class="w-24 shrink-0 font-mono text-sm text-muted-foreground">
         {dayjs(date).format(DATE_FORMAT)}
     </time>

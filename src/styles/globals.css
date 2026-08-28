@@ -414,6 +414,35 @@
     display: none;
 }
 
+/* ── 逐批展开的入场动效 ──────────────────────────────────────────────
+   引起前庭不适的是位移不是淡入,所以基础态保留淡入、位移单独放进
+   no-preference 守卫(与全站 scroll-behavior 同一处理)。
+   时长压在 300ms 内,缓动 ease-out 让起手快收尾稳;只动 opacity 与
+   transform 这两个合成器属性,不碰会触发重排的 height。
+   fill-mode: both 让错开延迟期间先保持 from 态,避免先闪一下再动。 */
+@keyframes reveal-fade {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes reveal-rise {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+}
+
+.reveal-enter {
+    animation: reveal-fade 200ms ease-out both;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .reveal-enter {
+        animation: reveal-rise 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+}
+
 /* Shiki 双主题:亮色用内联的 github-light,暗色切到 --shiki-dark 分支;
    面色一律回落到 muted token,不用主题自带的背景色 */
 /* Shiki 把配色写成行内 style,只能用 !important 掀掉它自带的面色 */

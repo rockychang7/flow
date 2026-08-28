@@ -1,0 +1,83 @@
+---
+// 静态站没有分页接口:条目全部照常渲染进 HTML(搜索引擎读得到),
+// 超出首屏的先挂 .reveal-item.hidden,由本组件逐批放出。
+// 按年分组这类"组头 + 条目"的结构,组容器挂 .reveal-group,
+// 组内出现可见条目时组头才跟着放出来。
+interface Props {
+    /** 每次点击放出的条数 */
+    step?: number;
+    label?: string;
+}
+
+const { step = 5, label = "加载更多" } = Astro.props;
+---
+
+<button
+    type="button"
+    data-reveal-more
+    data-step={step}
+    class="mt-12 cursor-pointer self-start text-sm text-muted-foreground transition-colors hover:text-foreground"
+>
+    {label}
+</button>
+
+<noscript>
+    <style>
+        /* 无脚本时全部展开,按钮撤掉,免得留一个按不动的按钮 */
+        .reveal-item { display: flex !important; }
+        .reveal-group { display: block !important; }
+        [data-reveal-more] { display: none !important; }
+    </style>
+</noscript>
+
+<script>
+    // 每条错开 40ms:10 条也只多出 360ms,不至于让人等
+    const STAGGER_MS = 40;
+
+    function init() {
+        const button = document.querySelector<HTMLButtonElement>("[data-reveal-more]");
+        // astro:page-load 首屏也会触发,用标记挡住重复绑定
+        if (!button || button.dataset.bound) return;
+        button.dataset.bound = "1";
+
+        const step = Number(button.dataset.step) || 5;
+
+        button.addEventListener("click", () => {
+            const pending = Array.from(
+                document.querySelectorAll<HTMLElement>(".reveal-item.hidden")
+            );
+            const revealed = pending.slice(0, step);
+            revealed.forEach((item) => item.classList.remove("hidden"));
+
+            // 组头:组内一旦有可见条目就放出来
+            const openedGroups = new Set<HTMLElement>();
+            document.querySelectorAll<HTMLElement>(".reveal-group.hidden").forEach((group) => {
+                if (group.querySelector(".reveal-item:not(.hidden)")) {
+                    group.classList.remove("hidden");
+                    openedGroups.add(group);
+                }
+            });
+
+            // 整组新出现时动画加在组上,组内条目不再各动一次,避免位移叠加
+            const targets: HTMLElement[] = [
+                ...openedGroups,
+                ...revealed.filter((item) => {
+                    const group = item.closest<HTMLElement>(".reveal-group");
+                    return !group || !openedGroups.has(group);
+                }),
+            ].sort((a, b) =>
+                a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1
+            );
+
+            targets.forEach((el, index) => {
+                el.style.animationDelay = `${index * STAGGER_MS}ms`;
+                el.classList.add("reveal-enter");
+            });
+
+            if (pending.length <= step) button.classList.add("hidden");
+        });
+    }
+
+    init();
+    document.addEventListener("astro:page-load", init);
+</script>
