@@ -112,6 +112,10 @@
     html {
         /* 顶栏定高 48,锚点跳转多留一档 */
         scroll-padding-top: 4rem;
+        /* main 有 min-h-svh:短页正好一屏没滚动条,长页有。
+           经典滚动条(Windows)要占 15px 宽,两种页之间切换会让居中版心横向漂 7~8px。
+           恒定预留滚动条槽位消掉这个差；overlay 滚动条(macOS/移动端)槽宽为 0,不受影响。 */
+        scrollbar-gutter: stable;
     }
 
     /* 位移类动效一律受 reduced-motion 守卫 */
