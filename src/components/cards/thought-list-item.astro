@@ -5,29 +5,68 @@ interface Props {
 }
 
 const { html, createdAt } = Astro.props;
+
+// created_at 是无时区的本地时间串。服务端只渲染绝对时间(月-日 时:分),
+// 一周内的条目由客户端脚本改写成相对时间 —— 相对时间若在构建时算,
+// 会永远停在构建那一刻。
+const [datePart, timePart] = createdAt.split(" ");
+const absolute = `${datePart.slice(5)} ${timePart.slice(0, 5)}`;
 ---
 
-<!-- 想法:正文宋体 16/1.75 + 等宽 13 时间戳,无卡片无线,条目之间只有留白 -->
-<article class="thought-body">
-    <div class="prose max-w-none" set:html={html} />
-    <time class="mt-2 block font-mono text-caption font-medium text-muted-foreground">
-        {createdAt.slice(0, 16)}
-    </time>
+<!-- Threads 式条目:左侧圆点 + 竖线串成时间线(占掉头像那一栏),
+     右侧 @handle · 时间一行,正文在下。无卡片无边框,与全站一致。 -->
+<article class="thought-item flex gap-x-3 pb-10 last:pb-0">
+    <div class="relative flex w-1.5 shrink-0 justify-center">
+        <span class="mt-2 size-1.5 shrink-0 rounded-full bg-muted-foreground"></span>
+        <span class="thought-line absolute inset-x-0 top-4 bottom-0 mx-auto w-px bg-border"></span>
+    </div>
+
+    <div class="min-w-0 flex-1">
+        <div class="flex items-baseline gap-x-2">
+            <span class="text-sm font-medium text-foreground">@Rocky</span>
+            <time
+                class="font-mono text-caption font-medium text-muted-foreground"
+                datetime={createdAt.replace(" ", "T")}
+                data-thought-time={createdAt}
+            >{absolute}</time>
+        </div>
+
+        <div class="thought-body mt-2">
+            <div class="prose max-w-none" set:html={html} />
+        </div>
+    </div>
 </article>
 
-<style is:global>
-    @reference "../../styles/globals.css";
+<script>
+    const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
-    /* 想法是短文,段距收到 8;其余排版规则与长文共用 .prose 那一套 */
-    .thought-body .prose p {
-        @apply my-2;
+    // "2026-08-04 17:24:14" 不是 ISO 格式,各浏览器解析口径不一,手动拆成本地时间
+    function parseLocal(value: string): Date | null {
+        const m = value.match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/);
+        if (!m) return null;
+        return new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]);
     }
 
-    .thought-body .prose > :first-child {
-        margin-top: 0;
+    function relative(diffMs: number): string {
+        const minutes = Math.floor(diffMs / 60000);
+        if (minutes < 1) return "刚刚";
+        if (minutes < 60) return `${minutes} 分钟前`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours} 小时前`;
+        return `${Math.floor(hours / 24)} 天前`;
     }
 
-    .thought-body .prose > :last-child {
-        margin-bottom: 0;
+    function render() {
+        const now = Date.now();
+        document.querySelectorAll<HTMLTimeElement>("time[data-thought-time]").forEach((el) => {
+            const date = parseLocal(el.dataset.thoughtTime ?? "");
+            if (!date) return;
+            const diff = now - date.getTime();
+            // 一周内换相对时间;更早的保留服务端渲染的日期
+            if (diff >= 0 && diff < WEEK_MS) el.textContent = relative(diff);
+        });
     }
-</style>
+
+    render();
+    document.addEventListener("astro:page-load", render);
+</script>

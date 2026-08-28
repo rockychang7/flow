@@ -383,6 +383,37 @@
     }
 }
 
+/* ── 想法正文 ────────────────────────────────────────────────────────
+   想法是短文,排版与长文共用 .prose,只把纵向节奏整体收紧。
+   /say 的预览复用同一个类,写的时候看到的就是发出去的样子。 */
+.thought-body .prose p {
+    margin-block: 0.5rem;
+}
+
+.thought-body .prose > :first-child {
+    margin-top: 0;
+}
+
+.thought-body .prose > :last-child {
+    margin-bottom: 0;
+}
+
+/* 图片贴着文字走,不留长文那 2em 呼吸位;左对齐不居中,与条目左缘对齐 */
+.thought-body .prose img {
+    margin-block: 0.75rem;
+    margin-inline: 0;
+}
+
+/* 想法不破栏:条目本就窄,旁边没有可借的空间 */
+.thought-body .prose > pre {
+    margin-inline: 0;
+}
+
+/* 时间线竖线连到下一条,最后一条不再往下拖 */
+.thought-item:last-child .thought-line {
+    display: none;
+}
+
 /* Shiki 双主题:亮色用内联的 github-light,暗色切到 --shiki-dark 分支;
    面色一律回落到 muted token,不用主题自带的背景色 */
 /* Shiki 把配色写成行内 style,只能用 !important 掀掉它自带的面色 */

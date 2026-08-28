@@ -1,8 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DATETIME_FORMAT, THOUGHTS_GITHUB } from "@/constant/constants";
+import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
-import React, { useEffect, useState } from "react";
+import { Bold, Code, Image as ImageIcon, Italic, Link as LinkIcon, List, Quote } from "lucide-react";
+// 预览用的浏览器端 Markdown 渲染器。构建时那套(@astrojs/markdown-remark)捆着
+// 代码高亮引擎,体积上不了浏览器;marked 的 CommonMark 口径与之基本一致。
+// 内容由站长本人在自己浏览器里输入,不做额外净化。
+import { marked } from "marked";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const TOKEN_KEY = "flow_gh_token";
 const REPO_URL = `https://api.github.com/repos/${THOUGHTS_GITHUB.owner}/${THOUGHTS_GITHUB.repo}`;
@@ -141,6 +147,77 @@ export function ThoughtComposer() {
     const [error, setError] = useState<{ message: string; reauth: boolean } | null>(null);
     const [publishedAt, setPublishedAt] = useState("");
     const [recent, setRecent] = useState<ThoughtEntry[]>([]);
+    const [mode, setMode] = useState<"write" | "preview">("write");
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    const previewHtml = useMemo(
+        () => (mode === "preview" ? (marked.parse(text, { async: false }) as string) : ""),
+        [mode, text]
+    );
+
+    // 改写正文并把光标落回指定选区(setState 后 DOM 下一帧才更新)
+    const applyEdit = (next: string, selStart: number, selEnd: number) => {
+        setText(next);
+        requestAnimationFrame(() => {
+            const el = textareaRef.current;
+            if (!el) return;
+            el.focus();
+            el.setSelectionRange(selStart, selEnd);
+        });
+    };
+
+    // 用标记夹住选区;没选中就填占位词并选中它,直接打字即可覆盖
+    const wrap = (before: string, after: string, placeholder: string) => {
+        const el = textareaRef.current;
+        if (!el) return;
+        const { selectionStart: start, selectionEnd: end } = el;
+        const inner = text.slice(start, end) || placeholder;
+        applyEdit(
+            text.slice(0, start) + before + inner + after + text.slice(end),
+            start + before.length,
+            start + before.length + inner.length
+        );
+    };
+
+    // 链接与图片:选区当描述文字,插入后把 url 段选中,等着粘贴覆盖
+    const insertUrlMark = (prefix: string, placeholder: string) => {
+        const el = textareaRef.current;
+        if (!el) return;
+        const { selectionStart: start, selectionEnd: end } = el;
+        const label = text.slice(start, end) || placeholder;
+        const head = `${prefix}[${label}](`;
+        applyEdit(
+            `${text.slice(0, start)}${head}url)${text.slice(end)}`,
+            start + head.length,
+            start + head.length + 3
+        );
+    };
+
+    // 行首标记:整行加,已经有标记的行跳过
+    const prefixLines = (mark: string) => {
+        const el = textareaRef.current;
+        if (!el) return;
+        const { selectionStart: start, selectionEnd: end } = el;
+        const from = text.lastIndexOf("\n", start - 1) + 1;
+        const rawTo = text.indexOf("\n", end);
+        const to = rawTo === -1 ? text.length : rawTo;
+        const block = text
+            .slice(from, to)
+            .split("\n")
+            .map((line) => (line.startsWith(mark) ? line : mark + line))
+            .join("\n");
+        applyEdit(text.slice(0, from) + block + text.slice(to), from, from + block.length);
+    };
+
+    const tools = [
+        { icon: Bold, label: "粗体", run: () => wrap("**", "**", "粗体") },
+        { icon: Italic, label: "斜体", run: () => wrap("*", "*", "斜体") },
+        { icon: LinkIcon, label: "链接", run: () => insertUrlMark("", "链接文字") },
+        { icon: ImageIcon, label: "图片(粘贴图片网址)", run: () => insertUrlMark("!", "图片") },
+        { icon: Code, label: "行内代码", run: () => wrap("`", "`", "代码") },
+        { icon: Quote, label: "引用", run: () => prefixLines("> ") },
+        { icon: List, label: "列表", run: () => prefixLines("- ") },
+    ];
 
     // localStorage 只能在挂载后读(SSR/hydration 一致性)
     useEffect(() => {
@@ -272,19 +349,73 @@ export function ThoughtComposer() {
                 </div>
             ) : (
                 <>
-                    <textarea
-                        className={TEXTAREA_CLASS}
-                        placeholder="随时记录你的想法,支持 Markdown…"
-                        value={text}
-                        onChange={(e) => setText(e.target.value)}
-                        onKeyDown={(e) => {
-                            if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-                                e.preventDefault();
-                                void publish();
-                            }
-                        }}
-                        disabled={publishing}
-                    />
+                    <div className="flex flex-col gap-2">
+                        {/* 版心只有 576,放不下左右对照,写与预览改成切页 */}
+                        <div className="flex items-center border-b border-border">
+                            {(["write", "preview"] as const).map((m) => (
+                                <button
+                                    key={m}
+                                    type="button"
+                                    onClick={() => setMode(m)}
+                                    className={cn(
+                                        "-mb-px border-b px-3 py-2 text-sm transition-colors",
+                                        mode === m
+                                            ? "border-foreground text-foreground"
+                                            : "border-transparent text-muted-foreground hover:text-foreground"
+                                    )}
+                                >
+                                    {m === "write" ? "写" : "预览"}
+                                </button>
+                            ))}
+                        </div>
+
+                        {mode === "write" ? (
+                            <>
+                                {/* 工具条只是往文本框里插 Markdown 语法,存的仍是纯 Markdown */}
+                                <div className="flex flex-wrap items-center gap-x-1">
+                                    {tools.map(({ icon: Icon, label, run }) => (
+                                        <button
+                                            key={label}
+                                            type="button"
+                                            title={label}
+                                            aria-label={label}
+                                            onClick={run}
+                                            disabled={publishing}
+                                            className="rounded-sm p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                                        >
+                                            <Icon className="size-4" />
+                                        </button>
+                                    ))}
+                                </div>
+                                <textarea
+                                    ref={textareaRef}
+                                    className={TEXTAREA_CLASS}
+                                    placeholder="随时记录你的想法,支持 Markdown;图片直接贴网址…"
+                                    value={text}
+                                    onChange={(e) => setText(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                                            e.preventDefault();
+                                            void publish();
+                                        }
+                                    }}
+                                    disabled={publishing}
+                                />
+                            </>
+                        ) : (
+                            /* 复用 .thought-body,预览与 /thoughts 上的成品同一套排版 */
+                            <div className="thought-body min-h-40 rounded-md border border-input px-3 py-2">
+                                {text.trim() ? (
+                                    <div
+                                        className="prose max-w-none"
+                                        dangerouslySetInnerHTML={{ __html: previewHtml }}
+                                    />
+                                ) : (
+                                    <p className="text-sm text-muted-foreground">还没有内容。</p>
+                                )}
+                            </div>
+                        )}
+                    </div>
                     <div className="flex items-center justify-between">
                         <span className="font-mono text-caption font-medium text-muted-foreground">
                             {text.length > 0 ? `${text.length} 字` : ""}
