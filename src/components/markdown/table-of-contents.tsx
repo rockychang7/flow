@@ -23,32 +23,46 @@ export function TableOfContents({headings, className, onItemClick, hideTitle}: T
     const indentClass = ["", "pl-4", "pl-8"];
 
     useEffect(() => {
-        const ids = filteredHeadings.map((h) => h.slug);
-        const observer = new IntersectionObserver(
-            (entries) => {
-                for (const entry of entries) {
-                    if (entry.isIntersecting) {
-                        // 标题进入视口顶部判定区,设为当前项
-                        setActiveId(entry.target.id);
-                    } else {
-                        // 向上回滚、标题从判定区下方离开时,回退到上一个标题
-                        const zoneBottom = entry.rootBounds?.bottom ?? window.innerHeight * 0.2;
-                        if (entry.boundingClientRect.top >= zoneBottom) {
-                            const idx = ids.indexOf(entry.target.id);
-                            if (idx > 0) setActiveId(ids[idx - 1]);
-                        }
-                    }
-                }
-            },
-            {rootMargin: "0px 0px -80% 0px"}
-        );
+        const ids = headings.filter((h) => h.depth <= 3).map((h) => h.slug);
+        if (ids.length === 0) return;
 
-        for (const id of ids) {
-            const element = document.getElementById(id);
-            if (element) observer.observe(element);
-        }
+        let frame = 0;
 
-        return () => observer.disconnect();
+        // 当前项一律由滚动位置直接算出,不靠 IntersectionObserver 的进出事件推断:
+        // 观察器在挂载时会把每个标题的初始状态各报一次,按事件推断会被最后一条覆盖,
+        // 结果刚进页面就点亮了倒数第二个标题。
+        const update = () => {
+            frame = 0;
+            // 判定线:视口顶部往下 20%,越过它的最后一个标题即当前所在段落
+            const line = window.innerHeight * 0.2;
+            let current = ids[0];
+            for (const id of ids) {
+                const element = document.getElementById(id);
+                if (!element) continue;
+                if (element.getBoundingClientRect().top > line) break;
+                current = id;
+            }
+            // 触底时末节可能整段都在判定线下方,永远轮不到它,单独兜一下
+            const atBottom =
+                window.scrollY + window.innerHeight >=
+                document.documentElement.scrollHeight - 2;
+            setActiveId(atBottom ? ids[ids.length - 1] : current);
+        };
+
+        const schedule = () => {
+            if (frame) return;
+            frame = requestAnimationFrame(update);
+        };
+
+        update();
+        window.addEventListener("scroll", schedule, {passive: true});
+        window.addEventListener("resize", schedule);
+
+        return () => {
+            if (frame) cancelAnimationFrame(frame);
+            window.removeEventListener("scroll", schedule);
+            window.removeEventListener("resize", schedule);
+        };
     }, [headings]);
 
     if (filteredHeadings.length === 0) return null;
