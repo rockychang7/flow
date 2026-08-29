@@ -44,6 +44,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       crossorigin
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 画布底色前置:浏览器在样式表到达前按 color-scheme 铺画布,
+         深色用户冷加载不再先白后黑;下方主题脚本会把两个 meta 改成精确值 -->
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ffffff" />
+    <style is:inline>html{background-color:#ffffff}html.dark{background-color:#0c0a09}</style>
     <meta name="generator" content={Astro.generator} />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
@@ -80,9 +85,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
         const apply = () => {
           const stored = localStorage.getItem("theme");
-          const theme = stored ?? (systemDark.matches ? "dark" : "light");
-          document.documentElement.classList.toggle("dark", theme === "dark");
+          const dark = stored ? stored === "dark" : systemDark.matches;
+          document.documentElement.classList.toggle("dark", dark);
           document.documentElement.dataset.themeMode = stored ?? "system";
+          // 画布与手机浏览器外壳的底色跟精确主题走,样式表未就位时也生效
+          document.querySelector('meta[name="color-scheme"]')?.setAttribute("content", dark ? "dark" : "light");
+          document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0c0a09" : "#ffffff");
         };
         apply();
         systemDark.addEventListener("change", apply);
@@ -100,15 +108,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       });
 
       // AFTER swap: fallback to ensure theme is correct
+      // (换入的新 head 带的是静态 meta,这里恢复成精确值)
       document.addEventListener("astro:after-swap", () => {
         const stored = localStorage.getItem("theme");
-        const theme =
-          stored ||
-          (window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light");
-        document.documentElement.classList.toggle("dark", theme === "dark");
+        const dark = stored
+          ? stored === "dark"
+          : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.classList.toggle("dark", dark);
         document.documentElement.dataset.themeMode = stored || "system";
+        document.querySelector('meta[name="color-scheme"]')?.setAttribute("content", dark ? "dark" : "light");
+        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0c0a09" : "#ffffff");
       });
     </script>
 
