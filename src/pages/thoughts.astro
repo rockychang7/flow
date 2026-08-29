@@ -9,19 +9,19 @@ import RootLayout from "../layouts/RootLayout.astro";
 const thoughts = await getRenderedThoughts();
 const title: string = "想法";
 ---
-<RootLayout title={title} description="碎片想法与近况">
+<RootLayout title={title} description="灵光一闪的碎片记录">
     <Header/>
     <div class="flex flex-col">
-        <SectionHead title="想法" as="h1" />
+        <SectionHead title="想法" as="h1" intro="灵光一闪的碎片记录。" />
     <!-- 列表不加 gap:条目自带下留白,竖线才能连成一条不断的时间线 -->
         {thoughts.length > 0 ? (
-            <div class="flex flex-col">
+            <div class="mt-12 flex flex-col">
                 {thoughts.map((thought) => (
                     <ThoughtListItem html={thought.html} createdAt={thought.createdAt} />
                 ))}
             </div>
         ) : (
-            <p class="text-muted-foreground">还没有想法。</p>
+            <p class="mt-12 text-muted-foreground">还没有想法。</p>
         )}
     </div>
 

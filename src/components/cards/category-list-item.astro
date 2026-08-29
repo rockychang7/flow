@@ -1,14 +1,17 @@
 ---
+// 「名称 + 计数」行,分类页与笔记专题行共用;改样式记得两处场景都看一眼
 interface Props {
     name: string;
     count: number;
     url: string;
+    /** 逐批展开的钩子(reveal-item),不需要就不传 */
+    class?: string;
 }
 
-const {name, count, url} = Astro.props;
+const {name, count, url, class: className} = Astro.props;
 ---
 
-<a href={url} class="group flex items-baseline justify-between gap-4 py-2">
+<a href={url} class:list={["group flex items-baseline justify-between gap-4 py-2", className]}>
     <span class="min-w-0 break-words font-medium transition-colors group-hover:text-muted-foreground">{name}</span>
     <span class="shrink-0 font-mono text-sm text-muted-foreground">{count}</span>
 </a>

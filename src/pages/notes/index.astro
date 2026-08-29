@@ -1,0 +1,72 @@
+---
+import ArticleListItem from "@/components/cards/article-list-item.astro";
+import CategoryListItem from "@/components/cards/category-list-item.astro";
+import Footer from "@/components/common/footer.astro";
+import Header from "@/components/common/header.astro";
+import LoadMore from "@/components/common/load-more.astro";
+import SectionHead from "@/components/common/section-head.astro";
+import RootLayout from "@/layouts/RootLayout.astro";
+import { getVisibleNotes, groupNotes } from "@/lib/notes";
+
+const { groups, misc } = groupNotes(await getVisibleNotes());
+
+// 专题行与散篇条目连续编号,逐批展开跨组推进(同归档页);
+// 整组都在首屏之外时连组头一起藏
+const INITIAL = 10;
+let cursor = 0;
+const topicItems = groups.map((group) => ({ group, index: cursor++ }));
+const topicsHidden = topicItems.length > 0 && topicItems.every((item) => item.index >= INITIAL);
+const miscItems = misc.map((note) => ({ note, index: cursor++ }));
+const miscHidden = miscItems.length > 0 && miscItems.every((item) => item.index >= INITIAL);
+const hasMore = cursor > INITIAL;
+---
+<RootLayout title="笔记" description="学习笔记,记录学习过程与总结">
+    <Header/>
+    <div class="flex flex-col">
+        <SectionHead title="笔记" as="h1" intro="学习笔记,记录学习过程与总结。">
+            <a
+                slot="aside"
+                href="/notes/rss.xml"
+                class="shrink-0 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >RSS</a>
+        </SectionHead>
+
+        <div class="mt-12 flex flex-col gap-y-12">
+            {topicItems.length > 0 && (
+                <section class:list={["reveal-group", topicsHidden && "hidden"]}>
+                    <h2 class="mb-6 font-medium text-muted-foreground">专题</h2>
+                    <div class="flex flex-col">
+                        {topicItems.map(({ group, index }) => (
+                            <CategoryListItem
+                                name={group.topic.name}
+                                count={group.notes.length}
+                                url={`/notes/${group.topic.slug}`}
+                                class={index >= INITIAL ? "reveal-item hidden" : undefined}
+                            />
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {miscItems.length > 0 && (
+                <section class:list={["reveal-group", miscHidden && "hidden"]}>
+                    <h2 class="mb-6 font-medium text-muted-foreground">散篇</h2>
+                    <div class="flex flex-col">
+                        {miscItems.map(({ note, index }) => (
+                            <ArticleListItem
+                                title={note.data.title}
+                                date={note.data.created}
+                                url={`/notes/${note.id}`}
+                                class={index >= INITIAL ? "reveal-item hidden" : undefined}
+                            />
+                        ))}
+                    </div>
+                </section>
+            )}
+        </div>
+
+        {hasMore && <LoadMore step={10} />}
+    </div>
+
+    <Footer/>
+</RootLayout>

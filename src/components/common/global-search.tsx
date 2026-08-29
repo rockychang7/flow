@@ -5,7 +5,14 @@ import Fuse, {type FuseResultMatch} from "fuse.js";
 import {Search, X} from "lucide-react";
 import React, {useEffect, useMemo, useRef, useState} from "react";
 
-const GlobalSearch: React.FC = () => {
+interface GlobalSearchProps {
+    /** 移动菜单里的第二个实例传 false,避免两份 ⌘K 监听各开一个弹窗 */
+    hotkey?: boolean;
+    /** icon = 顶栏图标钮(桌面);row = 移动菜单里的整行条目 */
+    variant?: "icon" | "row";
+}
+
+const GlobalSearch: React.FC<GlobalSearchProps> = ({ hotkey = true, variant = "icon" }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [searchData, setSearchData] = useState<SearchItem[] | null>(null);
@@ -15,6 +22,10 @@ const GlobalSearch: React.FC = () => {
 
     useEffect(() => {
         setPortalContainer(document.getElementById("dialog-portal"));
+    }, []);
+
+    useEffect(() => {
+        if (!hotkey) return;
         const down = (e: KeyboardEvent) => {
             if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault();
@@ -23,7 +34,7 @@ const GlobalSearch: React.FC = () => {
         };
         document.addEventListener("keydown", down);
         return () => document.removeEventListener("keydown", down);
-    }, []);
+    }, [hotkey]);
 
     // 首次打开时才拉取搜索索引,避免把索引内联进每个页面的 HTML
     useEffect(() => {
@@ -107,14 +118,26 @@ const GlobalSearch: React.FC = () => {
 
     return (
         <>
-            <button
-                onClick={() => setIsOpen(true)}
-                className="-m-1 cursor-pointer rounded-sm p-2 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                aria-label="打开搜索"
-                title="搜索 (⌘K)"
-            >
-                <Search className="size-4"/>
-            </button>
+            {variant === "row" ? (
+                <button
+                    onClick={() => setIsOpen(true)}
+                    data-menu-close
+                    className="flex w-full cursor-pointer items-center gap-3 py-3 font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    aria-label="打开搜索"
+                >
+                    <Search className="size-4 text-muted-foreground"/>
+                    搜索
+                </button>
+            ) : (
+                <button
+                    onClick={() => setIsOpen(true)}
+                    className="-m-1 cursor-pointer rounded-sm p-2 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    aria-label="打开搜索"
+                    title="搜索 (⌘K)"
+                >
+                    <Search className="size-4"/>
+                </button>
+            )}
 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 {/* @ts-ignore */}

@@ -6,6 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
+import remarkCallouts from "./src/lib/remark-callouts.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -39,7 +40,8 @@ export default defineConfig({
     },
     markdown: {
         processor: unified({
-            remarkPlugins: [[remarkToc, {heading: "目录", maxDepth: 3}],
+            remarkPlugins: [remarkCallouts,
+                [remarkToc, {heading: "目录", maxDepth: 3}],
                 [remarkCollapse, {test: "目录", summary: "open table of contents"}]],
         }),
     }

@@ -4,24 +4,146 @@ import GlobalSearch from "./global-search";
 import LogoNew from "./logo-new.astro";
 import { ModeToggle } from "./mode-toggle";
 ---
-<!-- 48px 定高毛玻璃顶栏:半透明底 + 16px 背景模糊,无 hairline -->
+<!-- 48px 定高毛玻璃顶栏:半透明底 + 16px 背景模糊,无 hairline。
+     窄屏只剩 logo + 菜单钮,导航/搜索/主题全部收进下方的全宽面板 -->
 <header class="fixed inset-x-0 top-0 z-50 h-12 bg-background/50 backdrop-blur-[16px]">
     <div class="mx-auto flex h-full w-full max-w-column items-center justify-between px-4">
         <a href="/" class="shrink-0 select-none">
             <LogoNew />
         </a>
 
-        <nav class="flex items-center gap-x-4 sm:gap-x-6" aria-label="站点导航">
-            {menuInfo.map((item) => (
-                <a
-                    href={item.menuLink}
-                    class="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                    {item.menuName}
-                </a>
-            ))}
+        <!-- 桌面:文字导航 + 搜索 + 主题 -->
+        <div class="hidden items-center gap-x-6 sm:flex">
+            <nav class="flex items-center gap-x-6" aria-label="站点导航">
+                {menuInfo.map((item) => (
+                    <a
+                        href={item.menuLink}
+                        class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                        {item.menuName}
+                    </a>
+                ))}
+            </nav>
             <GlobalSearch client:load />
             <ModeToggle client:load />
-        </nav>
+        </div>
+
+        <!-- 移动:菜单钮,菜单/关闭两枚图标只做透明度互换 -->
+        <button
+            type="button"
+            id="mobile-menu-toggle"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            aria-label="打开菜单"
+            class="-m-1 cursor-pointer rounded-sm p-2 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:hidden"
+        >
+            <span class="relative block size-4">
+                <svg class="menu-icon-open absolute inset-0 h-full w-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+                <svg class="menu-icon-close absolute inset-0 h-full w-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+            </span>
+        </button>
     </div>
 </header>
+
+<!-- 移动导航面板:全宽,从顶栏下方以幕布式缓缓展开(grid-rows 0fr→1fr);
+     动画时长受全站 reduced-motion 守卫自动压到 0 -->
+<div id="mobile-menu" data-state="closed" class="fixed inset-x-0 top-12 bottom-0 z-40 sm:hidden">
+    <div data-menu-backdrop class="absolute inset-0 bg-background/20 opacity-0 backdrop-blur-[2px] transition-opacity duration-300"></div>
+    <div data-menu-panel class="relative grid grid-rows-[0fr] bg-background/95 backdrop-blur-[16px] transition-[grid-template-rows] duration-300 ease-out">
+        <div class="min-h-0 overflow-hidden">
+            <nav class="mx-auto flex w-full max-w-column flex-col px-4 pt-2" aria-label="站点导航">
+                {menuInfo.map((item) => (
+                    <a href={item.menuLink} class="py-3 font-medium text-foreground">
+                        {item.menuName}
+                    </a>
+                ))}
+            </nav>
+            <div class="mx-auto w-full max-w-column px-4 pb-4">
+                <div class="flex flex-col border-t border-border pt-1">
+                    <GlobalSearch client:load variant="row" hotkey={false} />
+                    <ModeToggle client:load variant="row" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* 收起态整体不可见也不可点;visibility 延迟到收起动画结束再切换 */
+    #mobile-menu {
+        visibility: hidden;
+        transition: visibility 0s linear 300ms;
+    }
+
+    #mobile-menu[data-state="open"] {
+        visibility: visible;
+        transition-delay: 0s;
+    }
+
+    #mobile-menu[data-state="open"] [data-menu-panel] {
+        grid-template-rows: 1fr;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    #mobile-menu[data-state="open"] [data-menu-backdrop] {
+        opacity: 1;
+    }
+
+    #mobile-menu-toggle .menu-icon-open,
+    #mobile-menu-toggle .menu-icon-close {
+        transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #mobile-menu-toggle .menu-icon-close,
+    #mobile-menu-toggle[aria-expanded="true"] .menu-icon-open {
+        opacity: 0;
+    }
+
+    #mobile-menu-toggle[aria-expanded="true"] .menu-icon-close {
+        opacity: 1;
+    }
+</style>
+
+<script>
+    // 事件全部委托到 document 且只注册一次:ClientRouter 换页后脚本不重跑,
+    // 处理函数每次现查当前 DOM,不持有旧页面的元素引用
+    function menuEl() {
+        return document.getElementById("mobile-menu");
+    }
+
+    function setMenuOpen(open: boolean) {
+        const menu = menuEl();
+        const toggle = document.getElementById("mobile-menu-toggle");
+        if (!menu || !toggle) return;
+        menu.dataset.state = open ? "open" : "closed";
+        toggle.setAttribute("aria-expanded", String(open));
+        toggle.setAttribute("aria-label", open ? "关闭菜单" : "打开菜单");
+        // 面板打开时锁住页面滚动;scrollbar-gutter 已恒定预留,不会横向跳动
+        document.documentElement.classList.toggle("overflow-hidden", open);
+    }
+
+    document.addEventListener("click", (e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest("#mobile-menu-toggle")) {
+            setMenuOpen(menuEl()?.dataset.state !== "open");
+            return;
+        }
+        if (!target.closest("#mobile-menu")) return;
+        // 遮罩、导航链接、搜索行点击后收起;主题行留在面板里连续切换
+        if (target.closest("[data-menu-backdrop], a, [data-menu-close]")) {
+            setMenuOpen(false);
+        }
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && menuEl()?.dataset.state === "open") setMenuOpen(false);
+    });
+
+    // 换页前复位,避免滚动锁跟到下一页
+    document.addEventListener("astro:before-swap", () => setMenuOpen(false));
+
+    // 面板开着时拉宽窗口到桌面断点,面板被 CSS 藏掉,滚动锁也要跟着解开
+    window.matchMedia("(min-width: 640px)").addEventListener("change", (e) => {
+        if (e.matches) setMenuOpen(false);
+    });
+</script>

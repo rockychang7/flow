@@ -9,4 +9,8 @@ export const menuInfo: MenuItem[] = [
     menuName: "想法",
     menuLink: "/thoughts",
   },
+  {
+    menuName: "笔记",
+    menuLink: "/notes",
+  },
 ];

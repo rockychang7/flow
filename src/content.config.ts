@@ -16,6 +16,24 @@ const blogCollection = defineCollection({
   }),
 });
 
+const notesCollection = defineCollection({
+  loader: glob({ base: "./src/content/notes", pattern: "**/*.md" }),
+  schema: z.object({
+    title: z.string(),
+    // 专题 slug,对应 src/data/notes-topics.json;缺省进「散篇」
+    topic: z.string().nullable().optional(),
+    created: z.date(),
+    updated: z.date(),
+    // 同日创建的排序权重(升序),如全书总览排在分章之前;缺省按 0
+    order: z.number().optional(),
+    // 笔记来源(阅读笔记的原文链接)
+    source_url: z.string().url().nullable().optional(),
+    draft: z.boolean(),
+    // 由 notes:sync 同步脚本生成的标记;脚本的镜像删除只碰带此标记的文件
+    synced: z.boolean().optional(),
+  }),
+});
+
 const thoughtsCollection = defineCollection({
   loader: file("src/content/thoughts.json"),
   schema: z.object({
@@ -26,4 +44,8 @@ const thoughtsCollection = defineCollection({
   }),
 });
 
-export const collections = { articles: blogCollection, thoughts: thoughtsCollection };
+export const collections = {
+  articles: blogCollection,
+  notes: notesCollection,
+  thoughts: thoughtsCollection,
+};

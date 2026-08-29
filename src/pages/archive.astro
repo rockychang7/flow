@@ -29,17 +29,17 @@ const hasMore = sortBlogPosts.length > INITIAL;
 
 const title: string = "文章";
 ---
-<RootLayout title={title} description="按时间浏览所有文章">
+<RootLayout title={title} description="个人沉淀,成文的思考与记录">
     <Header/>
     <div class="flex flex-col">
-        <SectionHead title="文章" as="h1">
+        <SectionHead title="文章" as="h1" intro="个人沉淀,成文的思考与记录。">
             <span slot="aside" class="flex shrink-0 items-baseline gap-x-4">
                 <a href="/category" class="text-sm text-muted-foreground transition-colors hover:text-foreground">分类</a>
                 <a href="/tag" class="text-sm text-muted-foreground transition-colors hover:text-foreground">标签</a>
             </span>
         </SectionHead>
         <!-- 分组间 48;年份组头 16/500 muted -->
-        <div class="flex flex-col gap-y-12">
+        <div class="mt-12 flex flex-col gap-y-12">
             {groups.map((group) => (
                 <section class:list={["reveal-group", group.hidden && "hidden"]}>
                     <h2 class="mb-6 font-medium text-muted-foreground">{group.year}</h2>

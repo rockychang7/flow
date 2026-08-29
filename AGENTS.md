@@ -55,9 +55,10 @@ flow/
 │   ├── constant/           # 常量(DATE_FORMAT, SITE 站点信息, THOUGHTS_GITHUB 仓库信息)
 │   ├── content/
 │   │   ├── articles/       # 博客文章(MDX)
+│   │   ├── notes/          # 笔记(全部由 notes:sync 从 Obsidian 仓库同步,不要手写)
 │   │   └── thoughts.json   # 想法数据(JSON 数组,新条目追加末尾)
 │   ├── content.config.ts   # 内容集合 Schema(glob/file loader + zod)
-│   ├── data/               # 静态数据配置(菜单、项目、媒体链接、changelog)
+│   ├── data/               # 静态数据配置(菜单、项目、媒体链接、changelog、笔记专题)
 │   ├── layouts/
 │   │   └── RootLayout.astro # 全站布局(SEO head、主题脚本、ViewTransitions)
 │   ├── lib/                # 工具库(articles.ts 文章读取、thoughts.ts 想法读取、generateSearchData、utils)
@@ -70,13 +71,15 @@ flow/
 │   │   ├── category.astro / categories/[category].astro
 │   │   ├── tag.astro / tags/[tag].astro
 │   │   ├── changelog.astro
+│   │   ├── notes/          # 笔记板块(index 列表、[slug] 专题页+详情页共用、rss.xml 独立 feed)
 │   │   ├── articles/[...slug].astro  # 文章详情
 │   │   ├── rss.xml.js      # RSS订阅
 │   │   └── search.json.js  # 搜索索引端点
 │   ├── styles/globals.css  # 全局样式 + Tailwind v4 主题定义
 │   └── type/               # 类型定义
 ├── scripts/
-│   └── new-thought.mjs     # 本地发布想法 CLI(npm run say)
+│   ├── new-thought.mjs     # 本地发布想法 CLI(npm run say)
+│   └── sync-notes.mjs      # 笔记同步 CLI(npm run notes:sync,从 Obsidian 仓库筛选公开笔记)
 ├── astro.config.mjs
 ├── components.json         # shadcn/ui配置
 └── tsconfig.json           # 路径别名 @/ → src/
@@ -93,6 +96,12 @@ flow/
 - React 组件只在需要交互时使用 `client:load`,纯展示组件用 Astro 组件或不加 client 指令。
 - 主题:localStorage 只存用户手动选择;无选择时跟随系统(含系统切换监听)。逻辑在 RootLayout 内联脚本 + ModeToggle。
 - **想法读取一律走 `src/lib/thoughts.ts`** 的 `getRenderedThoughts()`(已含倒序排序与 markdown → HTML 渲染),不要在页面里直接 `getCollection("thoughts")`。
+- **笔记读取一律走 `src/lib/notes.ts`**:列表/详情用 `getVisibleNotes()`(开发模式含草稿样例,生产只含已发布),RSS/搜索用 `getPublishedNotes()`;专题分组用 `groupNotes()`。
+- 笔记内容来源于本地 Obsidian 仓库(路径可用环境变量 `NOTES_VAULT_PATH` 覆盖),**不要手改 `src/content/notes/` 下带 `synced: true` 的文件**——改源头笔记后重跑 `npm run notes:sync`,脚本是镜像语义(源头取消 `publish: true` 标记会删除 flow 侧文件)。公开过滤是白名单式:目录白名单 + 显式 `publish: true` + 个人事务 tag 黑名单,三层都在同步脚本里,不要放松任何一层。
+- 笔记的专题元数据(slug/名称/简介/顺序)手工维护在 `src/data/notes-topics.json`;笔记 slug 与专题 slug 共享 `/notes/` 路径段,同步脚本校验不冲突。
+- 笔记详情页以 `updated`(更新时间)为主要元信息;`created` 取自源文件名日期前缀,用于列表排序(专题页升序 = 学习顺序)与 RSS 条目时间(修订不刷屏)。
+- Obsidian callout(`> [!tip]` 等)由 `src/lib/remark-callouts.mjs` 在构建期渲染成 aside,样式在 globals.css 的 `.prose .callout` 段;四个变体只换图标措辞,不引入彩色。
+- 笔记正文若用 `#` 当章节(Obsidian 常见写法),同步脚本会整体降一级对齐"正文从 `##` 起";同日创建的笔记可用 frontmatter `order`(数字,升序)定顺序。
 - 想法数据存 `src/content/thoughts.json`,新条目只追加在数组末尾;`created_at` 为 `YYYY-MM-DD HH:mm:ss` 纯字符串(常量 `DATETIME_FORMAT`,展示截取前 16 位),不要引入 Date/时区转换。
 - 想法序列化格式契约:`JSON.stringify(arr, null, 2) + "\n"`。两条写入路径(线上 `/say` 的 GitHub Contents API 写回、本地 `npm run say`)必须保持该格式一致,否则会产生整文件无意义 diff。
 - `/say` 是隐藏发布页:不进导航菜单、sitemap 已在 astro.config 里排除、页面传 `noindex` 给 RootLayout;发布凭证是 fine-grained PAT(仅授权本仓库 Contents 读写),只存在用户浏览器 localStorage,不进代码与环境变量。
@@ -102,9 +111,11 @@ flow/
 
 - **文章管理**: 基于MDX,Frontmatter 由 zod schema 校验
 - **想法(微博客)**: `/thoughts` 时间线 + 首页最新 3 条;线上 `/say` 隐藏页(GitHub API 直发)或本地 `npm run say` 发布,数据以 JSON 跟随仓库
+- **笔记**: `/notes` 专题分组列表 + 专题页 + 详情页,内容经 `npm run notes:sync` 从 Obsidian 仓库白名单同步;进全站搜索,独立 feed `/notes/rss.xml`
 - **归档/分类/标签**: 时间线归档、分类与标签筛选页
 - **全站搜索**: ⌘K / Ctrl+K 唤起,Fuse.js 模糊匹配,支持 ↑↓/Enter 键盘导航
-- **暗色模式**: 亮/暗切换,默认跟随系统
+- **暗色模式**: 浅色/深色/跟随系统三态循环切换,默认跟随系统
+- **移动端导航**: 窄屏顶栏只剩 logo + 菜单钮,导航/搜索/主题收进全宽下拉面板(幕布式展开,逻辑在 header.astro)
 - **页面过渡**: Astro ClientRouter (View Transitions)
 - **RSS / Sitemap / robots.txt**: 自动生成
 - **代码高亮**: Shiki(github-light / github-dark 双主题)
@@ -117,6 +128,7 @@ npm run dev       # 开发模式
 npm run build     # astro check + astro build
 npm run preview   # 预览生产构建
 npm run say       # 本地发布一条想法(交互式;或 npm run say -- "内容")
+npm run notes:sync # 从 Obsidian 仓库同步公开笔记(校验+转换+镜像写入,push 前看 diff)
 ```
 
 ## 主题配置

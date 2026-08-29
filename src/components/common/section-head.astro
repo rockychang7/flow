@@ -8,9 +8,11 @@ interface Props {
     moreLabel?: string;
     /** 页面级标题用 h1(列表页),首页区块用 h2 */
     as?: "h1" | "h2";
+    /** 页题下的一行板块简介(14 muted),列表页统一用它说明板块是干嘛的 */
+    intro?: string;
 }
 
-const { title, moreHref, moreLabel = "查看全部", as: Tag = "h2" } = Astro.props;
+const { title, moreHref, moreLabel = "查看全部", as: Tag = "h2", intro } = Astro.props;
 const isPageTitle = Tag === "h1";
 ---
 <!-- 页题上方再压 32/64,叠在布局的 64/128 上,合计 96/192;
@@ -41,3 +43,4 @@ const isPageTitle = Tag === "h1";
         <slot name="aside" />
     )}
 </div>
+{intro && <p class="text-sm text-muted-foreground">{intro}</p>}
