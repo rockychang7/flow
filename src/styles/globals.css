@@ -506,11 +506,12 @@
     transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* !important 是为了压过图标/文字自带的行内隐藏兜底(见 mode-toggle.tsx) */
 html[data-theme-mode='light'] .mode-icon[data-mode='light'],
 html[data-theme-mode='dark'] .mode-icon[data-mode='dark'],
 html[data-theme-mode='system'] .mode-icon[data-mode='system'],
 html:not([data-theme-mode]) .mode-icon[data-mode='system'] {
-    opacity: 1;
+    opacity: 1 !important;
 }
 
 .mode-label {
@@ -521,7 +522,7 @@ html[data-theme-mode='light'] .mode-label[data-mode='light'],
 html[data-theme-mode='dark'] .mode-label[data-mode='dark'],
 html[data-theme-mode='system'] .mode-label[data-mode='system'],
 html:not([data-theme-mode]) .mode-label[data-mode='system'] {
-    display: inline;
+    display: inline !important;
 }
 
 /* Shiki 双主题:亮色用内联的 github-light,暗色切到 --shiki-dark 分支;

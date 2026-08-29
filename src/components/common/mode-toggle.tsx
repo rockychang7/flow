@@ -34,12 +34,13 @@ export function ModeToggle({ variant = "icon" }: Props) {
         document.documentElement.dataset.themeMode = next;
     };
 
-    /* 三枚图标叠放,只做透明度互换,不做旋转/缩放 */
+    /* 三枚图标叠放,只做透明度互换,不做旋转/缩放。
+       行内 opacity:0 是兜底:样式表没就位时宁可空白一瞬,也不画错误的图标 */
     const icons = (
         <span className="relative block size-4">
-            <Sun data-mode="light" className="mode-icon absolute inset-0 h-full w-full"/>
-            <Moon data-mode="dark" className="mode-icon absolute inset-0 h-full w-full"/>
-            <Monitor data-mode="system" className="mode-icon absolute inset-0 h-full w-full"/>
+            <Sun data-mode="light" style={{ opacity: 0 }} className="mode-icon absolute inset-0 h-full w-full"/>
+            <Moon data-mode="dark" style={{ opacity: 0 }} className="mode-icon absolute inset-0 h-full w-full"/>
+            <Monitor data-mode="system" style={{ opacity: 0 }} className="mode-icon absolute inset-0 h-full w-full"/>
         </span>
     );
 
@@ -54,9 +55,9 @@ export function ModeToggle({ variant = "icon" }: Props) {
                 <span className="text-muted-foreground">{icons}</span>
                 主题
                 <span className="ml-auto text-caption font-medium text-muted-foreground">
-                    <span className="mode-label" data-mode="light">浅色</span>
-                    <span className="mode-label" data-mode="dark">深色</span>
-                    <span className="mode-label" data-mode="system">跟随系统</span>
+                    <span className="mode-label" data-mode="light" style={{ display: "none" }}>浅色</span>
+                    <span className="mode-label" data-mode="dark" style={{ display: "none" }}>深色</span>
+                    <span className="mode-label" data-mode="system" style={{ display: "none" }}>跟随系统</span>
                 </span>
             </button>
         );
