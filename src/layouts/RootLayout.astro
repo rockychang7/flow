@@ -76,7 +76,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     {ogImage && <meta name="twitter:image" content={ogImage} />}
-    <script is:inline>
+    <script is:inline data-cfasync="false">
       // Immediately apply theme on page load
       (function () {
         // localStorage 只存用户手动选择;没有选择时跟随系统,且监听系统变化。
@@ -98,7 +98,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     </script>
 
     <!-- View Transitions theme sync -->
-    <script is:inline>
+    <script is:inline data-cfasync="false">
       // BEFORE swap: copy dark class and theme mode to the incoming document
       document.addEventListener("astro:before-swap", (event) => {
         const isDark = document.documentElement.classList.contains("dark");
@@ -122,7 +122,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     </script>
 
     <!-- iOS Chrome back button fix (known Astro bug workaround) -->
-    <script is:inline>
+    <script is:inline data-cfasync="false">
       (function () {
         // Detect iOS Chrome (or any iOS browser other than Safari)
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
