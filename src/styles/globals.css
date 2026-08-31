@@ -84,7 +84,7 @@
         --input: #e7e5e4;
         --ring: #79716b;
         --destructive: #b91c1c;
-        --selection-background: #facc15;
+        --selection-background: #d6d3d1;
         --selection-foreground: #1c1917;
     }
 
@@ -100,8 +100,8 @@
         --input: rgb(255 255 255 / 0.15);
         --ring: #a6a09b;
         --destructive: #f87171;
-        --selection-background: #fde047;
-        --selection-foreground: #1c1917;
+        --selection-background: #57534e;
+        --selection-foreground: #fafaf9;
     }
 
     /* Tailwind v4 的默认边框色是 currentcolor,统一回落到 border token */

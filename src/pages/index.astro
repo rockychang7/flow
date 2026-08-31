@@ -6,9 +6,9 @@ import Header from "../components/common/header.astro";
 
 // 左标右值的两列行,与 changelog 同一种行语法
 const stacks: [string, string[]][] = [
-    ["Coding Agent", ["Claude Code", "Codex", "OpenCode"]],
-    ["Frontend", ["HTML", "CSS", "JavaScript", "TypeScript", "React", "Astro", "Next.js", "Vite", "TailwindCSS"]],
-    ["Backend", ["Golang", "Java", "MySQL", "Redis", "Kafka", "Docker"]],
+    ["Agent Coding", ["Claude Code", "Codex", "OpenCode"]],
+    ["Web", ["TypeScript", "React", "Astro", "Next.js", "htmx", "shadcn/ui", "Tailwind CSS"]],
+    ["Backend", ["Go", "Java", "Python", "Spring Boot", "MySQL", "Redis", "Kafka", "Docker"]],
 ];
 
 const links: [string, string][] = [
@@ -65,7 +65,7 @@ const title: string = "Rocky Chang";
         </section>
 
         <section class="flex flex-col gap-y-6">
-            <h2 class="text-base font-medium text-foreground">技术栈</h2>
+            <h2 class="text-base font-medium text-foreground">工具与技术</h2>
             <div class="flex flex-col gap-y-6">
                 {stacks.map(([label, techs]) => (
                     <div class="flex flex-col gap-y-1 sm:flex-row sm:gap-x-8 sm:gap-y-0">
