@@ -2,6 +2,15 @@ import type { LogItem } from "@/type/changelog";
 
 export const changelogs: LogItem[] = [
   {
+    version: "v3.1.4",
+    date: "2026-08-31",
+    description: "优化文章目录交互与分类浏览体验。",
+    features: [
+      "桌面文章目录新增表盘刻度式悬停与键盘焦点反馈,触屏和减少动态效果设置下保持静态",
+      "分类总览改为带简介、文章数与直达箭头的编辑目录式入口,文章列表继续由分类详情页承载",
+    ],
+  },
+  {
     version: "v3.1.3",
     date: "2026-08-31",
     description: "优化列表加载与主题默认体验。",

@@ -1,17 +1,58 @@
 ---
-// 「名称 + 计数」行,分类页与笔记专题行共用;改样式记得两处场景都看一眼
+import { ArrowRight } from "lucide-react";
+
+// 紧凑行供笔记专题使用;分类总览用 editorial 变体呈现编辑目录。
 interface Props {
     name: string;
     count: number;
     url: string;
+    description?: string;
+    variant?: "compact" | "editorial";
     /** 逐批展开的钩子(reveal-item),不需要就不传 */
     class?: string;
 }
 
-const {name, count, url, class: className} = Astro.props;
+const {
+    name,
+    count,
+    url,
+    description,
+    variant = "compact",
+    class: className,
+} = Astro.props;
 ---
 
-<a href={url} class:list={["group flex items-baseline justify-between gap-4 py-2", className]}>
-    <span class="min-w-0 break-words font-medium transition-colors group-hover:text-muted-foreground">{name}</span>
-    <span class="shrink-0 font-mono text-sm text-muted-foreground">{count}</span>
-</a>
+{variant === "editorial" ? (
+    <a
+        href={url}
+        aria-label={`${name}，${count} 篇文章`}
+        class:list={[
+            "group block border-t py-6 outline-none transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring md:py-7",
+            className,
+        ]}
+    >
+        <span class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
+            <span class="min-w-0 break-words text-xl font-medium transition-colors group-hover:text-muted-foreground">
+                {name}
+            </span>
+            <span class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground">
+                <span><span class="font-mono">{count}</span> 篇</span>
+                <ArrowRight
+                    aria-hidden="true"
+                    className="size-4 transition-transform duration-200 motion-safe:group-hover:translate-x-1 motion-safe:group-focus-visible:translate-x-1"
+                    strokeWidth={1.75}
+                />
+            </span>
+        </span>
+        {description && (
+            <span class="mt-2 block max-w-[30rem] text-sm leading-6 text-muted-foreground">
+                {description}
+            </span>
+        )}
+    </a>
+) : (
+    <a href={url} class:list={["group flex items-baseline justify-between gap-4 py-2", className]}>
+        <span class="min-w-0 break-words font-medium transition-colors group-hover:text-muted-foreground">{name}</span>
+        <span class="shrink-0 font-mono text-sm text-muted-foreground">{count}</span>
+    </a>
+)}

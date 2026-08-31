@@ -68,7 +68,7 @@ export function TableOfContents({headings, className, onItemClick, hideTitle}: T
     if (filteredHeadings.length === 0) return null;
 
     return (
-        <nav className={cn("flex flex-col", className)} aria-label="目录">
+        <nav className={cn("toc-dial flex flex-col", className)} aria-label="目录">
             {!hideTitle && <p className="mb-2 text-sm font-medium text-muted-foreground">目录</p>}
             {filteredHeadings.map((heading) => {
                 const active = activeId === heading.slug;
@@ -86,14 +86,14 @@ export function TableOfContents({headings, className, onItemClick, hideTitle}: T
                             }
                         }}
                         className={cn(
-                            "group flex items-center gap-2 py-1",
+                            "toc-dial-item group flex items-center gap-2 rounded-sm py-1 outline-none",
                             indentClass[Math.min(heading.depth - topDepth, 2)]
                         )}
                     >
                         <span
                             aria-hidden="true"
                             className={cn(
-                                "h-1 w-3 shrink-0 rounded-sm transition-colors",
+                                "toc-dial-tick h-1 w-3 shrink-0 rounded-sm transition-colors",
                                 active ? "bg-foreground" : "bg-border group-hover:bg-muted-foreground"
                             )}
                         />

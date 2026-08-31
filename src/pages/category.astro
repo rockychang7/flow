@@ -1,6 +1,7 @@
 ---
 import CategoryListItem from "@/components/cards/category-list-item.astro";
 import SectionHead from "@/components/common/section-head.astro";
+import { categoryInfo } from "@/data/category-info";
 import { getPublishedArticles } from "@/lib/articles";
 import Footer from "../components/common/footer.astro";
 import Header from "../components/common/header.astro";
@@ -16,17 +17,22 @@ for (const post of allBlogPosts) {
     categoryCounts.set(category, (categoryCounts.get(category) ?? 0) + 1);
 }
 const sortedCategories = [...categoryCounts.keys()].sort();
+const categoryDescriptions = new Map(
+    categoryInfo.map(({ name, description }) => [name, description]),
+);
 ---
 <RootLayout title={title} description="按分类浏览所有文章">
     <Header/>
     <div class="flex flex-col">
         <SectionHead title="分类" as="h1" />
-        <div class="flex flex-col">
+        <div class="flex flex-col border-b">
             {sortedCategories.map(category => (
                 <CategoryListItem
                     name={category}
                     count={categoryCounts.get(category) ?? 0}
                     url={`/categories/${category}`}
+                    description={categoryDescriptions.get(category)}
+                    variant="editorial"
                 />
             ))}
         </div>
