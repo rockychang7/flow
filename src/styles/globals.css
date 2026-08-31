@@ -518,7 +518,7 @@
 html[data-theme-mode='light'] .mode-icon[data-mode='light'],
 html[data-theme-mode='dark'] .mode-icon[data-mode='dark'],
 html[data-theme-mode='system'] .mode-icon[data-mode='system'],
-html:not([data-theme-mode]) .mode-icon[data-mode='system'] {
+html:not([data-theme-mode]) .mode-icon[data-mode='light'] {
     opacity: 1 !important;
 }
 
@@ -529,7 +529,7 @@ html:not([data-theme-mode]) .mode-icon[data-mode='system'] {
 html[data-theme-mode='light'] .mode-label[data-mode='light'],
 html[data-theme-mode='dark'] .mode-label[data-mode='dark'],
 html[data-theme-mode='system'] .mode-label[data-mode='system'],
-html:not([data-theme-mode]) .mode-label[data-mode='system'] {
+html:not([data-theme-mode]) .mode-label[data-mode='light'] {
     display: inline !important;
 }
 

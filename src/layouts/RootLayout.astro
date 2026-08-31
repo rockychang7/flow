@@ -79,15 +79,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <script is:inline data-cfasync="false">
       // Immediately apply theme on page load
       (function () {
-        // localStorage 只存用户手动选择;没有选择时跟随系统,且监听系统变化。
+        // 没有保存主题时默认浅色;用户主动选择跟随系统时显式存为 system。
         // data-theme-mode 供主题钮的图标/文字纯 CSS 取态:本脚本在首帧前执行,
-        // 图标不会先闪"跟随系统"再跳到实际模式
+        // 图标不会先显示错误状态再跳到实际模式
         const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
         const apply = () => {
           const stored = localStorage.getItem("theme");
-          const dark = stored ? stored === "dark" : systemDark.matches;
+          const mode =
+            stored === "dark" || stored === "system" ? stored : "light";
+          const dark =
+            mode === "dark" || (mode === "system" && systemDark.matches);
           document.documentElement.classList.toggle("dark", dark);
-          document.documentElement.dataset.themeMode = stored ?? "system";
+          document.documentElement.dataset.themeMode = mode;
           // 画布与手机浏览器外壳的底色跟精确主题走,样式表未就位时也生效
           document.querySelector('meta[name="color-scheme"]')?.setAttribute("content", dark ? "dark" : "light");
           document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0c0a09" : "#ffffff");
@@ -104,18 +107,21 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         const isDark = document.documentElement.classList.contains("dark");
         event.newDocument.documentElement.classList.toggle("dark", isDark);
         event.newDocument.documentElement.dataset.themeMode =
-          document.documentElement.dataset.themeMode || "system";
+          document.documentElement.dataset.themeMode || "light";
       });
 
       // AFTER swap: fallback to ensure theme is correct
       // (换入的新 head 带的是静态 meta,这里恢复成精确值)
       document.addEventListener("astro:after-swap", () => {
         const stored = localStorage.getItem("theme");
-        const dark = stored
-          ? stored === "dark"
-          : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const mode =
+          stored === "dark" || stored === "system" ? stored : "light";
+        const dark =
+          mode === "dark" ||
+          (mode === "system" &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches);
         document.documentElement.classList.toggle("dark", dark);
-        document.documentElement.dataset.themeMode = stored || "system";
+        document.documentElement.dataset.themeMode = mode;
         document.querySelector('meta[name="color-scheme"]')?.setAttribute("content", dark ? "dark" : "light");
         document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0c0a09" : "#ffffff");
       });

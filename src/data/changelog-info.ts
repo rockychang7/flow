@@ -2,6 +2,15 @@ import type { LogItem } from "@/type/changelog";
 
 export const changelogs: LogItem[] = [
   {
+    version: "v3.1.3",
+    date: "2026-08-31",
+    description: "优化列表加载与主题默认体验。",
+    features: [
+      "修复更新日志等页面在站内跳转后「加载更多」偶发失效的问题",
+      "默认主题改为浅色,同时保留浅色、深色与跟随系统三态切换",
+    ],
+  },
+  {
     version: "v3.1.2",
     date: "2026-08-31",
     description: "优化文章图片排版与首页项目展示。",

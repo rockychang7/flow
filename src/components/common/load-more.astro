@@ -36,13 +36,12 @@ const { step = 5, label = "加载更多" } = Astro.props;
 
     function init() {
         const button = document.querySelector<HTMLButtonElement>("[data-reveal-more]");
-        // astro:page-load 首屏也会触发,用标记挡住重复绑定
-        if (!button || button.dataset.bound) return;
-        button.dataset.bound = "1";
+        if (!button) return;
 
         const step = Number(button.dataset.step) || 5;
 
-        button.addEventListener("click", () => {
+        // ClientRouter 换页后重新覆盖当前节点的处理器,避免 DOM 标记与监听器状态脱节。
+        button.onclick = () => {
             const pending = Array.from(
                 document.querySelectorAll<HTMLElement>(".reveal-item.hidden")
             );
@@ -75,9 +74,8 @@ const { step = 5, label = "加载更多" } = Astro.props;
             });
 
             if (pending.length <= step) button.classList.add("hidden");
-        });
+        };
     }
 
-    init();
     document.addEventListener("astro:page-load", init);
 </script>

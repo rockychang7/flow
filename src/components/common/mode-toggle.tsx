@@ -11,26 +11,23 @@ interface Props {
 
 /**
  * 主题三态循环:浅色 → 深色 → 跟随系统。
- * localStorage 只存手动选择(light/dark);「跟随系统」= 清掉存储,
- * RootLayout 的内联脚本没读到存储时本就跟随系统并监听系统变化。
+ * 未保存选择时默认浅色;主动选择「跟随系统」时显式存储 system。
  * 图标与文字由 <html data-theme-mode> 的纯 CSS 取态(globals.css 的 .mode-icon/.mode-label):
  * 该属性在首帧前就位,加载不闪、多实例同步,组件里不留状态。
  */
 export function ModeToggle({ variant = "icon" }: Props) {
     const cycle = () => {
         const stored = document.documentElement.dataset.themeMode;
-        const mode: Mode = stored === "light" || stored === "dark" ? stored : "system";
+        const mode: Mode =
+            stored === "dark" || stored === "system" ? stored : "light";
         const next = NEXT[mode];
-        if (next === "system") {
-            localStorage.removeItem("theme");
-            document.documentElement.classList.toggle(
-                "dark",
-                window.matchMedia("(prefers-color-scheme: dark)").matches
-            );
-        } else {
-            localStorage.setItem("theme", next);
-            document.documentElement.classList.toggle("dark", next === "dark");
-        }
+        const dark =
+            next === "dark" ||
+            (next === "system" &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+        localStorage.setItem("theme", next);
+        document.documentElement.classList.toggle("dark", dark);
         document.documentElement.dataset.themeMode = next;
     };
 
