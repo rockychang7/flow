@@ -21,7 +21,7 @@ export function ZoomableImage({ src, alt, className, caption, ...props }: Zoomab
                 />
             </div>
             {caption && (
-                <figcaption className="mt-2 text-center text-caption font-medium text-muted-foreground">
+                <figcaption className="mt-2 break-words px-2 text-center text-caption font-medium leading-5 text-muted-foreground">
                     {caption}
                 </figcaption>
             )}

@@ -2,6 +2,16 @@ import type { LogItem } from "@/type/changelog";
 
 export const changelogs: LogItem[] = [
   {
+    version: "v3.1.2",
+    date: "2026-08-31",
+    description: "优化文章图片排版与首页项目展示。",
+    features: [
+      "修复文章图片偏移,统一图片与正文的版心对齐",
+      "优化图片图注、文本选中高亮与移动端项目列表布局",
+      "新增 GitHub Image Host 项目,更新 Hello World 欢迎图片",
+    ],
+  },
+  {
     version: "v3.1.1",
     date: "2026-08-31",
     description: "统一文章与笔记的图片预览体验。",

@@ -9,7 +9,7 @@ const {title, description, url} = Astro.props;
 ---
 
 <a href={url} target="_blank" rel="noopener noreferrer"
-   class="group flex items-baseline gap-4 py-2">
+   class="group flex flex-col items-start gap-1 py-2 sm:flex-row sm:items-baseline sm:gap-4">
     <span class="ext-arrow shrink-0 font-medium transition-colors group-hover:text-muted-foreground">{title}</span>
     <span class="min-w-0 break-words text-sm text-muted-foreground">{description}</span>
 </a>

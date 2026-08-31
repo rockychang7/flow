@@ -14,7 +14,7 @@
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-body: var(--body); /* 正文墨,非纯黑;长文专用 */
-    --color-muted: var(--muted); /* 代码底 · hover 面 · ::selection */
+    --color-muted: var(--muted); /* 代码底 · hover 面 */
     --color-muted-foreground: var(--muted-foreground);
     --color-elevated: var(--elevated); /* 弹层浮面,暗色抬升一级 */
     --color-border: var(--border);
@@ -84,6 +84,8 @@
         --input: #e7e5e4;
         --ring: #79716b;
         --destructive: #b91c1c;
+        --selection-background: #facc15;
+        --selection-foreground: #1c1917;
     }
 
     .dark {
@@ -98,6 +100,8 @@
         --input: rgb(255 255 255 / 0.15);
         --ring: #a6a09b;
         --destructive: #f87171;
+        --selection-background: #fde047;
+        --selection-foreground: #1c1917;
     }
 
     /* Tailwind v4 的默认边框色是 currentcolor,统一回落到 border token */
@@ -141,8 +145,8 @@
     }
 
     ::selection {
-        background-color: var(--color-muted);
-        color: var(--color-foreground);
+        background-color: var(--selection-background);
+        color: var(--selection-foreground);
     }
 
     /* 日期与数字走等宽轨,天然对齐 */
@@ -434,16 +438,11 @@
     text-align: center;
 }
 
-/* 代码块与大图破栏到 640,图注回版心;窄屏不破,避免横向溢出 */
+/* 代码块与显式破栏元素扩展到 640px,正文图片保持与文字版心对齐 */
 @media (min-width: 42rem) {
     .prose > pre,
-    .prose > figure,
     .prose > .break-column {
         margin-inline: -2rem;
-    }
-
-    .prose > figure > figcaption {
-        margin-inline: 2rem;
     }
 }
 
