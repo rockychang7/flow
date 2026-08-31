@@ -30,27 +30,23 @@ const { step = 5, label = "加载更多" } = Astro.props;
     </style>
 </noscript>
 
-<script>
-    // 每条错开 40ms:10 条也只多出 360ms,不至于让人等
-    const STAGGER_MS = 40;
-
-    function init() {
-        const button = document.querySelector<HTMLButtonElement>("[data-reveal-more]");
+<script is:inline data-cfasync="false" data-astro-rerun>
+    (() => {
+        // 每条错开 40ms:10 条也只多出 360ms,不至于让人等
+        const STAGGER_MS = 40;
+        const button = document.querySelector("[data-reveal-more]");
         if (!button) return;
 
         const step = Number(button.dataset.step) || 5;
 
-        // ClientRouter 换页后重新覆盖当前节点的处理器,避免 DOM 标记与监听器状态脱节。
         button.onclick = () => {
-            const pending = Array.from(
-                document.querySelectorAll<HTMLElement>(".reveal-item.hidden")
-            );
+            const pending = Array.from(document.querySelectorAll(".reveal-item.hidden"));
             const revealed = pending.slice(0, step);
             revealed.forEach((item) => item.classList.remove("hidden"));
 
             // 组头:组内一旦有可见条目就放出来
-            const openedGroups = new Set<HTMLElement>();
-            document.querySelectorAll<HTMLElement>(".reveal-group.hidden").forEach((group) => {
+            const openedGroups = new Set();
+            document.querySelectorAll(".reveal-group.hidden").forEach((group) => {
                 if (group.querySelector(".reveal-item:not(.hidden)")) {
                     group.classList.remove("hidden");
                     openedGroups.add(group);
@@ -58,10 +54,10 @@ const { step = 5, label = "加载更多" } = Astro.props;
             });
 
             // 整组新出现时动画加在组上,组内条目不再各动一次,避免位移叠加
-            const targets: HTMLElement[] = [
+            const targets = [
                 ...openedGroups,
                 ...revealed.filter((item) => {
-                    const group = item.closest<HTMLElement>(".reveal-group");
+                    const group = item.closest(".reveal-group");
                     return !group || !openedGroups.has(group);
                 }),
             ].sort((a, b) =>
@@ -75,8 +71,5 @@ const { step = 5, label = "加载更多" } = Astro.props;
 
             if (pending.length <= step) button.classList.add("hidden");
         };
-    }
-
-    init();
-    document.addEventListener("astro:page-load", init);
+    })();
 </script>
