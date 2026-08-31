@@ -23,7 +23,7 @@ const hasMore = cursor > INITIAL;
 <RootLayout title="笔记" description="学习笔记,记录学习过程与总结">
     <Header/>
     <div class="flex flex-col">
-        <SectionHead title="笔记" as="h1" intro="学习笔记,记录学习过程与总结。">
+        <SectionHead title="笔记" as="h1">
             <a
                 slot="aside"
                 href="/notes/rss.xml"
@@ -31,7 +31,7 @@ const hasMore = cursor > INITIAL;
             >RSS</a>
         </SectionHead>
 
-        <div class="mt-12 flex flex-col gap-y-12">
+        <div class="flex flex-col gap-y-12">
             {topicItems.length > 0 && (
                 <section class:list={["reveal-group", topicsHidden && "hidden"]}>
                     <h2 class="mb-6 font-medium text-muted-foreground">专题</h2>
