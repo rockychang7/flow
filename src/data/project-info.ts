@@ -2,7 +2,7 @@ import type { ProjectInfo } from "@/type/data";
 
 export const projectInfo: ProjectInfo[] = [
   {
-    projectName: "GitHub Image Host",
+    projectName: "github image host",
     projectDescription: "Obsidian 图床插件，粘贴或拖入图片后上传到自有 GitHub 仓库并自动写回公开链接",
     projectLink: "https://github.com/rockychang7/obsidian-github-image-host",
   },

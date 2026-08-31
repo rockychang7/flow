@@ -24,8 +24,8 @@ const title: string = "Rocky Chang";
     <Header />
 
     <!-- 名字即页题:24/700,拉丁落在 Source Serif 4 -->
-    <!-- 页题上方再压 72/144,叠在布局的 64/128 上,合计 136/272:小标题靠留白立住,首屏只留这一件事 -->
-    <h1 class="mt-18 text-2xl font-bold text-foreground md:mt-36">RockyChang</h1>
+    <!-- 首页比列表页多留 16,叠在布局的 64/128 上,合计移动 112 / 桌面 176 -->
+    <h1 class="mt-12 text-2xl font-bold text-foreground">RockyChang</h1>
 
     <!-- 自述是两行短句,不加段距,靠 1.75 行高自然成块 -->
     <div class="mt-4 text-pretty text-base text-body">
@@ -58,6 +58,13 @@ const title: string = "Rocky Chang";
         </section>
 
         <section class="flex flex-col gap-y-6">
+            <h2 class="text-base font-medium text-foreground">关于本站</h2>
+            <p class="text-pretty text-base text-body">
+                Flow 是我的数字花园，用于记录个人沉淀、想法与学习。我会定期在这里<a href="/archive" class="link-inline">撰写文章</a>，分享关于 AI、开发、设计和个人成长的思考。
+            </p>
+        </section>
+
+        <section class="flex flex-col gap-y-6">
             <h2 class="text-base font-medium text-foreground">技术栈</h2>
             <div class="flex flex-col gap-y-6">
                 {stacks.map(([label, techs]) => (
@@ -67,13 +74,6 @@ const title: string = "Rocky Chang";
                     </div>
                 ))}
             </div>
-        </section>
-
-        <section class="flex flex-col gap-y-6">
-            <h2 class="text-base font-medium text-foreground">关于本站</h2>
-            <p class="text-pretty text-base text-body">
-                Flow 是我的数字花园，用于记录个人沉淀、想法与学习。我会定期在这里<a href="/archive" class="link-inline">撰写文章</a>，分享关于 AI、开发、设计和个人成长的思考。
-            </p>
         </section>
     </div>
 

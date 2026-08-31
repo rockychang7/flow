@@ -1,7 +1,7 @@
 ---
 // 两种角色共用一个组件:
 // as="h1" → 页题,24/700,全站唯一最大字号;as="h2" → 区块小标,14/500 muted。
-// 两者下方一律留 24;页题另在上方再压一段留白(见下)。
+// 两者下方一律留 24;页题另在上方留 32,与布局基础间距组成统一页首节奏。
 interface Props {
     title: string;
     moreHref?: string;
@@ -15,12 +15,12 @@ interface Props {
 const { title, moreHref, moreLabel = "查看全部", as: Tag = "h2", intro } = Astro.props;
 const isPageTitle = Tag === "h1";
 ---
-<!-- 页题上方再压 32/64,叠在布局的 64/128 上,合计 96/192;
-     比关于页的 136/272 收着 —— 列表页是来找东西的,不该先滚一段空白 -->
+<!-- 页题上方统一留 32,叠在布局的 64/128 上,合计移动 96 / 桌面 160;
+     列表页保持清楚的页首层级,同时不让桌面端出现过深的空白 -->
 <div
     class:list={[
         "mb-6 flex items-baseline justify-between gap-4",
-        isPageTitle && "mt-8 md:mt-16",
+        isPageTitle && "mt-8",
     ]}
 >
     <Tag
