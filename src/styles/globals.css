@@ -417,6 +417,15 @@
     margin-inline: auto;
 }
 
+.content-image-lightbox-trigger {
+    cursor: zoom-in;
+}
+
+.content-image-lightbox-trigger:focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 4px;
+}
+
 .prose figcaption {
     margin-top: 0.5rem;
     font-size: var(--text-caption);
@@ -544,17 +553,13 @@ html:not([data-theme-mode]) .mode-label[data-mode='system'] {
     text-decoration: var(--shiki-dark-text-decoration) !important;
 }
 
-/* 灯箱遮罩换轻磨砂,不用黑幕 */
+/* 页面级图片灯箱:轻磨砂遮罩,统一覆盖文章封面、文章正文与笔记正文。 */
 .PhotoView-Slider__Backdrop {
     backdrop-filter: blur(2px);
 }
 
-/* Ensure PhotoView appears above everything including sticky headers */
-.PhotoView-Portal,
-.PhotoView-Portal > div,
-.PhotoView__Photo,
-.PhotoView-Slider,
-.PhotoView-Slider__Backdrop {
+/* 只提升整个 Portal,避免覆盖 PhotoView 内部的遮罩、图片与工具栏层级。 */
+.PhotoView-Portal {
     z-index: 99999 !important;
 }
 

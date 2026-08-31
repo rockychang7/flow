@@ -1,6 +1,7 @@
 ---
 import Footer from "@/components/common/footer.astro";
 import Header from "@/components/common/header.astro";
+import ContentImageLightbox from "@/components/common/content-image-lightbox";
 import ArticleHeader from "@/components/markdown/article-header.astro";
 import Prose from "@/components/markdown/md-prose.astro";
 import { TableOfContents } from "@/components/markdown/table-of-contents";
@@ -28,6 +29,9 @@ const body = entry.body ?? "";
 const wordCount = getWordCount(body);
 const readingTime = getReadingTime(body);
 const tags = entry.data.tags;
+const imageGroups = entry.data.cover_url
+    ? ["#article-cover", "#article-content"]
+    : ["#article-content"];
 
 ---
 <RootLayout
@@ -45,9 +49,12 @@ const tags = entry.data.tags;
             wordCount={wordCount}
             readingTime={readingTime}
         />
-        <Prose>
-            <Content/>
-        </Prose>
+        <div id="article-content">
+            <Prose>
+                <Content/>
+            </Prose>
+        </div>
+        <ContentImageLightbox client:load groupSelectors={imageGroups} />
 
         {tags.length > 0 && (
             <div class="mt-12 flex flex-wrap gap-x-4 gap-y-2 text-sm">

@@ -1,5 +1,4 @@
 ---
-import ImageModal from "@/components/common/image-modal";
 import { DATE_FORMAT } from "@/constant/constants";
 import dayjs from "dayjs";
 
@@ -51,8 +50,12 @@ const { title, publishDate, coverImage, wordCount, readingTime } = Astro.props;
     </div>
 
     {coverImage && (
-        <div class="break-column mt-6 overflow-hidden rounded-md border border-border">
-            <ImageModal client:load src={coverImage} alt={`${title} 封面图`} />
+        <div id="article-cover" class="break-column mt-6 overflow-hidden rounded-md border border-border">
+            <img
+                src={coverImage}
+                alt={`${title} 封面图`}
+                class="block h-full w-full object-cover object-center"
+            />
         </div>
     )}
 </header>

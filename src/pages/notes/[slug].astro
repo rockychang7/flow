@@ -1,5 +1,6 @@
 ---
 import ArticleListItem from "@/components/cards/article-list-item.astro";
+import ContentImageLightbox from "@/components/common/content-image-lightbox";
 import LoadMore from "@/components/common/load-more.astro";
 import Footer from "@/components/common/footer.astro";
 import Header from "@/components/common/header.astro";
@@ -119,9 +120,12 @@ const pageDescription =
                 wordCount={noteView.wordCount}
                 readingTime={noteView.readingTime}
             />
-            <Prose>
-                <noteView.Content/>
-            </Prose>
+            <div id="note-content">
+                <Prose>
+                    <noteView.Content/>
+                </Prose>
+            </div>
+            <ContentImageLightbox client:load groupSelectors={["#note-content"]} />
 
             {(props.prev || props.next) && (
                 <nav class="mt-12 flex items-start justify-between gap-4">

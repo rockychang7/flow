@@ -2,6 +2,17 @@ import type { LogItem } from "@/type/changelog";
 
 export const changelogs: LogItem[] = [
   {
+    version: "v3.1.1",
+    date: "2026-08-31",
+    description: "统一文章与笔记的图片预览体验。",
+    features: [
+      "文章正文、文章封面与笔记正文统一使用页面级图片灯箱",
+      "多图支持计数、前后切换、键盘操作与移动端左右滑动",
+      "补齐图片图注、替代文本、焦点管理与缩放控制",
+      "修复灯箱层级冲突与移动端隐藏控件进入焦点顺序的问题",
+    ],
+  },
+  {
     version: "v3.1.0",
     date: "2026-08-29",
     description: "新增「笔记」板块:公开的学习笔记,按专题组织。",
