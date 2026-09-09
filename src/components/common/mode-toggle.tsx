@@ -4,6 +4,11 @@ type Mode = "light" | "dark" | "system";
 
 const NEXT: Record<Mode, Mode> = { light: "dark", dark: "system", system: "light" };
 
+interface ThemeController {
+    getMode: () => Mode;
+    setMode: (mode: Mode) => void;
+}
+
 interface Props {
     /** icon = 顶栏图标钮(桌面);row = 移动菜单里的整行条目 */
     variant?: "icon" | "row";
@@ -11,24 +16,45 @@ interface Props {
 
 /**
  * 主题三态循环:浅色 → 深色 → 跟随系统。
- * 未保存选择时默认浅色;主动选择「跟随系统」时显式存储 system。
+ * 未保存选择时跟随系统;主动选择后由 RootLayout 的主题控制器持久化。
  * 图标与文字由 <html data-theme-mode> 的纯 CSS 取态(globals.css 的 .mode-icon/.mode-label):
  * 该属性在首帧前就位,加载不闪、多实例同步,组件里不留状态。
  */
 export function ModeToggle({ variant = "icon" }: Props) {
     const cycle = () => {
-        const stored = document.documentElement.dataset.themeMode;
+        const controller = (
+            window as typeof window & { __flowTheme?: ThemeController }
+        ).__flowTheme;
+        const stored =
+            controller?.getMode() ??
+            document.documentElement.dataset.themeMode;
         const mode: Mode =
             stored === "dark" || stored === "system" ? stored : "light";
         const next = NEXT[mode];
+
+        if (controller) {
+            controller.setMode(next);
+            return;
+        }
+
+        // RootLayout 控制器应始终先于岛屿就绪;保留降级路径避免脚本被拦截时按钮失效。
         const dark =
             next === "dark" ||
             (next === "system" &&
                 window.matchMedia("(prefers-color-scheme: dark)").matches);
-
-        localStorage.setItem("theme", next);
+        try {
+            localStorage.setItem("flow-theme", next);
+        } catch {
+            // 仍应用到当前页面。
+        }
         document.documentElement.classList.toggle("dark", dark);
         document.documentElement.dataset.themeMode = next;
+        document
+            .querySelector('meta[name="color-scheme"]')
+            ?.setAttribute("content", dark ? "dark" : "light");
+        document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute("content", dark ? "#0c0a09" : "#ffffff");
     };
 
     /* 三枚图标叠放,只做透明度互换,不做旋转/缩放。

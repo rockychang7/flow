@@ -122,6 +122,12 @@
         scrollbar-gutter: stable;
     }
 
+    /* Radix Dialog 的 react-remove-scroll 会再加一次滚动条宽度的 margin-right。
+       html 已用 stable gutter 预留槽位,这里去掉重复补偿,保留它的滚动锁本身。 */
+    html body[data-scroll-locked] {
+        margin-right: 0 !important;
+    }
+
     /* 位移类动效一律受 reduced-motion 守卫 */
     @media (prefers-reduced-motion: no-preference) {
         html {
@@ -565,7 +571,7 @@
 html[data-theme-mode='light'] .mode-icon[data-mode='light'],
 html[data-theme-mode='dark'] .mode-icon[data-mode='dark'],
 html[data-theme-mode='system'] .mode-icon[data-mode='system'],
-html:not([data-theme-mode]) .mode-icon[data-mode='light'] {
+html:not([data-theme-mode]) .mode-icon[data-mode='system'] {
     opacity: 1 !important;
 }
 
@@ -576,7 +582,7 @@ html:not([data-theme-mode]) .mode-icon[data-mode='light'] {
 html[data-theme-mode='light'] .mode-label[data-mode='light'],
 html[data-theme-mode='dark'] .mode-label[data-mode='dark'],
 html[data-theme-mode='system'] .mode-label[data-mode='system'],
-html:not([data-theme-mode]) .mode-label[data-mode='light'] {
+html:not([data-theme-mode]) .mode-label[data-mode='system'] {
     display: inline !important;
 }
 

@@ -77,54 +77,122 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:description" content={description} />
     {ogImage && <meta name="twitter:image" content={ogImage} />}
     <script is:inline data-cfasync="false">
-      // Immediately apply theme on page load
+      // 首帧前恢复主题。localStorage 是主存储,长期 Cookie 用于浏览器偶发清理
+      // 单项存储后的恢复;旧的 theme 键会自动迁移到带站点命名空间的新键。
       (function () {
-        // 没有保存主题时默认浅色;用户主动选择跟随系统时显式存为 system。
-        // data-theme-mode 供主题钮的图标/文字纯 CSS 取态:本脚本在首帧前执行,
-        // 图标不会先显示错误状态再跳到实际模式
-        const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
-        const apply = () => {
-          const stored = localStorage.getItem("theme");
-          const mode =
-            stored === "dark" || stored === "system" ? stored : "light";
-          const dark =
-            mode === "dark" || (mode === "system" && systemDark.matches);
-          document.documentElement.classList.toggle("dark", dark);
-          document.documentElement.dataset.themeMode = mode;
-          // 画布与手机浏览器外壳的底色跟精确主题走,样式表未就位时也生效
-          document.querySelector('meta[name="color-scheme"]')?.setAttribute("content", dark ? "dark" : "light");
-          document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0c0a09" : "#ffffff");
+        const STORAGE_KEY = "flow-theme";
+        const LEGACY_STORAGE_KEY = "theme";
+        const COOKIE_KEY = "flow_theme";
+        const COOKIE_MAX_AGE = 60 * 60 * 24 * 400;
+        const MODES = ["light", "dark", "system"];
+        const isMode = (value) => MODES.includes(value);
+
+        const readLocal = (key) => {
+          try {
+            const value = localStorage.getItem(key);
+            return isMode(value) ? value : null;
+          } catch {
+            return null;
+          }
         };
-        apply();
-        systemDark.addEventListener("change", apply);
+
+        const readCookie = () => {
+          const prefix = `${COOKIE_KEY}=`;
+          const entry = document.cookie
+            .split("; ")
+            .find((item) => item.startsWith(prefix));
+          if (!entry) return null;
+          const value = decodeURIComponent(entry.slice(prefix.length));
+          return isMode(value) ? value : null;
+        };
+
+        const readSavedMode = () =>
+          readLocal(STORAGE_KEY) ||
+          readCookie() ||
+          readLocal(LEGACY_STORAGE_KEY);
+
+        const persist = (mode) => {
+          try {
+            localStorage.setItem(STORAGE_KEY, mode);
+            localStorage.removeItem(LEGACY_STORAGE_KEY);
+          } catch {
+            // Cookie fallback below still preserves the explicit choice.
+          }
+
+          const secure = location.protocol === "https:" ? "; Secure" : "";
+          document.cookie =
+            `${COOKIE_KEY}=${encodeURIComponent(mode)}; Path=/; ` +
+            `Max-Age=${COOKIE_MAX_AGE}; SameSite=Lax${secure}`;
+        };
+
+        const apply = (mode) => {
+          const resolved = isMode(mode) ? mode : "system";
+          const dark =
+            resolved === "dark" ||
+            (resolved === "system" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+          document.documentElement.classList.toggle("dark", dark);
+          document.documentElement.dataset.themeMode = resolved;
+          document
+            .querySelector('meta[name="color-scheme"]')
+            ?.setAttribute("content", dark ? "dark" : "light");
+          document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute("content", dark ? "#0c0a09" : "#ffffff");
+        };
+
+        window.__flowTheme = {
+          getMode: () => readSavedMode() || "system",
+          setMode: (mode) => {
+            if (!isMode(mode)) return;
+            persist(mode);
+            apply(mode);
+          },
+          apply: () => apply(readSavedMode() || "system"),
+        };
+
+        const savedMode = readSavedMode();
+        if (savedMode) persist(savedMode);
+        apply(savedMode || "system");
+
+        // ClientRouter 可能重新执行内联脚本;监听器只注册一次,执行时始终取最新控制器。
+        if (window.__flowThemeListenersBound) return;
+        window.__flowThemeListenersBound = true;
+
+        window
+          .matchMedia("(prefers-color-scheme: dark)")
+          .addEventListener("change", () => {
+            if (window.__flowTheme?.getMode() === "system") {
+              window.__flowTheme.apply();
+            }
+          });
+
+        window.addEventListener("storage", (event) => {
+          if (
+            event.key === null ||
+            event.key === STORAGE_KEY ||
+            event.key === LEGACY_STORAGE_KEY
+          ) {
+            window.__flowTheme?.apply();
+          }
+        });
+
+        document.addEventListener("astro:before-swap", (event) => {
+          const currentRoot = document.documentElement;
+          const nextRoot = event.newDocument.documentElement;
+          nextRoot.classList.toggle(
+            "dark",
+            currentRoot.classList.contains("dark")
+          );
+          nextRoot.dataset.themeMode =
+            currentRoot.dataset.themeMode || "system";
+        });
+
+        document.addEventListener("astro:after-swap", () => {
+          window.__flowTheme?.apply();
+        });
       })();
-    </script>
-
-    <!-- View Transitions theme sync -->
-    <script is:inline data-cfasync="false">
-      // BEFORE swap: copy dark class and theme mode to the incoming document
-      document.addEventListener("astro:before-swap", (event) => {
-        const isDark = document.documentElement.classList.contains("dark");
-        event.newDocument.documentElement.classList.toggle("dark", isDark);
-        event.newDocument.documentElement.dataset.themeMode =
-          document.documentElement.dataset.themeMode || "light";
-      });
-
-      // AFTER swap: fallback to ensure theme is correct
-      // (换入的新 head 带的是静态 meta,这里恢复成精确值)
-      document.addEventListener("astro:after-swap", () => {
-        const stored = localStorage.getItem("theme");
-        const mode =
-          stored === "dark" || stored === "system" ? stored : "light";
-        const dark =
-          mode === "dark" ||
-          (mode === "system" &&
-            window.matchMedia("(prefers-color-scheme: dark)").matches);
-        document.documentElement.classList.toggle("dark", dark);
-        document.documentElement.dataset.themeMode = mode;
-        document.querySelector('meta[name="color-scheme"]')?.setAttribute("content", dark ? "dark" : "light");
-        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0c0a09" : "#ffffff");
-      });
     </script>
 
     <!-- iOS Chrome back button fix (known Astro bug workaround) -->
