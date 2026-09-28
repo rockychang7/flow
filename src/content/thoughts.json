@@ -18,5 +18,10 @@
     "id": 4,
     "content": "少收藏，多吸收",
     "created_at": "2026-08-04 17:24:14"
+  },
+  {
+    "id": 5,
+    "content": "**Harness**的本质是为了给**模型**提供足够多的上下文，只要给的足够精确和充分，那么这套Harness的设计就已经成功一大半了。\n\n![图片](https://raw.githubusercontent.com/rockychang7/image-storage/master/README-01.png)",
+    "created_at": "2026-09-28 09:50:33"
   }
 ]
