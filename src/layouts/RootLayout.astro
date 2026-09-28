@@ -97,13 +97,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         };
 
         const readCookie = () => {
-          const prefix = `${COOKIE_KEY}=`;
-          const entry = document.cookie
-            .split("; ")
-            .find((item) => item.startsWith(prefix));
-          if (!entry) return null;
-          const value = decodeURIComponent(entry.slice(prefix.length));
-          return isMode(value) ? value : null;
+          try {
+            const prefix = `${COOKIE_KEY}=`;
+            const entry = document.cookie
+              .split("; ")
+              .find((item) => item.startsWith(prefix));
+            if (!entry) return null;
+            const value = decodeURIComponent(entry.slice(prefix.length));
+            return isMode(value) ? value : null;
+          } catch {
+            return null;
+          }
         };
 
         const readSavedMode = () =>
@@ -120,13 +124,19 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           }
 
           const secure = location.protocol === "https:" ? "; Secure" : "";
-          document.cookie =
-            `${COOKIE_KEY}=${encodeURIComponent(mode)}; Path=/; ` +
-            `Max-Age=${COOKIE_MAX_AGE}; SameSite=Lax${secure}`;
+          try {
+            document.cookie =
+              `${COOKIE_KEY}=${encodeURIComponent(mode)}; Path=/; ` +
+              `Max-Age=${COOKIE_MAX_AGE}; SameSite=Lax${secure}`;
+          } catch {
+            // 当前页面仍保持用户刚选择的模式。
+          }
         };
 
+        let currentMode = window.__flowTheme?.getMode() || readSavedMode() || "system";
         const apply = (mode) => {
           const resolved = isMode(mode) ? mode : "system";
+          currentMode = resolved;
           const dark =
             resolved === "dark" ||
             (resolved === "system" &&
@@ -143,18 +153,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         };
 
         window.__flowTheme = {
-          getMode: () => readSavedMode() || "system",
+          getMode: () => currentMode,
           setMode: (mode) => {
             if (!isMode(mode)) return;
             persist(mode);
             apply(mode);
           },
-          apply: () => apply(readSavedMode() || "system"),
+          apply: () => apply(currentMode),
+          sync: () => apply(readSavedMode() || "system"),
         };
 
-        const savedMode = readSavedMode();
-        if (savedMode) persist(savedMode);
-        apply(savedMode || "system");
+        if (currentMode !== "system" || readSavedMode()) persist(currentMode);
+        apply(currentMode);
 
         // ClientRouter 可能重新执行内联脚本;监听器只注册一次,执行时始终取最新控制器。
         if (window.__flowThemeListenersBound) return;
@@ -174,7 +184,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             event.key === STORAGE_KEY ||
             event.key === LEGACY_STORAGE_KEY
           ) {
-            window.__flowTheme?.apply();
+            window.__flowTheme?.sync();
           }
         });
 

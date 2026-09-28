@@ -26,8 +26,8 @@ export function ModeToggle({ variant = "icon" }: Props) {
             window as typeof window & { __flowTheme?: ThemeController }
         ).__flowTheme;
         const stored =
-            controller?.getMode() ??
-            document.documentElement.dataset.themeMode;
+            document.documentElement.dataset.themeMode ??
+            controller?.getMode();
         const mode: Mode =
             stored === "dark" || stored === "system" ? stored : "light";
         const next = NEXT[mode];
@@ -46,6 +46,13 @@ export function ModeToggle({ variant = "icon" }: Props) {
             localStorage.setItem("flow-theme", next);
         } catch {
             // 仍应用到当前页面。
+        }
+        try {
+            const secure = location.protocol === "https:" ? "; Secure" : "";
+            document.cookie =
+                `flow_theme=${next}; Path=/; Max-Age=${60 * 60 * 24 * 400}; SameSite=Lax${secure}`;
+        } catch {
+            // 存储不可用时,当前页面仍应用所选主题。
         }
         document.documentElement.classList.toggle("dark", dark);
         document.documentElement.dataset.themeMode = next;

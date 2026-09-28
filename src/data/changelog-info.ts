@@ -2,6 +2,15 @@ import type { LogItem } from "@/type/changelog";
 
 export const changelogs: LogItem[] = [
   {
+    version: "v3.1.5",
+    date: "2026-09-28",
+    description: "完善想法图片预览与主题选择的稳定性。",
+    features: [
+      "想法中的图片可点击放大,复用文章与笔记的图片灯箱",
+      "主题选择在站内跳转时保持,并兼容存储受限或 Cookie 异常的情况",
+    ],
+  },
+  {
     version: "v3.1.4",
     date: "2026-08-31",
     description: "优化文章目录交互与分类浏览体验。",

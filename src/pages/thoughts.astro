@@ -1,5 +1,6 @@
 ---
 import ThoughtListItem from "@/components/cards/thought-list-item.astro";
+import ContentImageLightbox from "@/components/common/content-image-lightbox";
 import SectionHead from "@/components/common/section-head.astro";
 import { getRenderedThoughts } from "@/lib/thoughts";
 import Footer from "../components/common/footer.astro";
@@ -15,7 +16,7 @@ const title: string = "想法";
         <SectionHead title="想法" as="h1" />
     <!-- 列表不加 gap:条目自带下留白,竖线才能连成一条不断的时间线 -->
         {thoughts.length > 0 ? (
-            <div class="flex flex-col">
+            <div id="thoughts-content" class="flex flex-col">
                 {thoughts.map((thought) => (
                     <ThoughtListItem html={thought.html} createdAt={thought.createdAt} />
                 ))}
@@ -25,5 +26,6 @@ const title: string = "想法";
         )}
     </div>
 
+    <ContentImageLightbox client:load groupSelectors={["#thoughts-content"]} />
     <Footer/>
 </RootLayout>
