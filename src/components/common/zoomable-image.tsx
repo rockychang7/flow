@@ -17,6 +17,8 @@ export function ZoomableImage({ src, alt, className, caption, ...props }: Zoomab
                     alt={alt}
                     className={cn("m-0 block h-auto w-full object-cover", className)}
                     style={{ display: "block", margin: 0 }}
+                    // 懒加载:正文配图在首屏之外;同时避免 React 19 SSR 为每张图注入 preload 抢首屏带宽
+                    loading="lazy"
                     {...props}
                 />
             </div>

@@ -8,7 +8,7 @@ Flow 是一个基于 Astro.js 构建的现代化个人博客项目,专注于内�
 ### 核心框架
 | 技术 | 版本 | 用途 |
 |------|------|------|
-| Astro | ^7.0 | 静态站点生成框架,islands 架构 |
+| Astro | ^7.4 | 静态站点生成框架,islands 架构(要求 Node.js >= 22.23.4;线上 Cloudflare Pages 构建所用版本由根目录 `.node-version` 指定) |
 | React | ^19.2 | 交互组件(仅需要交互的岛屿) |
 | TypeScript | ^5.9 | 类型安全 |
 
@@ -25,7 +25,7 @@ Flow 是一个基于 Astro.js 构建的现代化个人博客项目,专注于内�
 ### 内容处理
 | 技术 | 版本 | 用途 |
 |------|------|------|
-| @astrojs/mdx | ^7.0 | MDX支持 |
+| @astrojs/mdx | ^8.1 | MDX支持 |
 | @astrojs/rss | ^4.0 | RSS订阅生成(/rss.xml) |
 | @astrojs/sitemap | - | 站点地图(/sitemap-index.xml) |
 | remark-toc + remark-collapse | - | 文内目录(通过 astro.config 的 markdown.processor 配置,MDX 自动继承) |
@@ -33,11 +33,10 @@ Flow 是一个基于 Astro.js 构建的现代化个人博客项目,专注于内�
 | dayjs | ^1.11 | 日期处理(格式统一 YYYY-MM-DD) |
 | react-photo-view | - | 图片灯箱 |
 
-### 字体(双轨制)
-- UI(`--font-sans`):系统黑体栈(system-ui → PingFang SC / Microsoft YaHei),不自托管
-- 文章正文(`--font-reading`):Source Serif 4(拉丁)+ LXGW WenKai(中文,400/700 真字重,lxgw-wenkai-webfont 本地托管,按 unicode-range 分片按需加载),仅用于文章 prose 与文章标题
-- Maple Mono(等宽,用于代码/日期,`--font-mono`,@fontsource 本地托管)
-- 字体栈定义在 `src/styles/globals.css` 的 `@theme` 中;文章正文基线 18px(md-prose.astro)
+### 字体(衬线 + 等宽两轨)
+- 衬线(`--font-serif`,即全站默认字体,界面与正文共用):Source Serif 4 Variable(拉丁/数字)+ Noto Serif SC Variable(中文),均为可变字重,@fontsource-variable 本地托管,按 unicode-range 分片按需加载;层级差异只靠字重与灰度
+- JetBrains Mono(等宽,`--font-mono`,400/500,@fontsource 本地托管):代码块、行内代码与日期时间戳
+- 字体在 `src/layouts/RootLayout.astro` 引入(首屏拉丁分片 preload),字体栈定义在 `src/styles/globals.css` 的 `@theme` 中;正文基线 16px / 行高 1.75(globals.css 的 `.prose` 段)
 
 ## 项目结构
 

@@ -2,6 +2,17 @@ import type { LogItem } from "@/type/changelog";
 
 export const changelogs: LogItem[] = [
   {
+    version: "v3.1.6",
+    date: "2026-11-06",
+    description: "升级站点框架,优化文章图片加载。",
+    features: [
+      "Astro 升级到 7.4,MDX 与 React 集成同步升级到新的大版本",
+      "文章配图改为滚动到附近再加载,打开文章时不再一次性下载全部图片",
+      "页面刷新时不再先闪回顶部再跳到原来的阅读位置",
+      "重写项目 README,新增中文版",
+    ],
+  },
+  {
     version: "v3.1.5",
     date: "2026-09-28",
     description: "完善想法图片预览与主题选择的稳定性。",
