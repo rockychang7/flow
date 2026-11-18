@@ -2,6 +2,17 @@ import type { LogItem } from "@/type/changelog";
 
 export const changelogs: LogItem[] = [
   {
+    version: "v3.2.1",
+    date: "2026-11-18",
+    description: "优化站内切换与文章打开速度。",
+    features: [
+      "链接出现在屏幕上就在后台提前加载页面,手机上点开文章也不用再干等",
+      "样式、脚本与字体文件长期缓存在浏览器里,再次访问不必逐个向服务器确认",
+      "切换页面时顶部导航栏保持不动,不再随每次换页闪一下",
+      "文章配图改用 WebP 格式,体积约减少七成;图片加载出来时正文不再往下跳",
+    ],
+  },
+  {
     version: "v3.2.0",
     date: "2026-11-18",
     description: "想法改为推文式动态,新增表情回应。",

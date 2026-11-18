@@ -1,0 +1,12 @@
+# Cloudflare Pages 响应头。默认所有静态文件只缓存 4 小时(max-age=14400),
+# 过期后每个文件都要回源站验证一次;站点在海外节点,国内一次往返约 0.5~1s。
+
+# 构建产物文件名带内容哈希,内容变了文件名就变,可以放心永久缓存
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# 文章配图与表情图标:文件名不带哈希,换图时请换文件名;缓存 7 天
+/images/*
+  Cache-Control: public, max-age=604800
+/reactions/*
+  Cache-Control: public, max-age=604800

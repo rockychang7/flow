@@ -255,8 +255,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <slot />
     </main>
     <CodeCopy />
-    <BackToTop client:load />
-    <!-- Add this portal container for dialogs -->
-    <div id="dialog-portal"></div>
+    <BackToTop client:load transition:persist="back-to-top" />
+    <!-- 弹窗挂载点。顶栏的搜索岛跨页保留并持有这个节点的引用,它也必须跨页保留,
+         否则换页后搜索弹窗会渲染进已脱离文档的旧节点里 -->
+    <div id="dialog-portal" transition:persist="dialog-portal"></div>
   </body>
 </html>

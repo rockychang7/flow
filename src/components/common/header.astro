@@ -5,8 +5,10 @@ import LogoNew from "./logo-new.astro";
 import { ModeToggle } from "./mode-toggle";
 ---
 <!-- 48px 定高毛玻璃顶栏:半透明底 + 16px 背景模糊,无 hairline。
-     窄屏只剩 logo + 菜单钮,导航/搜索/主题全部收进下方的全宽面板 -->
-<header class="fixed inset-x-0 top-0 z-50 h-12 bg-background/50 backdrop-blur-[16px]">
+     窄屏只剩 logo + 菜单钮,导航/搜索/主题全部收进下方的全宽面板。
+     顶栏与移动面板都跨页保留(transition:persist):换页时不销毁重建,
+     里面的搜索/主题 React 岛也不必每页重新水合,已加载的搜索索引跟着留下 -->
+<header transition:persist="site-header" class="fixed inset-x-0 top-0 z-50 h-12 bg-background/50 backdrop-blur-[16px]">
     <div class="mx-auto flex h-full w-full max-w-column items-center justify-between px-4">
         <a href="/" class="shrink-0 select-none">
             <LogoNew />
@@ -47,7 +49,7 @@ import { ModeToggle } from "./mode-toggle";
 
 <!-- 移动导航面板:全宽,从顶栏下方以幕布式缓缓展开(grid-rows 0fr→1fr);
      动画时长受全站 reduced-motion 守卫自动压到 0 -->
-<div id="mobile-menu" data-state="closed" class="fixed inset-x-0 top-12 bottom-0 z-40 sm:hidden">
+<div id="mobile-menu" transition:persist="mobile-menu" data-state="closed" class="fixed inset-x-0 top-12 bottom-0 z-40 sm:hidden">
     <div data-menu-backdrop class="absolute inset-0 bg-background/20 opacity-0 backdrop-blur-[2px] transition-opacity duration-300"></div>
     <div data-menu-panel class="relative grid grid-rows-[0fr] bg-background/95 backdrop-blur-[16px] transition-[grid-template-rows] duration-300 ease-out">
         <div class="min-h-0 overflow-hidden">

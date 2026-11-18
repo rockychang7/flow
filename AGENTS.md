@@ -112,6 +112,11 @@ flow/
 - `/thoughts` 首屏 10 条,其余由 `LoadMore` 逐批放出(条目全部仍渲染进 HTML);表情栏只为可见条目拉数据,LoadMore 放出新条目后派发 `reveal:more` 事件触发补拉,接口单次最多查 100 条。
 - `astro dev` 没有 Pages Functions:开发模式下表情栏走组件内的内存假数据,刷新即重置;接口不可用时(生产)表情栏整栏隐藏。
 - 表情栏是全站唯一允许缩放动效的地方(globals.css 动效约定的例外),全部受 `prefers-reduced-motion` 守卫。
+- **换页速度**:站点在 Cloudflare 海外节点,国内每次往返约 0.5~1s,优化都围绕"少等一次往返":
+  - 预取策略在 astro.config 的 `prefetch`(全部链接、进入视口即预取,手机也生效);不需要预取的链接(RSS 等)加 `data-astro-prefetch="false"`。
+  - 缓存头在 `public/_headers`:`/_astro/*` 带哈希永久缓存;`/images/*`、`/reactions/*` 缓存 7 天,换图必须换文件名。
+  - 顶栏、移动菜单、回到顶部、`#dialog-portal` 都用 `transition:persist` 跨页保留;搜索岛持有 `#dialog-portal` 的引用,两者要一起保留。
+- 文章配图放 `public/images/`,用 WebP(宽度不超过 1600),`ZoomableImage` 写上原图 `width`/`height`,避免懒加载图片撑开时正文跳动。
 
 ## 主要功能
 

@@ -15,6 +15,12 @@ export default defineConfig({
     redirects: {
         "/about": "/",
     },
+    // 链接一进入视口就在后台预取页面。ClientRouter 默认是"鼠标悬停才预取",
+    // 手机没有悬停,点了才开始请求;站点在海外节点,这一下就是半秒到一秒的白等
+    prefetch: {
+        prefetchAll: true,
+        defaultStrategy: "viewport",
+    },
     integrations: [react(),
         mdx({
             syntaxHighlight: "shiki",
