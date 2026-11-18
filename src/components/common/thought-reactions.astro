@@ -6,8 +6,9 @@ interface Props {
 const { thoughtId } = Astro.props;
 ---
 
-<!-- 表情栏:服务端只输出空壳,计数由客户端脚本向 /api/reactions 拉取后渲染。
-     接口不可用时整栏保持 hidden,不影响阅读。
+<!-- 表情栏:笑脸按钮随页面直出,首屏不跳动;各表情的计数由客户端脚本
+     先用本地缓存(上次看到的数)立即画出,再向 /api/reactions 拉最新值,新增的计数淡入。
+     接口不可用时整栏收起,不影响阅读。
      data-no-lightbox:表情图标不是内容图片,不进图片灯箱。 -->
 <div
     class="thought-reactions"
@@ -15,9 +16,27 @@ const { thoughtId } = Astro.props;
     data-no-lightbox
     role="group"
     aria-label="表情回应"
-    hidden
 >
+    <span class="reaction-add-wrap">
+        <button
+            type="button"
+            class="reaction-add"
+            title="添加表情"
+            aria-label="添加表情"
+            aria-haspopup="menu"
+            aria-expanded="false"
+        >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 14.5s1.3 1.8 3.5 1.8 3.5-1.8 3.5-1.8"></path><path d="M9 9.5h.01M15 9.5h.01"></path></svg>
+        </button>
+    </span>
 </div>
+
+<noscript>
+    <style>
+        /* 无脚本时按钮按不动,整栏不显示 */
+        .thought-reactions { display: none !important; }
+    </style>
+</noscript>
 
 <style is:global>
     /* 表情栏是全站唯一允许缩放动效的地方(globals.css 动效约定的例外),
@@ -188,6 +207,11 @@ const { thoughtId } = Astro.props;
         78% { transform: translate(-50%, -90%) scale(1); opacity: 1; }
         100% { transform: translate(-50%, -100%) scale(0.92); opacity: 0; }
     }
+    /* 数据回来后才出现的计数:原地淡入,不做位移 */
+    @keyframes reaction-chip-in {
+        from { opacity: 0; }
+    }
+    .reaction-chip.is-enter { animation: reaction-chip-in 0.24s ease-out; }
     .reaction-chip img.is-pop { animation: reaction-pop 0.42s cubic-bezier(0.34, 1.3, 0.64, 1); }
     .reaction-chip img.is-shrink { animation: reaction-shrink 0.26s ease-out; }
     .reaction-count.is-up { animation: reaction-num-up 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
@@ -396,6 +420,7 @@ const { thoughtId } = Astro.props;
         try {
             s.counts[key] = await sendReaction(id, key, on);
             updateChip(box, id, key, on, false);
+            writeCache([id]);
         } catch {
             on ? s.mine.delete(key) : s.mine.add(key);
             s.counts[key] = Math.max(0, (s.counts[key] ?? 0) + (on ? -1 : 1));
@@ -478,25 +503,58 @@ const { thoughtId } = Astro.props;
         return picker;
     }
 
-    const SMILE_SVG =
-        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5s1.3 1.8 3.5 1.8 3.5-1.8 3.5-1.8"/><path d="M9 9.5h.01M15 9.5h.01"/></svg>';
+    // ── 本地缓存:记住上次看到的计数,回访时先画出来,接口回来再校正 ──
+    const CACHE_KEY = "flow:reactions";
+    type Cached = Record<string, { c: Record<string, number>; m: string[] }>;
 
-    function renderBox(box: HTMLElement, id: number) {
-        const s = states.get(id)!;
-        box.replaceChildren();
-        for (const r of REACTIONS) {
-            if ((s.counts[r.key] ?? 0) > 0) box.append(makeChip(id, r.key));
+    function readCache(): Cached {
+        try {
+            return JSON.parse(localStorage.getItem(CACHE_KEY) ?? "{}") as Cached;
+        } catch {
+            return {};
         }
-        const wrap = document.createElement("span");
-        wrap.className = "reaction-add-wrap";
-        const add = document.createElement("button");
-        add.type = "button";
-        add.className = "reaction-add";
-        add.title = "添加表情";
-        add.setAttribute("aria-label", "添加表情");
-        add.setAttribute("aria-haspopup", "menu");
-        add.setAttribute("aria-expanded", "false");
-        add.innerHTML = SMILE_SVG;
+    }
+
+    function writeCache(ids: number[]) {
+        try {
+            const cache = readCache();
+            for (const id of ids) {
+                const s = states.get(id);
+                if (s) cache[id] = { c: s.counts, m: [...s.mine] };
+            }
+            localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+        } catch {
+            /* 存储不可用就不缓存 */
+        }
+    }
+
+    /** 按当前状态对齐计数按钮:已有的原地更新,新出现的(fade 时)淡入,归零的移除 */
+    function syncChips(box: HTMLElement, id: number, fade: boolean) {
+        const s = states.get(id)!;
+        const wrap = box.querySelector(".reaction-add-wrap");
+        for (const r of REACTIONS) {
+            const count = s.counts[r.key] ?? 0;
+            let chip = box.querySelector<HTMLButtonElement>(`.reaction-chip[data-key="${r.key}"]`);
+            if (count <= 0) {
+                chip?.remove();
+                continue;
+            }
+            if (!chip) {
+                chip = makeChip(id, r.key);
+                if (fade && !reduceMotion()) chip.classList.add("is-enter");
+                box.insertBefore(chip, wrap);
+            }
+            chip.setAttribute("aria-pressed", String(s.mine.has(r.key)));
+            chip.setAttribute("aria-label", chipLabel(r.key, count));
+            chip.querySelector(".reaction-count")!.textContent = String(count);
+        }
+    }
+
+    /** 给页面直出的笑脸按钮挂上交互 */
+    function bindAdd(box: HTMLElement, id: number) {
+        const wrap = box.querySelector<HTMLElement>(".reaction-add-wrap");
+        const add = wrap?.querySelector<HTMLButtonElement>(".reaction-add");
+        if (!wrap || !add) return;
 
         // 鼠标:悬停展开(短延迟防误触),移出整个区域(按钮 + 选择条)后稍等再收起
         wrap.addEventListener("pointerenter", (ev) => {
@@ -522,9 +580,6 @@ const { thoughtId } = Astro.props;
                 if (ev.detail === 0) picker?.querySelector("button")?.focus();
             }
         });
-        wrap.append(add);
-        box.append(wrap);
-        box.hidden = false;
     }
 
     async function init() {
@@ -535,11 +590,25 @@ const { thoughtId } = Astro.props;
         if (boxes.length === 0) return;
         boxes.forEach((b) => (b.dataset.ready = "1"));
         const ids = [...new Set(boxes.map((b) => Number(b.dataset.thoughtId)))];
+
+        // 先用缓存立刻画出上次看到的计数,按钮马上可用
+        const cache = readCache();
+        for (const id of ids) {
+            const c = cache[id];
+            states.set(id, { counts: { ...(c?.c ?? {}) }, mine: new Set(c?.m ?? []) });
+        }
+        boxes.forEach((b) => {
+            const id = Number(b.dataset.thoughtId);
+            syncChips(b, id, false);
+            bindAdd(b, id);
+        });
+
         let payload: ReactionsPayload;
         try {
             payload = await fetchReactions(ids);
         } catch {
-            return; // 接口不可用:表情栏保持隐藏
+            boxes.forEach((b) => (b.hidden = true)); // 接口不可用:整栏收起
+            return;
         }
         for (const id of ids) {
             states.set(id, {
@@ -547,7 +616,8 @@ const { thoughtId } = Astro.props;
                 mine: new Set(payload.mine[id] ?? []),
             });
         }
-        boxes.forEach((b) => renderBox(b, Number(b.dataset.thoughtId)));
+        boxes.forEach((b) => syncChips(b, Number(b.dataset.thoughtId), true));
+        writeCache(ids);
     }
 
     document.addEventListener("click", closePickers);
