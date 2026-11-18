@@ -58,7 +58,7 @@
     --radius-lg: 0.875rem; /* 14 弹层 */
     --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.05); /* 仅按钮与输入框 */
 
-    /* 只动透明度,不做位移/缩放 */
+    /* 只动透明度,不做位移/缩放(唯一例外:想法表情栏的点中动效,见 thought-reactions.astro) */
     --animate-fade-in: fade-in 0.3s ease-out forwards;
 
     @keyframes fade-in {
@@ -514,20 +514,18 @@
     margin-bottom: 0;
 }
 
-/* 图片贴着文字走,不留长文那 2em 呼吸位;左对齐不居中,与条目左缘对齐 */
+/* 图片贴着文字走,不留长文那 2em 呼吸位;左对齐不居中,与条目左缘对齐;
+   圆角 + 细边,像社交动态里的配图 */
 .thought-body .prose img {
     margin-block: 0.75rem;
     margin-inline: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
 }
 
 /* 想法不破栏:条目本就窄,旁边没有可借的空间 */
 .thought-body .prose > pre {
     margin-inline: 0;
-}
-
-/* 时间线竖线连到下一条,最后一条不再往下拖 */
-.thought-item:last-child .thought-line {
-    display: none;
 }
 
 /* ── 逐批展开的入场动效 ──────────────────────────────────────────────

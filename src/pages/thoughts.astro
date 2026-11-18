@@ -1,5 +1,6 @@
 ---
 import ThoughtListItem from "@/components/cards/thought-list-item.astro";
+import LoadMore from "@/components/common/load-more.astro";
 import ContentImageLightbox from "@/components/common/content-image-lightbox";
 import SectionHead from "@/components/common/section-head.astro";
 import { getRenderedThoughts } from "@/lib/thoughts";
@@ -8,22 +9,31 @@ import Header from "../components/common/header.astro";
 import RootLayout from "../layouts/RootLayout.astro";
 
 const thoughts = await getRenderedThoughts();
+// 首屏先放 10 条,其余挂 reveal-item 由 LoadMore 逐批放出(全部仍渲染进 HTML,搜索引擎读得到)
+const INITIAL = 10;
+const hasMore = thoughts.length > INITIAL;
 const title: string = "想法";
 ---
 <RootLayout title={title} description="灵光一闪的碎片记录">
     <Header/>
     <div class="flex flex-col">
         <SectionHead title="想法" as="h1" />
-    <!-- 列表不加 gap:条目自带下留白,竖线才能连成一条不断的时间线 -->
+    <!-- 列表不加 gap:条目自带上下留白与细线分隔 -->
         {thoughts.length > 0 ? (
             <div id="thoughts-content" class="flex flex-col">
-                {thoughts.map((thought) => (
-                    <ThoughtListItem html={thought.html} createdAt={thought.createdAt} />
+                {thoughts.map((thought, index) => (
+                    <ThoughtListItem
+                        id={thought.id}
+                        html={thought.html}
+                        createdAt={thought.createdAt}
+                        class={index >= INITIAL ? "reveal-item hidden" : undefined}
+                    />
                 ))}
             </div>
         ) : (
             <p class="text-muted-foreground">还没有想法。</p>
         )}
+        {hasMore && <LoadMore step={10} />}
     </div>
 
     <ContentImageLightbox client:load groupSelectors={["#thoughts-content"]} />

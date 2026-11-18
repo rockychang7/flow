@@ -1,39 +1,55 @@
 ---
+import ThoughtReactions from "@/components/common/thought-reactions.astro";
+
 interface Props {
+    id: number;
     html: string;
     createdAt: string;
+    /** 逐批展开的钩子("reveal-item hidden"),不需要就不传 */
+    class?: string;
 }
 
-const { html, createdAt } = Astro.props;
+const { id, html, createdAt, class: className } = Astro.props;
 
-// created_at 是无时区的本地时间串。服务端只渲染绝对时间(月-日 时:分),
+// created_at 是无时区的本地时间串。服务端只渲染绝对时间(年-月-日 时:分,即前 16 位),
 // 一周内的条目由客户端脚本改写成相对时间 —— 相对时间若在构建时算,
-// 会永远停在构建那一刻。
-const [datePart, timePart] = createdAt.split(" ");
-const absolute = `${datePart.slice(5)} ${timePart.slice(0, 5)}`;
+// 会永远停在构建那一刻。悬停 title 始终给完整时间。
+const absolute = createdAt.slice(0, 16);
 ---
 
-<!-- Threads 式条目:左侧圆点 + 竖线串成时间线(占掉头像那一栏),
-     右侧 @handle · 时间一行,正文在下。无卡片无边框,与全站一致。 -->
-<article class="thought-item flex gap-x-3 pb-10 last:pb-0">
-    <div class="relative flex w-1.5 shrink-0 justify-center">
-        <span class="mt-2 size-1.5 shrink-0 rounded-full bg-muted-foreground"></span>
-        <span class="thought-line absolute inset-x-0 top-4 bottom-0 mx-auto w-px bg-border"></span>
-    </div>
+<!-- 推文式条目:左侧圆形头像,右侧 名字 · @账号 · 时间 一行,正文在下,底部表情栏。
+     无卡片无边框;条目间细线用 border-top(首条除外)而不是外层 divide-y ——
+     逐批展开时末尾有隐藏条目,divide-y 会让最后一条可见条目多出一条底线。
+     用 flex 而非 grid:load-more 的 noscript 兜底会把 .reveal-item 强制成 flex。 -->
+<article
+    class:list={[
+        "thought-item flex gap-x-3 border-t border-border py-5 first:border-t-0 first:pt-0 last:pb-0",
+        className,
+    ]}
+>
+    <div
+        class="grid size-10 shrink-0 place-items-center rounded-full border border-border bg-muted text-[17px] font-semibold leading-none text-foreground select-none"
+        aria-hidden="true"
+    >R</div>
 
     <div class="min-w-0 flex-1">
-        <div class="flex items-baseline gap-x-2">
-            <span class="text-sm font-medium text-foreground">@Rocky</span>
+        <div class="flex flex-wrap items-baseline gap-x-1.5 text-sm">
+            <span class="font-semibold text-foreground">Rocky</span>
+            <span class="text-muted-foreground">@rocky</span>
+            <span class="text-muted-foreground" aria-hidden="true">·</span>
             <time
                 class="font-mono text-caption font-medium text-muted-foreground"
                 datetime={createdAt.replace(" ", "T")}
+                title={absolute}
                 data-thought-time={createdAt}
             >{absolute}</time>
         </div>
 
-        <div class="thought-body mt-2">
+        <div class="thought-body mt-1">
             <div class="prose max-w-none" set:html={html} />
         </div>
+
+        <ThoughtReactions thoughtId={id} />
     </div>
 </article>
 

@@ -9,9 +9,9 @@ interface Props {
 const { thoughts } = Astro.props;
 ---
 
-<!-- 想法条目间 48 纯留白 -->
-<section class="flex flex-col gap-y-12">
+<!-- 与 /thoughts 同一形态:条目自带上下留白与细线分隔 -->
+<section class="flex flex-col">
     {thoughts.map((thought) => (
-        <ThoughtListItem html={thought.html} createdAt={thought.createdAt} />
+        <ThoughtListItem id={thought.id} html={thought.html} createdAt={thought.createdAt} />
     ))}
 </section>

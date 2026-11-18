@@ -1,0 +1,4 @@
+Reaction emoji (*.svg, *.webp) are from Noto Emoji Animation by Google,
+licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+Source: https://googlefonts.github.io/noto-emoji-animation/
+The animated .webp files were resized to 192x192.

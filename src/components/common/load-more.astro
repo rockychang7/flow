@@ -70,6 +70,9 @@ const { step = 5, label = "加载更多" } = Astro.props;
             });
 
             if (pending.length <= step) button.classList.add("hidden");
+
+            // 通知依赖可见性的组件(如想法表情栏)为新放出的条目补拉数据
+            document.dispatchEvent(new CustomEvent("reveal:more"));
         };
     })();
 </script>

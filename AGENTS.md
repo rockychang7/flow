@@ -76,6 +76,8 @@ flow/
 │   │   └── search.json.js  # 搜索索引端点
 │   ├── styles/globals.css  # 全局样式 + Tailwind v4 主题定义
 │   └── type/               # 类型定义
+├── functions/api/reactions.ts  # 表情回应接口(Cloudflare Pages Functions + D1)
+├── migrations/             # D1 建表 SQL
 ├── scripts/
 │   ├── new-thought.mjs     # 本地发布想法 CLI(npm run say)
 │   └── sync-notes.mjs      # 笔记同步 CLI(npm run notes:sync,从 Obsidian 仓库筛选公开笔记)
@@ -105,11 +107,16 @@ flow/
 - 想法序列化格式契约:`JSON.stringify(arr, null, 2) + "\n"`。两条写入路径(线上 `/say` 的 GitHub Contents API 写回、本地 `npm run say`)必须保持该格式一致,否则会产生整文件无意义 diff。
 - `/say` 是隐藏发布页:不进导航菜单、sitemap 已在 astro.config 里排除、页面传 `noindex` 给 RootLayout;发布凭证是 fine-grained PAT(仅授权本仓库 Contents 读写),只存在用户浏览器 localStorage,不进代码与环境变量。
 - 线上 `/say` 发布会直接产生远端 commit:本地改动/发布前先 `git pull --rebase`。
+- **想法表情回应**:表情清单唯一来源是 `src/lib/reactions.ts` 的 `REACTIONS`(前端 `thought-reactions.astro` 与接口 `functions/api/reactions.ts` 共用);增删表情要同时在 `public/reactions/` 放 `{key}.svg`(静态图标)与 `{key}.webp`(点中特效动图,Noto Animated Emoji,CC BY 4.0,出处见同目录 ATTRIBUTION.txt)。
+- 表情计数存在 Cloudflare D1(Pages 项目 binding 名 `DB`,库名 `flow-reactions`),表结构在 `migrations/`,新迁移文件按序号追加,用 `npx wrangler d1 execute flow-reactions --remote --file=<文件>` 应用。`functions/` 由 Cloudflare Pages 直接部署,不经过 Astro 构建,站点仍是纯静态。
+- `/thoughts` 首屏 10 条,其余由 `LoadMore` 逐批放出(条目全部仍渲染进 HTML);表情栏只为可见条目拉数据,LoadMore 放出新条目后派发 `reveal:more` 事件触发补拉,接口单次最多查 100 条。
+- `astro dev` 没有 Pages Functions:开发模式下表情栏走组件内的内存假数据,刷新即重置;接口不可用时(生产)表情栏整栏隐藏。
+- 表情栏是全站唯一允许缩放动效的地方(globals.css 动效约定的例外),全部受 `prefers-reduced-motion` 守卫。
 
 ## 主要功能
 
 - **文章管理**: 基于MDX,Frontmatter 由 zod schema 校验
-- **想法(微博客)**: `/thoughts` 时间线 + 首页最新 3 条;线上 `/say` 隐藏页(GitHub API 直发)或本地 `npm run say` 发布,数据以 JSON 跟随仓库
+- **想法(微博客)**: `/thoughts` 时间线 + 首页最新 3 条;线上 `/say` 隐藏页(GitHub API 直发)或本地 `npm run say` 发布,数据以 JSON 跟随仓库。推文式条目(头像 + 名字 · 时间 + 正文),底部表情回应:访客无需登录,点过的表情才显示计数,点中有 Telegram 式动图特效
 - **笔记**: `/notes` 专题分组列表 + 专题页 + 详情页,内容经 `npm run notes:sync` 从 Obsidian 仓库白名单同步;进全站搜索,独立 feed `/notes/rss.xml`
 - **归档/分类/标签**: 时间线归档、分类与标签筛选页
 - **全站搜索**: ⌘K / Ctrl+K 唤起,Fuse.js 模糊匹配,支持 ↑↓/Enter 键盘导航

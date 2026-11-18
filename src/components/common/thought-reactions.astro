@@ -1,0 +1,560 @@
+---
+interface Props {
+    thoughtId: number;
+}
+
+const { thoughtId } = Astro.props;
+---
+
+<!-- 表情栏:服务端只输出空壳,计数由客户端脚本向 /api/reactions 拉取后渲染。
+     接口不可用时整栏保持 hidden,不影响阅读。
+     data-no-lightbox:表情图标不是内容图片,不进图片灯箱。 -->
+<div
+    class="thought-reactions"
+    data-thought-id={thoughtId}
+    data-no-lightbox
+    role="group"
+    aria-label="表情回应"
+    hidden
+>
+</div>
+
+<style is:global>
+    /* 表情栏是全站唯一允许缩放动效的地方(globals.css 动效约定的例外),
+       且全部受 prefers-reduced-motion 守卫。元素由脚本生成,样式只能用全局选择器。 */
+    .thought-reactions {
+        margin-top: 0.75rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.375rem;
+    }
+    .thought-reactions[hidden] {
+        display: none;
+    }
+    .thought-reactions img {
+        display: block;
+        cursor: inherit;
+        -webkit-user-drag: none;
+        user-select: none;
+    }
+
+    .reaction-chip {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3125rem;
+        height: 1.875rem;
+        padding: 0 0.625rem 0 0.5rem;
+        border: 1px solid var(--color-border);
+        border-radius: 999px;
+        background: var(--color-background);
+        color: var(--color-muted-foreground);
+        font-size: var(--text-caption);
+        line-height: 1;
+        cursor: pointer;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        transition:
+            background-color 0.15s,
+            border-color 0.15s,
+            color 0.15s;
+    }
+    .reaction-chip:hover {
+        background: var(--color-muted);
+    }
+    .reaction-chip[aria-pressed="true"] {
+        background: var(--color-muted);
+        border-color: var(--color-ring);
+        color: var(--color-foreground);
+    }
+    .reaction-chip img {
+        width: 1.125rem;
+        height: 1.125rem;
+    }
+    .reaction-chip .reaction-count {
+        font-family: var(--font-mono);
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+        display: inline-block;
+    }
+
+    .reaction-add-wrap {
+        position: relative;
+        display: inline-flex;
+    }
+    .reaction-add {
+        display: inline-grid;
+        place-items: center;
+        height: 1.875rem;
+        width: 2.125rem;
+        border: 1px dashed var(--color-border);
+        border-radius: 999px;
+        background: var(--color-background);
+        color: var(--color-muted-foreground);
+        cursor: pointer;
+        transition:
+            background-color 0.15s,
+            color 0.15s;
+    }
+    .reaction-add:hover,
+    .reaction-add[aria-expanded="true"] {
+        background: var(--color-muted);
+        color: var(--color-foreground);
+    }
+
+    /* 选择条:Dock 式。胶囊本身只横向变宽,图标从底边向上放大、探出胶囊 */
+    .reaction-picker {
+        --dock-base: 2.125rem;
+        position: absolute;
+        left: 0;
+        bottom: calc(100% + 0.5rem);
+        z-index: 20;
+        display: flex;
+        align-items: flex-end;
+        padding: 0.25rem;
+        border: 1px solid var(--color-border);
+        border-radius: 999px;
+        background: var(--color-elevated);
+        box-shadow: 0 6px 20px rgb(0 0 0 / 0.08);
+        animation: reaction-picker-in 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+        transform-origin: 1rem 100%;
+    }
+    /* 按钮和选择条之间的空隙用透明桥接住,鼠标移上去途中不会断开悬停 */
+    .reaction-picker::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        height: 0.625rem;
+    }
+    .reaction-picker button {
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        width: var(--dock-base);
+        height: var(--dock-base);
+        padding-bottom: 0.3125rem;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: width 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reaction-picker img {
+        width: 1.5rem;
+        height: 1.5rem;
+        transform-origin: 50% 100%;
+        transform: scale(var(--dock-scale, 1));
+        transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reaction-picker button:focus-visible {
+        background: var(--color-muted);
+    }
+
+    .reaction-chip:focus-visible,
+    .reaction-add:focus-visible,
+    .reaction-picker button:focus-visible {
+        outline: 2px solid var(--color-ring);
+        outline-offset: 2px;
+    }
+
+    @keyframes reaction-picker-in {
+        from {
+            opacity: 0;
+            transform: translateY(4px) scale(0.96);
+        }
+    }
+
+    /* 点中:图标轻弹、数字滚动、动图从按钮上方浮起后淡出(Telegram 式) */
+    @keyframes reaction-pop {
+        0% { transform: scale(1); }
+        35% { transform: scale(1.32); }
+        65% { transform: scale(0.96); }
+        100% { transform: scale(1); }
+    }
+    @keyframes reaction-shrink {
+        45% { transform: scale(0.86); }
+    }
+    @keyframes reaction-num-up {
+        from { transform: translateY(60%); opacity: 0; }
+    }
+    @keyframes reaction-num-down {
+        from { transform: translateY(-60%); opacity: 0; }
+    }
+    @keyframes reaction-effect {
+        0% { transform: translate(-50%, -35%) scale(0.5); opacity: 0; }
+        12% { transform: translate(-50%, -78%) scale(1); opacity: 1; }
+        78% { transform: translate(-50%, -90%) scale(1); opacity: 1; }
+        100% { transform: translate(-50%, -100%) scale(0.92); opacity: 0; }
+    }
+    .reaction-chip img.is-pop { animation: reaction-pop 0.42s cubic-bezier(0.34, 1.3, 0.64, 1); }
+    .reaction-chip img.is-shrink { animation: reaction-shrink 0.26s ease-out; }
+    .reaction-count.is-up { animation: reaction-num-up 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
+    .reaction-count.is-down { animation: reaction-num-down 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
+
+    .reaction-effect {
+        position: fixed;
+        z-index: 50;
+        width: 3.25rem;
+        height: 3.25rem;
+        pointer-events: none;
+        animation: reaction-effect 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reaction-picker,
+        .reaction-chip img.is-pop,
+        .reaction-chip img.is-shrink,
+        .reaction-count.is-up,
+        .reaction-count.is-down {
+            animation: none;
+        }
+        .reaction-picker button,
+        .reaction-picker img {
+            transition: none;
+        }
+        .reaction-effect {
+            display: none;
+        }
+    }
+</style>
+
+<script>
+    import { REACTIONS, type ReactionsPayload } from "@/lib/reactions";
+
+    const API = "/api/reactions";
+    const VISITOR_KEY = "flow:visitor";
+    const LABEL = new Map<string, string>(REACTIONS.map((r) => [r.key, r.label]));
+
+    // 每条想法的计数与"我点过的"状态;每次进页都重新拉一次最新数据
+    type State = { counts: Record<string, number>; mine: Set<string> };
+    const states = new Map<number, State>();
+    let visitorId: string;
+
+    function getVisitorId(): string {
+        if (visitorId) return visitorId;
+        try {
+            const saved = localStorage.getItem(VISITOR_KEY);
+            if (saved) return (visitorId = saved);
+            visitorId = crypto.randomUUID();
+            localStorage.setItem(VISITOR_KEY, visitorId);
+        } catch {
+            visitorId ??= crypto.randomUUID();
+        }
+        return visitorId;
+    }
+
+    // ── 数据层:生产走接口;开发模式(astro dev 没有 Pages Functions)用内存假数据 ──
+    const devStore = new Map<number, State>();
+
+    async function fetchReactions(ids: number[]): Promise<ReactionsPayload> {
+        if (import.meta.env.DEV) {
+            const payload: ReactionsPayload = { counts: {}, mine: {} };
+            for (const id of ids) {
+                const s = devStore.get(id) ?? { counts: id % 2 ? { like: 2, fire: 1 } : {}, mine: new Set<string>() };
+                devStore.set(id, s);
+                payload.counts[id] = { ...s.counts };
+                payload.mine[id] = [...s.mine];
+            }
+            return payload;
+        }
+        const res = await fetch(`${API}?ids=${ids.join(",")}&v=${getVisitorId()}`);
+        if (!res.ok) throw new Error(`reactions ${res.status}`);
+        return res.json();
+    }
+
+    async function sendReaction(id: number, key: string, on: boolean): Promise<number> {
+        if (import.meta.env.DEV) {
+            const s = devStore.get(id)!;
+            on ? s.mine.add(key) : s.mine.delete(key);
+            s.counts[key] = Math.max(0, (s.counts[key] ?? 0) + (on ? 1 : -1));
+            return s.counts[key];
+        }
+        const res = await fetch(API, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ id, key, on, v: getVisitorId() }),
+        });
+        if (!res.ok) throw new Error(`reactions ${res.status}`);
+        return (await res.json()).count;
+    }
+
+    // ── 动态表情:整段 webp 以 blob 缓存,每次播放换新 blob URL,保证从第一帧开始 ──
+    const animCache = new Map<string, Promise<Blob>>();
+
+    function loadAnim(key: string): Promise<Blob> {
+        let p = animCache.get(key);
+        if (!p) {
+            p = fetch(`/reactions/${key}.webp`).then((r) => {
+                if (!r.ok) throw new Error("anim");
+                return r.blob();
+            });
+            p.catch(() => animCache.delete(key));
+            animCache.set(key, p);
+        }
+        return p;
+    }
+
+    const reduceMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    async function playEffect(anchor: HTMLElement, key: string) {
+        if (reduceMotion()) return;
+        let blob: Blob;
+        try {
+            blob = await loadAnim(key);
+        } catch {
+            return;
+        }
+        if (!anchor.isConnected) return;
+        const icon = anchor.querySelector("img") ?? anchor;
+        const rect = icon.getBoundingClientRect();
+        const url = URL.createObjectURL(blob);
+        const img = document.createElement("img");
+        img.className = "reaction-effect";
+        img.alt = "";
+        img.src = url;
+        img.style.left = `${rect.left + rect.width / 2}px`;
+        img.style.top = `${rect.top + rect.height / 2}px`;
+        document.body.appendChild(img);
+        img.addEventListener("animationend", () => {
+            img.remove();
+            URL.revokeObjectURL(url);
+        });
+    }
+
+    function restartAnim(el: Element, cls: string) {
+        el.classList.remove("is-pop", "is-shrink", "is-up", "is-down");
+        void (el as HTMLElement).offsetWidth;
+        el.classList.add(cls);
+    }
+
+    function staticIcon(key: string, size: number): HTMLImageElement {
+        const img = document.createElement("img");
+        img.src = `/reactions/${key}.svg`;
+        img.alt = "";
+        img.width = size;
+        img.height = size;
+        img.draggable = false;
+        return img;
+    }
+
+    // ── 渲染 ──
+    function chipLabel(key: string, count: number) {
+        return `${LABEL.get(key)},${count} 人`;
+    }
+
+    function makeChip(id: number, key: string): HTMLButtonElement {
+        const s = states.get(id)!;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "reaction-chip";
+        btn.dataset.key = key;
+        btn.title = LABEL.get(key) ?? key;
+        btn.setAttribute("aria-pressed", String(s.mine.has(key)));
+        btn.setAttribute("aria-label", chipLabel(key, s.counts[key] ?? 0));
+        const num = document.createElement("span");
+        num.className = "reaction-count";
+        num.textContent = String(s.counts[key] ?? 0);
+        btn.append(staticIcon(key, 18), num);
+        btn.addEventListener("pointerenter", () => loadAnim(key).catch(() => {}), { once: true });
+        btn.addEventListener("click", () => toggle(id, key));
+        return btn;
+    }
+
+    function updateChip(box: HTMLElement, id: number, key: string, on: boolean, animate: boolean) {
+        const s = states.get(id)!;
+        const count = s.counts[key] ?? 0;
+        let chip = box.querySelector<HTMLButtonElement>(`.reaction-chip[data-key="${key}"]`);
+        if (count <= 0) {
+            chip?.remove();
+            return;
+        }
+        if (!chip) {
+            chip = makeChip(id, key);
+            box.insertBefore(chip, box.querySelector(".reaction-add-wrap"));
+        }
+        chip.setAttribute("aria-pressed", String(s.mine.has(key)));
+        chip.setAttribute("aria-label", chipLabel(key, count));
+        const num = chip.querySelector(".reaction-count")!;
+        num.textContent = String(count);
+        if (!animate) return;
+        restartAnim(num, on ? "is-up" : "is-down");
+        restartAnim(chip.querySelector("img")!, on ? "is-pop" : "is-shrink");
+        if (on) playEffect(chip, key);
+    }
+
+    async function toggle(id: number, key: string) {
+        const s = states.get(id);
+        const box = document.querySelector<HTMLElement>(`.thought-reactions[data-thought-id="${id}"]`);
+        if (!s || !box) return;
+        const on = !s.mine.has(key);
+        // 先改界面,请求失败再退回
+        on ? s.mine.add(key) : s.mine.delete(key);
+        s.counts[key] = Math.max(0, (s.counts[key] ?? 0) + (on ? 1 : -1));
+        updateChip(box, id, key, on, true);
+        try {
+            s.counts[key] = await sendReaction(id, key, on);
+            updateChip(box, id, key, on, false);
+        } catch {
+            on ? s.mine.delete(key) : s.mine.add(key);
+            s.counts[key] = Math.max(0, (s.counts[key] ?? 0) + (on ? -1 : 1));
+            updateChip(box, id, key, !on, false);
+        }
+    }
+
+    // ── 选择条:鼠标悬停展开、移开稍等再收起;触屏/键盘点按钮开关 ──
+    let closeTimer = 0;
+    let openTimer = 0;
+
+    function closePickers() {
+        clearTimeout(openTimer);
+        clearTimeout(closeTimer);
+        document.querySelectorAll(".reaction-picker").forEach((p) => p.remove());
+        document
+            .querySelectorAll(".reaction-add[aria-expanded='true']")
+            .forEach((b) => b.setAttribute("aria-expanded", "false"));
+    }
+
+    // Dock 放大:按指针到每个图标中心的横向距离,余弦衰减出放大倍数;
+    // 按钮跟着变宽把邻居推开,图标从底边向上长,探出胶囊
+    const DOCK_MAX = 1.7;
+    const DOCK_RANGE = 90; // px,超出这个距离不放大
+
+    function dockUpdate(picker: HTMLElement, x: number | null) {
+        const base = parseFloat(getComputedStyle(picker).fontSize) * 2.125;
+        picker.querySelectorAll<HTMLButtonElement>("button").forEach((b) => {
+            let scale = 1;
+            if (x !== null) {
+                const r = b.getBoundingClientRect();
+                const d = Math.abs(x - (r.left + r.width / 2));
+                if (d < DOCK_RANGE) scale = 1 + (DOCK_MAX - 1) * (Math.cos((d / DOCK_RANGE) * Math.PI) + 1) / 2;
+            }
+            b.style.width = scale === 1 ? "" : `${(base * (1 + (scale - 1) * 0.55)).toFixed(1)}px`;
+            b.querySelector("img")!.style.setProperty("--dock-scale", scale.toFixed(3));
+        });
+    }
+
+    function openPicker(id: number, wrap: HTMLElement, trigger: HTMLButtonElement) {
+        if (wrap.querySelector(".reaction-picker")) return;
+        closePickers();
+        const s = states.get(id)!;
+        const picker = document.createElement("div");
+        picker.className = "reaction-picker";
+        picker.setAttribute("role", "menu");
+        for (const r of REACTIONS) {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.title = r.label;
+            b.setAttribute("role", "menuitem");
+            b.setAttribute("aria-label", r.label);
+            b.append(staticIcon(r.key, 24));
+            // 悬停即预取动图,点下去时特效不用等网络
+            b.addEventListener("pointerenter", () => loadAnim(r.key).catch(() => {}), { once: true });
+            b.addEventListener("click", (ev) => {
+                ev.stopPropagation();
+                closePickers();
+                if (!s.mine.has(r.key)) toggle(id, r.key);
+            });
+            picker.append(b);
+        }
+        if (!reduceMotion()) {
+            let frame = 0;
+            picker.addEventListener("pointermove", (ev) => {
+                if (ev.pointerType !== "mouse") return;
+                cancelAnimationFrame(frame);
+                frame = requestAnimationFrame(() => dockUpdate(picker, ev.clientX));
+            });
+            picker.addEventListener("pointerleave", () => {
+                cancelAnimationFrame(frame);
+                dockUpdate(picker, null);
+            });
+        }
+        wrap.append(picker);
+        trigger.setAttribute("aria-expanded", "true");
+        // 窄屏时选择条可能伸出版心右侧,往左挪回来
+        const overflow = picker.getBoundingClientRect().right - (document.documentElement.clientWidth - 8);
+        if (overflow > 0) picker.style.left = `${-overflow}px`;
+        return picker;
+    }
+
+    const SMILE_SVG =
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5s1.3 1.8 3.5 1.8 3.5-1.8 3.5-1.8"/><path d="M9 9.5h.01M15 9.5h.01"/></svg>';
+
+    function renderBox(box: HTMLElement, id: number) {
+        const s = states.get(id)!;
+        box.replaceChildren();
+        for (const r of REACTIONS) {
+            if ((s.counts[r.key] ?? 0) > 0) box.append(makeChip(id, r.key));
+        }
+        const wrap = document.createElement("span");
+        wrap.className = "reaction-add-wrap";
+        const add = document.createElement("button");
+        add.type = "button";
+        add.className = "reaction-add";
+        add.title = "添加表情";
+        add.setAttribute("aria-label", "添加表情");
+        add.setAttribute("aria-haspopup", "menu");
+        add.setAttribute("aria-expanded", "false");
+        add.innerHTML = SMILE_SVG;
+
+        // 鼠标:悬停展开(短延迟防误触),移出整个区域(按钮 + 选择条)后稍等再收起
+        wrap.addEventListener("pointerenter", (ev) => {
+            if (ev.pointerType !== "mouse") return;
+            clearTimeout(closeTimer);
+            clearTimeout(openTimer);
+            openTimer = window.setTimeout(() => openPicker(id, wrap, add), 120);
+        });
+        wrap.addEventListener("pointerleave", (ev) => {
+            if (ev.pointerType !== "mouse") return;
+            clearTimeout(openTimer);
+            closeTimer = window.setTimeout(closePickers, 220);
+        });
+        // 触屏与键盘:点按钮开关
+        add.addEventListener("click", (ev) => {
+            ev.stopPropagation();
+            if (add.getAttribute("aria-expanded") === "true") {
+                // 鼠标悬停已展开时,点击不应把它关掉
+                if ((ev as PointerEvent).pointerType === "mouse") return;
+                closePickers();
+            } else {
+                const picker = openPicker(id, wrap, add);
+                if (ev.detail === 0) picker?.querySelector("button")?.focus();
+            }
+        });
+        wrap.append(add);
+        box.append(wrap);
+        box.hidden = false;
+    }
+
+    async function init() {
+        // 只取当前可见的条目:逐批展开时还藏着的,等 LoadMore 放出后(reveal:more)再拉
+        const boxes = [...document.querySelectorAll<HTMLElement>(".thought-reactions[data-thought-id]")].filter(
+            (b) => !b.dataset.ready && !b.closest(".reveal-item.hidden")
+        );
+        if (boxes.length === 0) return;
+        boxes.forEach((b) => (b.dataset.ready = "1"));
+        const ids = [...new Set(boxes.map((b) => Number(b.dataset.thoughtId)))];
+        let payload: ReactionsPayload;
+        try {
+            payload = await fetchReactions(ids);
+        } catch {
+            return; // 接口不可用:表情栏保持隐藏
+        }
+        for (const id of ids) {
+            states.set(id, {
+                counts: { ...(payload.counts[id] ?? {}) },
+                mine: new Set(payload.mine[id] ?? []),
+            });
+        }
+        boxes.forEach((b) => renderBox(b, Number(b.dataset.thoughtId)));
+    }
+
+    document.addEventListener("click", closePickers);
+    document.addEventListener("keydown", (ev) => {
+        if (ev.key === "Escape") closePickers();
+    });
+    document.addEventListener("astro:page-load", init);
+    document.addEventListener("reveal:more", init);
+    init();
+</script>
